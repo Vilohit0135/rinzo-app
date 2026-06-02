@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#000000',
     textAlign: 'center',
-    lineHeight: 24,
+    lineHeight: 34,
     marginTop: 20,
     fontFamily: 'Poppins-semi-bold',
   },
