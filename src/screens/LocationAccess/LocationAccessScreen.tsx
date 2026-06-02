@@ -4,7 +4,11 @@ import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants/theme';
 
-const LocationAccessScreen = () => {
+interface LocationAccessScreenProps {
+  onNext?: () => void;
+}
+
+const LocationAccessScreen = ({ onNext }: LocationAccessScreenProps) => {
   const { width } = useWindowDimensions();
 
   return (
@@ -43,7 +47,9 @@ const LocationAccessScreen = () => {
           </LinearGradient>
         </TouchableOpacity>
 
-        <Text style={styles.secondaryText}>Maybe Later</Text>
+        <TouchableOpacity onPress={onNext} activeOpacity={0.6}>
+          <Text style={styles.secondaryText}>Maybe Later</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
