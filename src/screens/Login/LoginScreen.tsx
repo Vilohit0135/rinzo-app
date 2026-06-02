@@ -5,7 +5,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants/theme';
 import { SocialButton } from '../../components/buttons/SocialButton';
 
-const LoginScreen = () => {
+interface LoginScreenProps {
+  onLoginSuccess?: () => void;
+}
+
+const LoginScreen = ({ onLoginSuccess }: LoginScreenProps) => {
   const handleSocialLogin = (provider: string) => {
     console.log('Social login:', provider);
   };
@@ -46,6 +50,7 @@ const LoginScreen = () => {
         <TouchableOpacity
           style={styles.buttonWrapper}
           activeOpacity={0.8}
+          onPress={onLoginSuccess}
         >
           <LinearGradient
             colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}

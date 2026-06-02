@@ -7,6 +7,7 @@ import SplashScreen from './src/screens/Splash/SplashScreen';
 import OnboardingScreen1 from './src/screens/Onboarding/OnboardingScreen1';
 import LocationAccessScreen from './src/screens/LocationAccess/LocationAccessScreen';
 import LoginScreen from './src/screens/Login/LoginScreen';
+import HomeScreen from './src/screens/Home/HomeScreen';
 import SchedulePickupScreen from './src/screens/SchedulePickup/SchedulePickupScreen';
 
 const Stack = createNativeStackNavigator();
@@ -23,22 +24,39 @@ export default function App() {
         >
           <Stack.Screen
             name="Splash"
-            component={SplashScreen}
-          />
+          >
+            {({ navigation }) => (
+              <SplashScreen onFinish={() => navigation.replace('Onboarding')} />
+            )}
+          </Stack.Screen>
 
           <Stack.Screen
             name="Onboarding"
-            component={OnboardingScreen1}
-          />
+          >
+            {({ navigation }) => (
+              <OnboardingScreen1 onNext={() => navigation.navigate('LocationAccess')} />
+            )}
+          </Stack.Screen>
 
           <Stack.Screen
             name="LocationAccess"
-            component={LocationAccessScreen}
-          />
+          >
+            {({ navigation }) => (
+              <LocationAccessScreen onNext={() => navigation.navigate('Login')} />
+            )}
+          </Stack.Screen>
 
           <Stack.Screen
             name="Login"
-            component={LoginScreen}
+          >
+            {({ navigation }) => (
+              <LoginScreen onLoginSuccess={() => navigation.replace('Home')} />
+            )}
+          </Stack.Screen>
+
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
           />
 
           <Stack.Screen
