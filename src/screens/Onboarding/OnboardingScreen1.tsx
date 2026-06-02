@@ -2,8 +2,13 @@ import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
+import { COLORS } from '../../constants/theme';
 
-const OnboardingScreen1 = () => {
+interface OnboardingScreen1Props {
+  onNext?: () => void;
+}
+
+const OnboardingScreen1 = ({ onNext }: OnboardingScreen1Props) => {
   const { height } = useWindowDimensions();
 
   return (
@@ -32,9 +37,10 @@ const OnboardingScreen1 = () => {
         <TouchableOpacity
           style={styles.buttonContainer}
           activeOpacity={0.8}
+          onPress={onNext}
         >
           <LinearGradient
-            colors={['#8259D2', '#8259D2']}
+            colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
             style={styles.buttonGradient}
           >
             <Text style={styles.buttonText}>Next</Text>
