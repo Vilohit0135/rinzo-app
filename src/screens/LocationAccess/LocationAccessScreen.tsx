@@ -38,6 +38,7 @@ const LocationAccessScreen = ({ onNext }: LocationAccessScreenProps) => {
         <TouchableOpacity
           style={styles.buttonContainer}
           activeOpacity={0.8}
+          onPress={onNext}
         >
           <LinearGradient
             colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}

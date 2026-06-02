@@ -1,0 +1,16 @@
+export const COLORS = {
+  background: '#F8F7FC',
+  textPrimary: '#1C1C38',
+  textDark: '#111111',
+  textMuted: '#8D8DAD',
+  placeholder: '#808080',
+  purple: '#7C4DFF',
+  purpleDark: '#4D2CA3',
+  purpleLight: '#EEE8FF',
+  gradientStart: '#8B5CF6',
+  gradientEnd: '#7C4DFF',
+  promoStart: '#D9C3FF',
+  promoEnd: '#C8A4FF',
+  white: '#FFFFFF',
+  borderPurple: '#BDA3FF',
+} as const;
