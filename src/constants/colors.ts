@@ -5,6 +5,8 @@ export const COLORS = {
   textMuted: '#8D8DAD',
   placeholder: '#808080',
   purple: '#7C4DFF',
+  purpledarks1: '#331970',
+  purplelocation:'#8259D2',
   purpleDark: '#4D2CA3',
   purpleLight: '#EEE8FF',
   gradientStart: '#8B5CF6',

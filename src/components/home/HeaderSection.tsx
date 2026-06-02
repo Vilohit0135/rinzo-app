@@ -16,11 +16,11 @@ const HeaderSection = () => {
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.greeting}>Hey Mira</Text>
+      <Text style={styles.greeting}>Hey Mira 👋</Text>
       <Text style={styles.title}>Find laundry near you</Text>
 
       <View style={styles.locationRow}>
-        <Ionicons name="location-outline" size={22} color={COLORS.purple} />
+        <Ionicons name="location-outline" size={22} color={COLORS.purplelocation} />
         <Text style={styles.locationText}>Bangalore</Text>
         <Ionicons name="chevron-down" size={20} color={COLORS.purple} />
       </View>
@@ -50,8 +50,7 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
   },
   title: {
-    marginTop: 6,
-    fontSize: 42,
+    fontSize:26,
     fontWeight: '700',
     color: COLORS.textPrimary,
     lineHeight: 48,
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
   locationText: {
     fontSize: 18,
     fontWeight: '600',
-    color: COLORS.purple,
+    color: COLORS.purpledarks1,
   },
 });
 

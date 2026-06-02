@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 14,
     marginRight: 12,
-    fontSize: 18,
+    fontSize: 13,
     color: COLORS.placeholder,
   },
 });
