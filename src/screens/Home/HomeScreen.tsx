@@ -22,12 +22,13 @@ type RootStackParamList = {
   MyOrders: undefined;
   Profile: undefined;
   LaundryDetail: { id: string };
-  SchedulePickup: undefined;
+  BookPickup: undefined;
+  OrderTracking: undefined;
 };
 
 type IconName = string;
 
-type QuickActionRoute = 'SchedulePickup';
+type QuickActionRoute = 'BookPickup' | 'OrderTracking';
 
 type QuickAction = {
   title: string;
@@ -43,8 +44,8 @@ const services: Array<{ title: string; icon: IconName }> = [
 ];
 
 const quickActions: QuickAction[] = [
-  { title: 'Schedule Pickup', icon: 'calendar-outline', route: 'SchedulePickup' },
-  { title: 'Track Order', icon: 'navigate-outline' },
+  { title: 'Schedule Pickup', icon: 'calendar-outline', route: 'BookPickup' },
+  { title: 'Track Order', icon: 'navigate-outline', route: 'OrderTracking' },
   { title: 'Repeat Order', icon: 'refresh-outline' },
 ];
 
@@ -60,10 +61,6 @@ const SectionHeader = ({ title }: { title: string }) => (
 
 const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
-
-  const goToSchedulePickup = () => {
-    navigation.navigate('SchedulePickup');
-  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
