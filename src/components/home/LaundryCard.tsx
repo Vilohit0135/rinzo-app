@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface LaundryCardProps {
@@ -11,6 +11,7 @@ interface LaundryCardProps {
   deliveryTime: string;
   icon?: string;
   style?: ViewStyle;
+  onPress?: () => void;
 }
 
 const tagIcons: Record<string, string> = {
@@ -23,9 +24,9 @@ const tagIcons: Record<string, string> = {
   'Budget': 'wallet-outline',
 };
 
-const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliveryTime, icon, style }: LaundryCardProps) => {
+const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliveryTime, icon, style, onPress }: LaundryCardProps) => {
   return (
-    <View style={[styles.card, style]}>
+    <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={[styles.card, style]}>
       <View style={styles.leftIconSection}>
         <View style={styles.iconContainer}>
           <Ionicons name={icon || 'shirt-outline'} size={28} color="#7C4DFF" />
@@ -59,7 +60,7 @@ const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliver
           <Text style={styles.deliveryText}>🕒 Delivery by {deliveryTime}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
