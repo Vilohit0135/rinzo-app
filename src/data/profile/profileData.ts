@@ -12,6 +12,11 @@ export interface ProfileData {
   userProfile: {
     name: string;
     email: string;
+    mobile: string;
+    dateOfBirth: string;
+    gender: string;
+    preferredLanguage: string;
+    profileImage: number;
   };
   stats: {
     totalOrders: number;
@@ -26,6 +31,11 @@ export const profileData: ProfileData = {
   userProfile: {
     name: 'Mira Sharma',
     email: 'mira.sharma@gmail.com',
+    mobile: '+91 83334747583',
+    dateOfBirth: '3/10/2001',
+    gender: 'Female',
+    preferredLanguage: 'English',
+    profileImage: require('../../assets/images/profile.png'),
   },
   stats: {
     totalOrders: 24,
