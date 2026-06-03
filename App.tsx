@@ -1,19 +1,63 @@
-import { useState } from 'react';
+// App.tsx
+
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import OnboardingScreen1 from './src/screens/Onboarding/OnboardingScreen1';
-import SplashScreen from './src/screens/Splash/SplashScreen';
-import LocationAccessScreen from './src/screens/LocationAccess/LocationAccessScreen';
-import LoginScreen from './src/screens/Login/LoginScreen';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import SchedulePickupScreen from './src/screens/SchedulePickup/SchedulePickupScreen';
+import BookPickupScreen from './src/screens/BookPickup/BookPickupScreen';
+import PickupDetailsScreen from './src/screens/PickupDetails/PickupDetailsScreen';
+import OrderSummaryScreen from './src/screens/OrderSummary/OrderSummaryScreen';
+import PaymentScreen from './src/screens/Payment/PaymentScreen';
+import OrderConfirmationScreen from './src/screens/OrderConfirmation/OrderConfirmationScreen';
+import OrderTrackingScreen from './src/screens/OrderTracking/OrderTrackingScreen';
+import HomeScreen from './src/screens/Home/HomeScreen';
+import { RootStackParamList } from './src/types/navigation';
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function App() {
-  const [screen, setScreen] = useState<'splash' | 'onboarding' | 'location' | 'login'>('splash');
-
   return (
     <SafeAreaProvider>
-      {screen === 'splash' && <SplashScreen onFinish={() => setScreen('onboarding')} />}
-      {screen === 'onboarding' && <OnboardingScreen1 onNext={() => setScreen('location')} />}
-      {screen === 'location' && <LocationAccessScreen onNext={() => setScreen('login')} />}
-      {screen === 'login' && <LoginScreen />}
+      <NavigationContainer>
+        <Stack.Navigator
+          screenOptions={{ headerShown: false }}
+          initialRouteName="BookPickup"
+        >
+          <Stack.Screen
+            name="BookPickup"
+            component={BookPickupScreen}
+          />
+          <Stack.Screen
+            name="PickupDetails"
+            component={PickupDetailsScreen}
+          />
+          <Stack.Screen
+            name="SchedulePickup"
+            component={SchedulePickupScreen}
+          />
+          <Stack.Screen
+            name="OrderSummary"
+            component={OrderSummaryScreen}
+          />
+          <Stack.Screen
+            name="Payment"
+            component={PaymentScreen}
+          />
+          <Stack.Screen
+            name="OrderConfirmation"
+            component={OrderConfirmationScreen}
+          />
+          <Stack.Screen
+            name="OrderTracking"
+            component={OrderTrackingScreen}
+          />
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }
