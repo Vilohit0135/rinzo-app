@@ -4,6 +4,7 @@ import MenuItem from './MenuItem';
 interface MenuItemData {
   icon: string;
   title: string;
+  onPress?: () => void;
 }
 
 interface MenuSectionProps {
@@ -22,6 +23,7 @@ const MenuSection = ({ heading, items }: MenuSectionProps) => {
             icon={item.icon}
             title={item.title}
             isLast={index === items.length - 1}
+            onPress={item.onPress}
           />
         ))}
       </View>

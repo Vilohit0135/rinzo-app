@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../constants/colors';
 
@@ -6,18 +6,19 @@ interface MenuItemProps {
   icon: string;
   title: string;
   isLast?: boolean;
+  onPress?: () => void;
 }
 
-const MenuItem = ({ icon, title, isLast }: MenuItemProps) => {
+const MenuItem = ({ icon, title, isLast, onPress }: MenuItemProps) => {
   return (
     <View>
-      <View style={styles.row}>
+      <TouchableOpacity style={styles.row} activeOpacity={0.7} onPress={onPress} disabled={!onPress}>
         <View style={styles.left}>
           <Ionicons name={icon} size={18} color={COLORS.purple} />
           <Text style={styles.title}>{title}</Text>
         </View>
         <Ionicons name="chevron-forward" size={16} color="#8B5CF6" />
-      </View>
+      </TouchableOpacity>
       {!isLast && <View style={styles.divider} />}
     </View>
   );

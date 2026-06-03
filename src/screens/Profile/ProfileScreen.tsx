@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from 'react-native';
+﻿import { ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
@@ -15,6 +15,7 @@ type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
+  MyOrders: undefined;
   Profile: undefined;
 };
 
@@ -33,7 +34,14 @@ const ProfileScreen = () => {
         <StatsCard {...profileData.stats} />
 
         <MenuSection {...profileData.accountMenu} />
-        <MenuSection {...profileData.activityMenu} />
+        <MenuSection
+          heading={profileData.activityMenu.heading}
+          items={profileData.activityMenu.items.map((item) =>
+            item.title === 'Order History'
+              ? { ...item, onPress: () => navigation.navigate('MyOrders') }
+              : item
+          )}
+        />
         <MenuSection {...profileData.supportMenu} />
 
         <LogoutButton />
