@@ -16,6 +16,7 @@ import { COLORS } from '../../constants/colors';
 
 type RootStackParamList = {
   Home: undefined;
+  Search: undefined;
   SchedulePickup: undefined;
 };
 
@@ -139,7 +140,7 @@ const HomeScreen = () => {
           </View>
         </View>
       </ScrollView>
-      <BottomTabBar />
+      <BottomTabBar onTabPress={(tab) => { if (tab === 'Search') navigation.navigate('Search'); }} />
     </SafeAreaView>
   );
 };
