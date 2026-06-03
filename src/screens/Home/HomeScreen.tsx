@@ -36,6 +36,13 @@ const services: Array<{ title: string; icon: IconName }> = [
   { title: 'Wash & Fold', icon: 'basket-outline' },
 ];
 
+const popularLaundries = [
+  { name: 'Krishna Laundry', rating: 4.8, reviewCount: 231, distance: '1.2 km away', price: '₹50/kg', tags: ['Pickup Available', 'Fast Service'], deliveryTime: '2:00 PM', icon: 'shirt-outline' },
+  { name: 'Royal Wash', rating: 4.9, reviewCount: 345, distance: '0.8 km away', price: '₹60/kg', tags: ['Express', 'Eco Friendly'], deliveryTime: '1:00 PM', icon: 'sparkles-outline' },
+  { name: 'Eco Laundry Hub', rating: 4.7, reviewCount: 156, distance: '3.1 km away', price: '₹45/kg', tags: ['Budget', 'Eco Friendly'], deliveryTime: '5:00 PM', icon: 'leaf-outline' },
+  { name: 'Sparkle Dry Clean', rating: 4.6, reviewCount: 189, distance: '2.5 km away', price: '₹80/kg', tags: ['Dry Clean', 'Free Pickup'], deliveryTime: '4:00 PM', icon: 'water-outline' },
+];
+
 const quickActions: QuickAction[] = [
   { title: 'Schedule Pickup', icon: 'calendar-outline', route: 'SchedulePickup' },
   { title: 'Track Order', icon: 'navigate-outline' },
@@ -110,9 +117,15 @@ const HomeScreen = () => {
 
         <View style={styles.popularSection}>
           <SectionHeader title="Popular Laundry Nearby" />
-          <View style={styles.laundryCardWrap}>
-            <LaundryCard />
-          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.laundryCardsRow}
+          >
+            {popularLaundries.map((item) => (
+              <LaundryCard key={item.name} {...item} style={{ width: 320 }} />
+            ))}
+          </ScrollView>
         </View>
 
         <View style={styles.promoWrap}>
@@ -159,7 +172,7 @@ const styles = StyleSheet.create({
     color: COLORS.purpleDark,
   },
   servicesSection: {
-    marginTop: 32,
+    marginTop: 20,
     paddingHorizontal: 18,
   },
   serviceCardsRow: {
@@ -168,31 +181,33 @@ const styles = StyleSheet.create({
     paddingRight: 18,
   },
   quickActionsSection: {
-    marginTop: 45,
+    marginTop: 35,
     paddingHorizontal: 18,
   },
   quickActionsRow: {
-    marginTop: 18,
+    marginTop: 15,
     gap: 12,
     paddingRight: 18,
   },
   popularSection: {
-    marginTop: 45,
+    marginTop: 10,
     paddingHorizontal: 18,
   },
-  laundryCardWrap: {
+  laundryCardsRow: {
     marginTop: 18,
+    gap: 12,
+    paddingRight: 18,
   },
   promoWrap: {
-    marginTop: 26,
-    paddingHorizontal: 18,
+    marginTop: 20,
+    paddingHorizontal: 14,
   },
   orderSection: {
-    marginTop: 41,
+    marginTop: 21,
     paddingHorizontal: 18,
   },
   orderCardWrap: {
-    marginTop: 18,
+    marginTop: 10,
   },
 });
 

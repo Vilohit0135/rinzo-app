@@ -44,20 +44,20 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   greeting: {
-    marginTop: 21,
+    marginTop: 15,
     fontSize: 15,
     fontWeight: '500',
     color: COLORS.textMuted,
   },
   title: {
-    marginTop: 5,
+    marginTop: -5,
     fontSize: 20,
     fontWeight: '700',
     color: COLORS.textPrimary,
     lineHeight: 36,
   },
   locationRow: {
-    marginTop: 14,
+    marginTop: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,

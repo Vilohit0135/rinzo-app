@@ -26,8 +26,8 @@ const PromoBanner = () => {
 
 const styles = StyleSheet.create({
   banner: {
-    height: 109,
-    borderRadius: 21,
+    height: 80,
+    borderRadius: 17,
     padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
@@ -40,9 +40,9 @@ const styles = StyleSheet.create({
   label: {
     alignSelf: 'flex-start',
     backgroundColor: COLORS.purple,
-    borderRadius: 999,
-    paddingHorizontal: 9,
-    paddingVertical: 4,
+    borderRadius: 5,
+    paddingHorizontal: 19,
+    paddingVertical: 3,
   },
   labelText: {
     fontSize: 9,
@@ -50,19 +50,20 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   title: {
-    marginTop: 8,
-    fontSize: 27,
+    marginTop: 1,
+    fontSize: 20,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   subtitle: {
-    marginTop: 2,
-    fontSize: 12,
+    marginTop: 0,
+    fontSize: 13,
+    fontFamily: 'Poppins',
     fontWeight: '600',
     color: COLORS.textPrimary,
   },
   button: {
-    height: 39,
+    height: 29,
     borderRadius: 12,
     backgroundColor: COLORS.purple,
     paddingHorizontal: 14,

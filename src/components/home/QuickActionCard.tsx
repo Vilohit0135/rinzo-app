@@ -21,8 +21,8 @@ const QuickActionCard = ({ title, icon, onPress }: QuickActionCardProps) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: 165,
-    height: 63,
+    width: 135,
+    height: 53,
     backgroundColor: COLORS.purpleLight,
     borderRadius: 17,
     paddingHorizontal: 14,
@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconWrap: {
-    width: 36,
-    height: 36,
+    width: 26,
+    height: 26,
     borderRadius: 18,
     backgroundColor: COLORS.white,
     alignItems: 'center',
@@ -39,9 +39,9 @@ const styles = StyleSheet.create({
   },
   title: {
     marginLeft: 11,
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '700',
-    color: COLORS.textPrimary,
+    color: '#331970',
   },
 });
 
