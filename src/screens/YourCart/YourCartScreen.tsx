@@ -18,6 +18,7 @@ type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
+  Profile: undefined;
 };
 
 const YourCartScreen = () => {
@@ -62,7 +63,7 @@ const YourCartScreen = () => {
           <CheckoutButton />
         </View>
       </ScrollView>
-      <BottomTabBar activeTab="Orders" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); }} />
+      <BottomTabBar activeTab="Orders" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
     </SafeAreaView>
   );
 };

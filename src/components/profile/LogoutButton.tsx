@@ -1,0 +1,36 @@
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+const LogoutButton = () => {
+  return (
+    <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+      <View style={styles.row}>
+        <Ionicons name="log-out-outline" size={18} color="#FF4D4F" />
+        <Text style={styles.text}>Logout</Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const styles = StyleSheet.create({
+  button: {
+    marginTop: 30,
+    height: 48,
+    borderRadius: 14,
+    backgroundColor: '#FFE5E5',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  text: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#FF4D4F',
+  },
+});
+
+export default LogoutButton;
