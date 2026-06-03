@@ -13,14 +13,14 @@ const LaundryCard = () => {
           </View>
         </View>
         <View style={styles.iconWrap}>
-          <Ionicons name="shirt-outline" size={36} color={COLORS.purple} />
+          <Ionicons name="shirt-outline" size={27} color={COLORS.purple} />
         </View>
       </View>
 
       <Text style={styles.distance}>1.2 km away</Text>
 
       <View style={styles.priceRow}>
-        <Text style={styles.price}>Rs.50/kg</Text>
+        <Text style={styles.price}>₹50/kg</Text>
         <Text style={styles.deliveryText}>Delivery by 2:00 PM</Text>
       </View>
 
@@ -39,79 +39,79 @@ const LaundryCard = () => {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    height: 250,
+    height: 188,
     backgroundColor: COLORS.white,
-    borderRadius: 28,
-    padding: 22,
+    borderRadius: 21,
+    padding: 17,
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 10,
+      height: 8,
     },
     shadowOpacity: 0.08,
-    shadowRadius: 20,
-    elevation: 5,
+    shadowRadius: 15,
+    elevation: 4,
   },
   topRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   name: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   metaRow: {
-    marginTop: 12,
+    marginTop: 9,
   },
   rating: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '600',
     color: COLORS.textPrimary,
   },
   iconWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: 24,
+    width: 48,
+    height: 48,
+    borderRadius: 18,
     backgroundColor: COLORS.purpleLight,
     alignItems: 'center',
     justifyContent: 'center',
   },
   distance: {
-    marginTop: 14,
-    fontSize: 16,
+    marginTop: 11,
+    fontSize: 12,
     fontWeight: '600',
     color: COLORS.textPrimary,
   },
   priceRow: {
-    marginTop: 18,
+    marginTop: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   price: {
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: '700',
     color: COLORS.purple,
   },
   deliveryText: {
-    fontSize: 15,
+    fontSize: 11,
     fontWeight: '600',
     color: COLORS.textMuted,
   },
   tagsRow: {
-    marginTop: 20,
+    marginTop: 15,
     flexDirection: 'row',
-    gap: 10,
+    gap: 8,
   },
   tag: {
     backgroundColor: COLORS.purpleLight,
     borderRadius: 999,
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 11,
+    paddingVertical: 6,
   },
   tagText: {
-    fontSize: 14,
+    fontSize: 11,
     fontWeight: '600',
     color: COLORS.purple,
   },

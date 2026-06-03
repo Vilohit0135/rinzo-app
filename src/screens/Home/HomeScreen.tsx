@@ -47,7 +47,7 @@ const SectionHeader = ({ title }: { title: string }) => (
     <Text style={styles.sectionTitle}>{title}</Text>
     <TouchableOpacity style={styles.viewAll} activeOpacity={0.7}>
       <Text style={styles.viewAllText}>View all</Text>
-      <Ionicons name="chevron-forward" size={20} color={COLORS.purpleDark} />
+      <Ionicons name="chevron-forward" size={15} color={COLORS.purpleDark} />
     </TouchableOpacity>
   </View>
 );
@@ -133,11 +133,11 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   safeArea: {
-    flex:1,
+    flex: 1,
     backgroundColor: COLORS.background,
   },
   scrollContent: {
-    paddingBottom: 140,
+    paddingBottom: 105,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
@@ -154,45 +154,45 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewAllText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '600',
     color: COLORS.purpleDark,
   },
   servicesSection: {
-    marginTop: 42,
-    paddingHorizontal: 24,
+    marginTop: 32,
+    paddingHorizontal: 18,
   },
   serviceCardsRow: {
-    marginTop: 24,
-    gap: 16,
-    paddingRight: 24,
+    marginTop: 18,
+    gap: 12,
+    paddingRight: 18,
   },
   quickActionsSection: {
-    marginTop: 60,
-    paddingHorizontal: 24,
+    marginTop: 45,
+    paddingHorizontal: 18,
   },
   quickActionsRow: {
-    marginTop: 24,
-    gap: 16,
-    paddingRight: 24,
+    marginTop: 18,
+    gap: 12,
+    paddingRight: 18,
   },
   popularSection: {
-    marginTop: 60,
-    paddingHorizontal: 24,
+    marginTop: 45,
+    paddingHorizontal: 18,
   },
   laundryCardWrap: {
-    marginTop: 24,
+    marginTop: 18,
   },
   promoWrap: {
-    marginTop: 34,
-    paddingHorizontal: 24,
+    marginTop: 26,
+    paddingHorizontal: 18,
   },
   orderSection: {
-    marginTop: 54,
-    paddingHorizontal: 24,
+    marginTop: 41,
+    paddingHorizontal: 18,
   },
   orderCardWrap: {
-    marginTop: 24,
+    marginTop: 18,
   },
 });
 
