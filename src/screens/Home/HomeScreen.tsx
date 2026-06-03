@@ -75,7 +75,7 @@ const HomeScreen = () => {
         contentContainerStyle={styles.scrollContent}
       >
         <HeaderSection />
-        <SearchBar />
+        <SearchBar onPress={() => navigation.navigate('Search')} />
 
         <View style={styles.servicesSection}>
           <SectionHeader title="Services" />

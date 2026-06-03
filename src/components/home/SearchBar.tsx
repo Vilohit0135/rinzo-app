@@ -1,14 +1,18 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../constants/colors';
 
-const SearchBar = () => {
+interface SearchBarProps {
+  onPress?: () => void;
+}
+
+const SearchBar = ({ onPress }: SearchBarProps) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={styles.container}>
       <Ionicons name="search-outline" size={20} color={COLORS.textDark} />
       <Text style={styles.placeholder}>Search for services or laundries..</Text>
       <Ionicons name="options-outline" size={20} color={COLORS.textDark} />
-    </View>
+    </TouchableOpacity>
   );
 };
 
