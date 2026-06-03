@@ -13,12 +13,14 @@ import PromoBanner from '../../components/home/PromoBanner';
 import OrderCard from '../../components/home/OrderCard';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
+import { laundryItems } from '../../data/laundry/laundryData';
 
 type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
   Profile: undefined;
+  LaundryDetail: { id: string };
   SchedulePickup: undefined;
 };
 
@@ -37,13 +39,6 @@ const services: Array<{ title: string; icon: IconName }> = [
   { title: 'Iron Only', icon: 'sparkles-outline' },
   { title: 'Dry Clean', icon: 'water-outline' },
   { title: 'Wash & Fold', icon: 'basket-outline' },
-];
-
-const popularLaundries = [
-  { name: 'Krishna Laundry', rating: 4.8, reviewCount: 231, distance: '1.2 km away', price: '₹50/kg', tags: ['Pickup Available', 'Fast Service'], deliveryTime: '2:00 PM', icon: 'shirt-outline' },
-  { name: 'Royal Wash', rating: 4.9, reviewCount: 345, distance: '0.8 km away', price: '₹60/kg', tags: ['Express', 'Eco Friendly'], deliveryTime: '1:00 PM', icon: 'sparkles-outline' },
-  { name: 'Eco Laundry Hub', rating: 4.7, reviewCount: 156, distance: '3.1 km away', price: '₹45/kg', tags: ['Budget', 'Eco Friendly'], deliveryTime: '5:00 PM', icon: 'leaf-outline' },
-  { name: 'Sparkle Dry Clean', rating: 4.6, reviewCount: 189, distance: '2.5 km away', price: '₹80/kg', tags: ['Dry Clean', 'Free Pickup'], deliveryTime: '4:00 PM', icon: 'water-outline' },
 ];
 
 const quickActions: QuickAction[] = [
@@ -125,8 +120,8 @@ const HomeScreen = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.laundryCardsRow}
           >
-            {popularLaundries.map((item) => (
-              <LaundryCard key={item.name} {...item} style={{ width: 320 }} />
+            {laundryItems.map((item) => (
+              <LaundryCard key={item.id} {...item} style={{ width: 320 }} onPress={() => navigation.navigate('LaundryDetail', { id: item.id })} />
             ))}
           </ScrollView>
         </View>

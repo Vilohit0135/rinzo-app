@@ -11,6 +11,7 @@ import HomeScreen from './src/screens/Home/HomeScreen';
 import SearchScreen from './src/screens/Search/SearchScreen';
 import YourCartScreen from './src/screens/YourCart/YourCartScreen';
 import ProfileScreen from './src/screens/Profile/ProfileScreen';
+import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
 import SchedulePickupScreen from './src/screens/SchedulePickup/SchedulePickupScreen';
 
 const Stack = createNativeStackNavigator();
@@ -75,6 +76,11 @@ export default function App() {
           <Stack.Screen
             name="Profile"
             component={ProfileScreen}
+          />
+
+          <Stack.Screen
+            name="LaundryDetail"
+            component={LaundryDetailScreen}
           />
 
           <Stack.Screen
