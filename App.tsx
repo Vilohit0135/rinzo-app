@@ -14,6 +14,8 @@ import ProfileScreen from './src/screens/Profile/ProfileScreen';
 import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
 import SchedulePickupScreen from './src/screens/SchedulePickup/SchedulePickupScreen';
 import MyOrdersScreen from './src/screens/MyOrders/MyOrdersScreen';
+import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
+import SignupScreen from './src/screens/Auth/SignupScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,7 +57,7 @@ export default function App() {
             name="Login"
           >
             {({ navigation }) => (
-              <LoginScreen onLoginSuccess={() => navigation.replace('Home')} />
+              <LoginScreen onLoginSuccess={() => navigation.navigate('OtpVerification')} onSignupPress={() => navigation.navigate('Signup')} />
             )}
           </Stack.Screen>
 
@@ -93,6 +95,19 @@ export default function App() {
             name="MyOrders"
             component={MyOrdersScreen}
           />
+
+          <Stack.Screen
+            name="OtpVerification"
+            component={OtpVerificationScreen}
+          />
+
+          <Stack.Screen
+            name="Signup"
+          >
+            {({ navigation }) => (
+              <SignupScreen onSignupSuccess={() => navigation.navigate('Login')} onLoginPress={() => navigation.navigate('Login')} />
+            )}
+          </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
