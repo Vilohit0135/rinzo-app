@@ -13,6 +13,7 @@ type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
+  Profile: undefined;
 };
 
 const recentSearches = ['Dry Clean', 'Krishna Laundry', 'Iron Service'];
@@ -111,7 +112,7 @@ const SearchScreen = () => {
           ))}
         </View>
       </ScrollView>
-      <BottomTabBar activeTab="Search" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+      <BottomTabBar activeTab="Search" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Orders') navigation.navigate('YourCart'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
     </SafeAreaView>
   );
 };
