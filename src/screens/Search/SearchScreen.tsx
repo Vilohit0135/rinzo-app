@@ -12,6 +12,7 @@ import { COLORS } from '../../constants/colors';
 type RootStackParamList = {
   Home: undefined;
   Search: undefined;
+  YourCart: undefined;
 };
 
 const recentSearches = ['Dry Clean', 'Krishna Laundry', 'Iron Service'];
@@ -110,7 +111,7 @@ const SearchScreen = () => {
           ))}
         </View>
       </ScrollView>
-      <BottomTabBar activeTab="Search" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); }} />
+      <BottomTabBar activeTab="Search" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
     </SafeAreaView>
   );
 };
