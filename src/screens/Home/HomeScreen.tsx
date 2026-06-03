@@ -119,7 +119,7 @@ const HomeScreen = () => {
             contentContainerStyle={styles.laundryCardsRow}
           >
             {laundryItems.map((item) => (
-              <LaundryCard key={item.id} {...item} style={{ width: 320 }} onPress={() => navigation.navigate('LaundryDetail', { id: item.id })} />
+              <LaundryCard key={item.id} {...item} style={{ width: 340 }} onPress={() => navigation.navigate('LaundryDetail', { id: item.id })} />
             ))}
           </ScrollView>
         </View>
@@ -173,11 +173,12 @@ const styles = StyleSheet.create({
   },
   serviceCardsRow: {
     marginTop: 18,
+    marginBottom: 5,
     gap: 12,
     paddingRight: 18,
   },
   quickActionsSection: {
-    marginTop: 35,
+    marginTop: 15,
     paddingHorizontal: 18,
   },
   quickActionsRow: {
@@ -193,9 +194,10 @@ const styles = StyleSheet.create({
     marginTop: 18,
     gap: 12,
     paddingRight: 18,
+    marginBottom: 10,
   },
   promoWrap: {
-    marginTop: 20,
+    marginTop: 10,
     paddingHorizontal: 14,
   },
   orderSection: {
