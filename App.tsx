@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -13,6 +13,7 @@ import YourCartScreen from './src/screens/YourCart/YourCartScreen';
 import ProfileScreen from './src/screens/Profile/ProfileScreen';
 import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
 import SchedulePickupScreen from './src/screens/SchedulePickup/SchedulePickupScreen';
+import MyOrdersScreen from './src/screens/MyOrders/MyOrdersScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -87,8 +88,14 @@ export default function App() {
             name="SchedulePickup"
             component={SchedulePickupScreen}
           />
+
+          <Stack.Screen
+            name="MyOrders"
+            component={MyOrdersScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
   );
 }
+

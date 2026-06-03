@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+﻿import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,6 +19,7 @@ type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
+  MyOrders: undefined;
   Profile: undefined;
   LaundryDetail: { id: string };
   SchedulePickup: undefined;
