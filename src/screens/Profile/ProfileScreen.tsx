@@ -17,6 +17,7 @@ type RootStackParamList = {
   YourCart: undefined;
   MyOrders: undefined;
   Profile: undefined;
+  PersonalInformation: undefined;
 };
 
 const ProfileScreen = () => {
@@ -33,7 +34,14 @@ const ProfileScreen = () => {
 
         <StatsCard {...profileData.stats} />
 
-        <MenuSection {...profileData.accountMenu} />
+        <MenuSection
+          heading={profileData.accountMenu.heading}
+          items={profileData.accountMenu.items.map((item) =>
+            item.title === 'Personal Information'
+              ? { ...item, onPress: () => navigation.navigate('PersonalInformation') }
+              : item
+          )}
+        />
         <MenuSection
           heading={profileData.activityMenu.heading}
           items={profileData.activityMenu.items.map((item) =>

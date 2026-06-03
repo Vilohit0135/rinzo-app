@@ -12,6 +12,7 @@ import HomeScreen from './src/screens/Home/HomeScreen';
 import SearchScreen from './src/screens/Search/SearchScreen';
 import YourCartScreen from './src/screens/YourCart/YourCartScreen';
 import ProfileScreen from './src/screens/Profile/ProfileScreen';
+import PersonalInformationScreen from './src/screens/Profile/PersonalInformationScreen';
 import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
 import MyOrdersScreen from './src/screens/MyOrders/MyOrdersScreen';
 import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
@@ -86,6 +87,11 @@ export default function App() {
           <Stack.Screen
             name="Profile"
             component={ProfileScreen}
+          />
+
+          <Stack.Screen
+            name="PersonalInformation"
+            component={PersonalInformationScreen}
           />
 
           <Stack.Screen

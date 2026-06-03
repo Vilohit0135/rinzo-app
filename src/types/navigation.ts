@@ -9,6 +9,7 @@ export type RootStackParamList = {
   Search: undefined;
   YourCart: undefined;
   Profile: undefined;
+  PersonalInformation: undefined;
   LaundryDetail: { id: string };
   MyOrders: undefined;
   OtpVerification: undefined;
