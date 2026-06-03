@@ -8,6 +8,7 @@ import OnboardingScreen1 from './src/screens/Onboarding/OnboardingScreen1';
 import LocationAccessScreen from './src/screens/LocationAccess/LocationAccessScreen';
 import LoginScreen from './src/screens/Login/LoginScreen';
 import HomeScreen from './src/screens/Home/HomeScreen';
+import SearchScreen from './src/screens/Search/SearchScreen';
 import SchedulePickupScreen from './src/screens/SchedulePickup/SchedulePickupScreen';
 
 const Stack = createNativeStackNavigator();
@@ -57,6 +58,11 @@ export default function App() {
           <Stack.Screen
             name="Home"
             component={HomeScreen}
+          />
+
+          <Stack.Screen
+            name="Search"
+            component={SearchScreen}
           />
 
           <Stack.Screen

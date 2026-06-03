@@ -1,9 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../constants/colors';
 
-const BottomTabBar = () => {
+interface BottomTabBarProps {
+  activeTab?: 'Home' | 'Search' | 'Orders' | 'Profile';
+  onTabPress?: (tab: string) => void;
+}
+
+const tabs = [
+  { name: 'Home' as const, icon: 'home-outline' },
+  { name: 'Search' as const, icon: 'search-outline' },
+  { name: 'Orders' as const, icon: 'bag-handle-outline' },
+  { name: 'Profile' as const, icon: 'person-outline' },
+];
+
+const BottomTabBar = ({ activeTab = 'Home', onTabPress }: BottomTabBarProps) => {
   return (
     <LinearGradient
       colors={[COLORS.gradientStart, COLORS.gradientEnd]}
@@ -11,19 +23,18 @@ const BottomTabBar = () => {
       end={{ x: 1, y: 0 }}
       style={styles.container}
     >
-      <View style={styles.activeTab}>
-        <Ionicons name="home-outline" size={18} color={COLORS.purple} />
-        <Text style={styles.activeText}>Home</Text>
-      </View>
-      <View style={styles.inactiveTab}>
-        <Ionicons name="search-outline" size={20} color={COLORS.white} />
-      </View>
-      <View style={styles.inactiveTab}>
-        <Ionicons name="bag-handle-outline" size={20} color={COLORS.white} />
-      </View>
-      <View style={styles.inactiveTab}>
-        <Ionicons name="person-outline" size={20} color={COLORS.white} />
-      </View>
+      {tabs.map((tab) =>
+        tab.name === activeTab ? (
+          <TouchableOpacity key={tab.name} style={styles.activeTab} activeOpacity={0.8} onPress={() => onTabPress?.(tab.name)}>
+            <Ionicons name={tab.icon} size={18} color={COLORS.purple} />
+            <Text style={styles.activeText}>{tab.name}</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity key={tab.name} style={styles.inactiveTab} activeOpacity={0.8} onPress={() => onTabPress?.(tab.name)}>
+            <Ionicons name={tab.icon} size={20} color={COLORS.white} />
+          </TouchableOpacity>
+        )
+      )}
     </LinearGradient>
   );
 };
