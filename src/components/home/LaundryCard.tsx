@@ -66,7 +66,7 @@ const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliver
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    height: 125,
+    height: 115,
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
