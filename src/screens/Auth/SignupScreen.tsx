@@ -5,12 +5,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants/theme';
 import { SocialButton } from '../../components/buttons/SocialButton';
 
-interface LoginScreenProps {
-  onLoginSuccess?: () => void;
-  onSignupPress?: () => void;
+interface SignupScreenProps {
+  onSignupSuccess?: () => void;
+  onLoginPress?: () => void;
 }
 
-const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
+const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
   const handleSocialLogin = (provider: string) => {
     console.log('Social login:', provider);
   };
@@ -32,32 +32,32 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
         <Text style={styles.welcomeText}>Welcome Back</Text>
         <Text style={styles.subtitle}>Please enter your details</Text>
 
-        <Text style={[styles.label, styles.phoneLabel]}>Phone number</Text>
+        <Text style={[styles.label, styles.emailLabel]}>Email</Text>
         <TextInput
           style={styles.input}
-          placeholder="+ 91 8777734343"
+          placeholder="Email"
           placeholderTextColor="#8E8E8E"
-          keyboardType="phone-pad"
+          keyboardType="email-address"
         />
 
-        <Text style={[styles.label, styles.otpLabel]}>OTP</Text>
+        <Text style={[styles.label, styles.passwordLabel]}>Password</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter Otp"
+          placeholder="Enter your password"
           placeholderTextColor="#8E8E8E"
-          keyboardType="number-pad"
+          secureTextEntry
         />
 
         <TouchableOpacity
           style={styles.buttonWrapper}
           activeOpacity={0.8}
-          onPress={onLoginSuccess}
+          onPress={onSignupSuccess}
         >
           <LinearGradient
             colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
             style={styles.buttonGradient}
           >
-            <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Signup</Text>
           </LinearGradient>
         </TouchableOpacity>
 
@@ -73,9 +73,9 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
           <SocialButton provider="apple" onPress={() => handleSocialLogin('apple')} />
         </View>
 
-        <TouchableOpacity style={styles.signupLink} activeOpacity={0.7} onPress={onSignupPress}>
-          <Text style={styles.signupLinkText}>
-            Don't have an account? <Text style={styles.signupLinkHighlight}>Sign up</Text>
+        <TouchableOpacity style={styles.loginLink} activeOpacity={0.7} onPress={onLoginPress}>
+          <Text style={styles.loginLinkText}>
+            Already have an account? <Text style={styles.loginLinkHighlight}>Login</Text>
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -86,22 +86,22 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F7F7F7',
   },
   scrollContent: {
-    paddingTop: 140,
+    paddingTop: 100,
     paddingHorizontal: 24,
   },
   logo: {
-    width: 200,
-    height: 40,
+    width: 220,
+    height: 55,
   },
   welcomeText: {
     fontSize: 24,
     fontWeight: '700',
     color: '#111111',
     lineHeight: 30,
-    marginTop: 35,
+    marginTop: 38,
   },
   subtitle: {
     fontSize: 16,
@@ -114,10 +114,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#222222',
   },
-  phoneLabel: {
+  emailLabel: {
     marginTop: 28,
   },
-  otpLabel: {
+  passwordLabel: {
     marginTop: 24,
   },
   input: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
   },
   buttonWrapper: {
     marginTop: 58,
-    height: 50,
+    height: 56,
     borderRadius: 12,
     overflow: 'hidden',
   },
@@ -144,13 +144,13 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
     color: '#FFFFFF',
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 60,
+    marginTop: 90,
   },
   dividerLine: {
     flex: 1,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   },
   dividerText: {
     fontSize: 15,
-    color: '#52525B',
+    color: '#666666',
     marginHorizontal: 14,
   },
   socialRow: {
@@ -168,19 +168,19 @@ const styles = StyleSheet.create({
     marginTop: 30,
     gap: 22,
   },
-  signupLink: {
+  loginLink: {
     marginTop: 24,
     alignItems: 'center',
     marginBottom: 40,
   },
-  signupLinkText: {
+  loginLinkText: {
     fontSize: 15,
     color: '#52525B',
   },
-  signupLinkHighlight: {
+  loginLinkHighlight: {
     color: '#8259D2',
     fontWeight: '600',
   },
 });
 
-export default LoginScreen;
+export default SignupScreen;

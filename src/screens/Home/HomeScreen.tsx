@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+﻿import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -13,9 +13,15 @@ import PromoBanner from '../../components/home/PromoBanner';
 import OrderCard from '../../components/home/OrderCard';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
+import { laundryItems } from '../../data/laundry/laundryData';
 
 type RootStackParamList = {
   Home: undefined;
+  Search: undefined;
+  YourCart: undefined;
+  MyOrders: undefined;
+  Profile: undefined;
+  LaundryDetail: { id: string };
   SchedulePickup: undefined;
 };
 
@@ -47,7 +53,7 @@ const SectionHeader = ({ title }: { title: string }) => (
     <Text style={styles.sectionTitle}>{title}</Text>
     <TouchableOpacity style={styles.viewAll} activeOpacity={0.7}>
       <Text style={styles.viewAllText}>View all</Text>
-      <Ionicons name="chevron-forward" size={20} color={COLORS.purpleDark} />
+      <Ionicons name="chevron-forward" size={15} color={COLORS.purpleDark} />
     </TouchableOpacity>
   </View>
 );
@@ -67,7 +73,7 @@ const HomeScreen = () => {
         contentContainerStyle={styles.scrollContent}
       >
         <HeaderSection />
-        <SearchBar />
+        <SearchBar onPress={() => navigation.navigate('Search')} />
 
         <View style={styles.servicesSection}>
           <SectionHeader title="Services" />
@@ -110,9 +116,15 @@ const HomeScreen = () => {
 
         <View style={styles.popularSection}>
           <SectionHeader title="Popular Laundry Nearby" />
-          <View style={styles.laundryCardWrap}>
-            <LaundryCard />
-          </View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.laundryCardsRow}
+          >
+            {laundryItems.map((item) => (
+              <LaundryCard key={item.id} {...item} style={{ width: 320 }} onPress={() => navigation.navigate('LaundryDetail', { id: item.id })} />
+            ))}
+          </ScrollView>
         </View>
 
         <View style={styles.promoWrap}>
@@ -126,7 +138,7 @@ const HomeScreen = () => {
           </View>
         </View>
       </ScrollView>
-      <BottomTabBar />
+      <BottomTabBar onTabPress={(tab) => { if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
     </SafeAreaView>
   );
 };
@@ -137,7 +149,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scrollContent: {
-    paddingBottom: 140,
+    paddingBottom: 105,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -145,7 +157,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
@@ -154,45 +166,47 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewAllText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '600',
     color: COLORS.purpleDark,
   },
   servicesSection: {
-    marginTop: 42,
-    paddingHorizontal: 24,
+    marginTop: 20,
+    paddingHorizontal: 18,
   },
   serviceCardsRow: {
-    marginTop: 24,
-    gap: 16,
-    paddingRight: 24,
+    marginTop: 18,
+    gap: 12,
+    paddingRight: 18,
   },
   quickActionsSection: {
-    marginTop: 60,
-    paddingHorizontal: 24,
+    marginTop: 35,
+    paddingHorizontal: 18,
   },
   quickActionsRow: {
-    marginTop: 24,
-    gap: 16,
-    paddingRight: 24,
+    marginTop: 15,
+    gap: 12,
+    paddingRight: 18,
   },
   popularSection: {
-    marginTop: 60,
-    paddingHorizontal: 24,
+    marginTop: 10,
+    paddingHorizontal: 18,
   },
-  laundryCardWrap: {
-    marginTop: 24,
+  laundryCardsRow: {
+    marginTop: 18,
+    gap: 12,
+    paddingRight: 18,
   },
   promoWrap: {
-    marginTop: 34,
-    paddingHorizontal: 24,
+    marginTop: 20,
+    paddingHorizontal: 14,
   },
   orderSection: {
-    marginTop: 54,
-    paddingHorizontal: 24,
+    marginTop: 21,
+    paddingHorizontal: 18,
   },
   orderCardWrap: {
-    marginTop: 24,
+    marginTop: 10,
   },
 });
 

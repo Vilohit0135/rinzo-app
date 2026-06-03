@@ -1,7 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-interface LaundryCardProps {
+interface SearchResultCardProps {
   name: string;
   rating: number;
   reviewCount: number;
@@ -9,34 +9,17 @@ interface LaundryCardProps {
   price: string;
   tags: string[];
   deliveryTime: string;
-  icon?: string;
-  style?: ViewStyle;
-  onPress?: () => void;
 }
 
-const tagIcons: Record<string, string> = {
-  'Pickup Available': 'car-outline',
-  'Fast Service': 'flash-outline',
-  'Express': 'flash-outline',
-  'Eco Friendly': 'leaf-outline',
-  'Dry Clean': 'water-outline',
-  'Free Pickup': 'car-outline',
-  'Budget': 'wallet-outline',
-};
-
-const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliveryTime, icon, style, onPress }: LaundryCardProps) => {
+const SearchResultCard = ({ name, rating, reviewCount, distance, price, tags, deliveryTime }: SearchResultCardProps) => {
   return (
-    <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={[styles.card, style]}>
-      <View style={styles.leftIconSection}>
-        <View style={styles.iconContainer}>
-          <Ionicons name={icon || 'shirt-outline'} size={28} color="#7C4DFF" />
-        </View>
-      </View>
-      <View style={styles.rightContent}>
+    <View style={styles.card}>
+      <View style={styles.thumbnail} />
+      <View style={styles.content}>
         <View style={styles.topRow}>
           <Text style={styles.name} numberOfLines={1}>{name}</Text>
           <View style={styles.ratingGroup}>
-            <Ionicons name="star" size={16} color="#FFC107" />
+            <Ionicons name="star" size={11} color="#FFC107" />
             <Text style={styles.rating}>{rating}</Text>
             <Text style={styles.reviewCount}>({reviewCount})</Text>
           </View>
@@ -50,7 +33,6 @@ const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliver
         <View style={styles.tagsRow}>
           {tags.map((tag, index) => (
             <View key={index} style={styles.tag}>
-              <Ionicons name={tagIcons[tag] || 'pricetag-outline'} size={12} color="#7C4DFF" />
               <Text style={styles.tagText}>{tag}</Text>
             </View>
           ))}
@@ -60,7 +42,11 @@ const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliver
           <Text style={styles.deliveryText}>🕒 Delivery by {deliveryTime}</Text>
         </View>
       </View>
-    </TouchableOpacity>
+
+      <View style={styles.favouriteWrap}>
+        <Ionicons name="heart-outline" size={26} color="#000000" />
+      </View>
+    </View>
   );
 };
 
@@ -68,33 +54,27 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     height: 115,
-    flexDirection: 'row',
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 18,
+    borderRadius: 18,
+    padding: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 2,
   },
-  leftIconSection: {
-    width: 72,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconContainer: {
-    width: 52,
-    height: 52,
+  thumbnail: {
+    width: 80,
+    height: 80,
     borderRadius: 14,
-    backgroundColor: '#F3E8FF',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#F1ECFF',
   },
-  rightContent: {
+  content: {
     flex: 1,
-    paddingLeft: 7,
+    paddingLeft: 10,
   },
   topRow: {
     flexDirection: 'row',
@@ -103,7 +83,7 @@ const styles = StyleSheet.create({
   },
   name: {
     flexShrink: 1,
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: '700',
     color: '#1E1E2D',
   },
@@ -113,55 +93,61 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   rating: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '700',
     color: '#1E1E2D',
   },
   reviewCount: {
-    fontSize: 13,
-    color: '#9A9AB0',
+    fontSize: 11,
+    color: '#8D8DAD',
   },
   secondRow: {
-    marginTop: 1,
+    marginTop: 6,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   distance: {
-    fontSize: 14,
-    color: '#8E8EAA',
+    fontSize: 12,
+    color: '#8D8DAD',
   },
   price: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
-    color: '#6C4DFF',
+    color: '#7C4DFF',
   },
   tagsRow: {
-    marginTop: 5,
+    marginTop: 6,
     flexDirection: 'row',
-    gap: 3,
+    gap: 8,
   },
   tag: {
-    height: 16,
-    borderRadius: 13,
-    paddingHorizontal: 10,
-    backgroundColor: '#EFE9FF',
-    flexDirection: 'row',
+    height: 20,
+    paddingHorizontal: 8,
+    borderRadius: 14,
+    backgroundColor: '#EEE8FF',
     alignItems: 'center',
-    gap: 4,
+    justifyContent: 'center',
   },
   tagText: {
     fontSize: 10,
-    fontWeight: '500',
+    fontWeight: '600',
     color: '#7C4DFF',
   },
   deliveryRow: {
-    marginTop: 10,
+    marginTop: 8,
   },
   deliveryText: {
-    fontSize: 13,
-    color: '#8E8EAA',
+    fontSize: 12,
+    color: '#8D8DAD',
+  },
+  favouriteWrap: {
+    position: 'absolute',
+    bottom: 8,
+    right: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 
-export default LaundryCard;
+export default SearchResultCard;

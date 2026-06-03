@@ -12,15 +12,15 @@ const HeaderSection = () => {
           resizeMode="cover"
         />
         <TouchableOpacity activeOpacity={0.7}>
-          <Ionicons name="notifications-outline" size={28} color={COLORS.textDark} />
+          <Ionicons name="notifications-outline" size={21} color={COLORS.textDark} />
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.greeting}>Hey Mira</Text>
+      <Text style={styles.greeting}>Hey Mira 👋</Text>
       <Text style={styles.title}>Find laundry near you</Text>
 
       <View style={styles.locationRow}>
-        <Ionicons name="location-outline" size={22} color={COLORS.purple} />
+        <Ionicons name="location-outline" size={17} color={COLORS.purplelocation} />
         <Text style={styles.locationText}>Bangalore</Text>
         <Ionicons name="chevron-down" size={20} color={COLORS.purple} />
       </View>
@@ -30,8 +30,8 @@ const HeaderSection = () => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 24,
-    paddingTop: 20,
+    paddingHorizontal: 18,
+    paddingTop: 15,
   },
   topRow: {
     flexDirection: 'row',
@@ -39,33 +39,33 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   profileImage: {
-    width: 54,
-    height: 54,
-    borderRadius: 27,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
   greeting: {
-    marginTop: 28,
-    fontSize: 20,
+    marginTop: 15,
+    fontSize: 15,
     fontWeight: '500',
     color: COLORS.textMuted,
   },
   title: {
-    marginTop: 6,
-    fontSize: 42,
+    marginTop: -5,
+    fontSize: 20,
     fontWeight: '700',
     color: COLORS.textPrimary,
-    lineHeight: 48,
+    lineHeight: 36,
   },
   locationRow: {
-    marginTop: 18,
+    marginTop: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },
   locationText: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '600',
-    color: COLORS.purple,
+    color: COLORS.purpledarks1,
   },
 });
 

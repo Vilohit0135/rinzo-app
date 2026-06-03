@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -8,7 +8,14 @@ import OnboardingScreen1 from './src/screens/Onboarding/OnboardingScreen1';
 import LocationAccessScreen from './src/screens/LocationAccess/LocationAccessScreen';
 import LoginScreen from './src/screens/Login/LoginScreen';
 import HomeScreen from './src/screens/Home/HomeScreen';
+import SearchScreen from './src/screens/Search/SearchScreen';
+import YourCartScreen from './src/screens/YourCart/YourCartScreen';
+import ProfileScreen from './src/screens/Profile/ProfileScreen';
+import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
 import SchedulePickupScreen from './src/screens/SchedulePickup/SchedulePickupScreen';
+import MyOrdersScreen from './src/screens/MyOrders/MyOrdersScreen';
+import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
+import SignupScreen from './src/screens/Auth/SignupScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -50,7 +57,7 @@ export default function App() {
             name="Login"
           >
             {({ navigation }) => (
-              <LoginScreen onLoginSuccess={() => navigation.replace('Home')} />
+              <LoginScreen onLoginSuccess={() => navigation.navigate('OtpVerification')} onSignupPress={() => navigation.navigate('Signup')} />
             )}
           </Stack.Screen>
 
@@ -60,11 +67,50 @@ export default function App() {
           />
 
           <Stack.Screen
+            name="Search"
+            component={SearchScreen}
+          />
+
+          <Stack.Screen
+            name="YourCart"
+            component={YourCartScreen}
+          />
+
+          <Stack.Screen
+            name="Profile"
+            component={ProfileScreen}
+          />
+
+          <Stack.Screen
+            name="LaundryDetail"
+            component={LaundryDetailScreen}
+          />
+
+          <Stack.Screen
             name="SchedulePickup"
             component={SchedulePickupScreen}
           />
+
+          <Stack.Screen
+            name="MyOrders"
+            component={MyOrdersScreen}
+          />
+
+          <Stack.Screen
+            name="OtpVerification"
+            component={OtpVerificationScreen}
+          />
+
+          <Stack.Screen
+            name="Signup"
+          >
+            {({ navigation }) => (
+              <SignupScreen onSignupSuccess={() => navigation.navigate('Login')} onLoginPress={() => navigation.navigate('Login')} />
+            )}
+          </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
   );
 }
+

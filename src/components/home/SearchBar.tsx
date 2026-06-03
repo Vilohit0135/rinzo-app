@@ -1,41 +1,45 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../constants/colors';
 
-const SearchBar = () => {
+interface SearchBarProps {
+  onPress?: () => void;
+}
+
+const SearchBar = ({ onPress }: SearchBarProps) => {
   return (
-    <View style={styles.container}>
-      <Ionicons name="search-outline" size={26} color={COLORS.textDark} />
+    <TouchableOpacity activeOpacity={0.8} onPress={onPress} style={styles.container}>
+      <Ionicons name="search-outline" size={20} color={COLORS.textDark} />
       <Text style={styles.placeholder}>Search for services or laundries..</Text>
-      <Ionicons name="options-outline" size={26} color={COLORS.textDark} />
-    </View>
+      <Ionicons name="options-outline" size={20} color={COLORS.textDark} />
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    height: 68,
-    borderRadius: 34,
+    height: 46,
+    borderRadius: 26,
     backgroundColor: COLORS.white,
-    marginHorizontal: 24,
-    marginTop: 32,
-    paddingHorizontal: 22,
+    marginHorizontal: 18,
+    marginTop: 16,
+    paddingHorizontal: 17,
     flexDirection: 'row',
     alignItems: 'center',
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 8,
+      height: 6,
     },
     shadowOpacity: 0.08,
-    shadowRadius: 18,
-    elevation: 5,
+    shadowRadius: 14,
+    elevation: 4,
   },
   placeholder: {
     flex: 1,
-    marginLeft: 14,
-    marginRight: 12,
-    fontSize: 18,
+    marginLeft: 11,
+    marginRight: 9,
+    fontSize: 15,
     color: COLORS.placeholder,
   },
 });

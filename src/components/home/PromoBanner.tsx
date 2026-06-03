@@ -18,7 +18,7 @@ const PromoBanner = () => {
         <Text style={styles.subtitle}>On your first order</Text>
       </View>
       <TouchableOpacity style={styles.button} activeOpacity={0.8}>
-        <Text style={styles.buttonText}>Claim Now</Text>
+        <Text style={styles.buttonText}>Claim Now →</Text>
       </TouchableOpacity>
     </LinearGradient>
   );
@@ -26,9 +26,9 @@ const PromoBanner = () => {
 
 const styles = StyleSheet.create({
   banner: {
-    height: 145,
-    borderRadius: 28,
-    padding: 18,
+    height: 80,
+    borderRadius: 17,
+    padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -40,37 +40,38 @@ const styles = StyleSheet.create({
   label: {
     alignSelf: 'flex-start',
     backgroundColor: COLORS.purple,
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 5,
+    borderRadius: 5,
+    paddingHorizontal: 19,
+    paddingVertical: 3,
   },
   labelText: {
-    fontSize: 12,
+    fontSize: 9,
     fontWeight: '700',
     color: COLORS.white,
   },
   title: {
-    marginTop: 10,
-    fontSize: 36,
+    marginTop: 1,
+    fontSize: 20,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   subtitle: {
-    marginTop: 2,
-    fontSize: 16,
+    marginTop: 0,
+    fontSize: 13,
+    fontFamily: 'Poppins',
     fontWeight: '600',
     color: COLORS.textPrimary,
   },
   button: {
-    height: 52,
-    borderRadius: 16,
+    height: 29,
+    borderRadius: 12,
     backgroundColor: COLORS.purple,
-    paddingHorizontal: 18,
+    paddingHorizontal: 14,
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '700',
     color: COLORS.white,
   },
