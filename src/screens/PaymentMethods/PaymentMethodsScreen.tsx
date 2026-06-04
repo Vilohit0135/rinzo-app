@@ -130,7 +130,7 @@ const PaymentMethodsScreen = () => {
                 <Text style={styles.walletTitle}>{wallet.title}</Text>
                 <Text style={styles.walletSubtitle}>{wallet.subtitle}</Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color="#8B5CF6" />
+              <Ionicons name="chevron-forward" size={20} color="#8259D2" />
             </TouchableOpacity>
           ))}
 
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#7C4DFF',
+    backgroundColor: '#8259D2',
     justifyContent: 'center',
     alignItems: 'center',
   },

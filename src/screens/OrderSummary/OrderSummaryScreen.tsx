@@ -13,7 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
-import BottomTabBar from '../../components/navigation/BottomTabBar';
+import BottomTabBar from '../../components/home/BottomTabBar';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderSummary'>;
 
@@ -68,16 +68,21 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
 
           <View style={styles.addressCard}>
             <View style={styles.addressHeaderRow}>
-              <Text style={styles.addressTitle}>Home</Text>
-              <TouchableOpacity activeOpacity={0.7}>
+              <Text style={styles.addressTitle}>Pickup Address</Text>
+              <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('PickupDetails')}>
                 <Text style={styles.changeText}>Change</Text>
               </TouchableOpacity>
             </View>
             <Text style={styles.addressText}>
-              123 Main Street, Apt 4B, New York, NY 10001
+              221b Baker Street Bangalore - 50001
             </Text>
             <View style={styles.addressDivider} />
-            <Text style={styles.timeLabel}>Pickup Time</Text>
+            <View style={styles.timeHeaderRow}>
+              <Text style={styles.timeLabel}>Pickup Time</Text>
+              <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('SchedulePickup')}>
+                <Text style={styles.changeText}>Change</Text>
+              </TouchableOpacity>
+            </View>
             <Text style={styles.timeText}>12 PM - 1 PM, Saturday 17th May</Text>
           </View>
 
@@ -106,13 +111,20 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
             activeOpacity={0.8}
             onPress={() => navigation.navigate('Payment')}
           >
-            <LinearGradient colors={['#8B5CF6', '#7C4DFF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.proceedGradient}>
+            <LinearGradient colors={['#8259D2', '#8259D2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.proceedGradient}>
               <Text style={styles.proceedText}>Proceed to Payment</Text>
             </LinearGradient>
           </TouchableOpacity>
         </ScrollView>
 
-        <BottomTabBar />
+        <BottomTabBar
+          activeTab="Orders"
+          onTabPress={(tab) => {
+            if (tab === 'Home') navigation.navigate('Home');
+            if (tab === 'Search') navigation.navigate('Search');
+            if (tab === 'Profile') navigation.navigate('Profile');
+          }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -121,18 +133,18 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#F5F4F8' },
   container: { flex: 1 },
-  scrollContent: { paddingBottom: 120 },
+  scrollContent: { paddingBottom: 100 },
 
   header: {
-    paddingTop: 24,
+    paddingTop: 16,
     paddingHorizontal: 24,
     flexDirection: 'row',
     alignItems: 'center',
   },
   backButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#F1F1F1',
     justifyContent: 'center',
     alignItems: 'center',
@@ -142,16 +154,16 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '700',
     color: '#111111',
   },
 
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     color: '#1E1E35',
-    marginTop: 24,
+    marginTop: 45,
     marginBottom: 16,
     paddingHorizontal: 24,
   },
@@ -162,33 +174,33 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     borderWidth: 1.5,
     borderColor: '#F0F0F0',
-    paddingVertical: 20,
+    paddingVertical: 22,
     paddingHorizontal: 24,
   },
   summaryRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 48,
+    height: 40,
   },
   summaryLabel: {
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: '700',
     color: '#111111',
   },
   summaryPrice: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
-    color: '#4B2E83',
+    color: '#8259D2',
   },
   summaryDivider: {
     height: 1,
     backgroundColor: '#F0F0F0',
-    marginVertical: 4,
+    marginVertical: 3,
   },
 
   addressCard: {
-    marginTop: 18,
+    marginTop: 16,
     marginHorizontal: 24,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
@@ -202,72 +214,77 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   addressTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '700',
     color: '#111111',
   },
   changeText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
-    color: '#4B2E83',
+    color: '#8259D2',
   },
   addressText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
     color: '#555555',
-    marginTop: 6,
-    lineHeight: 20,
+    marginTop: 4,
+    lineHeight: 18,
   },
   addressDivider: {
     height: 1,
     backgroundColor: '#F0F0F0',
-    marginVertical: 14,
+    marginVertical: 10,
+  },
+  timeHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   timeLabel: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '700',
     color: '#111111',
   },
   timeText: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '500',
     color: '#555555',
-    marginTop: 4,
+    marginTop: 3,
   },
 
   pricingCard: {
-    marginTop: 18,
+    marginTop: 16,
     marginHorizontal: 24,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: '#F0F0F0',
-    paddingVertical: 6,
-    paddingHorizontal: 16,
+    paddingVertical: 8,
+    paddingHorizontal: 18,
   },
   pricingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    height: 42,
+    height: 36,
   },
   pricingLabel: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: '#1A1A1A',
   },
   pricingValue: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#1A1A1A',
   },
   pricingLabelDiscount: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
     color: '#41B883',
   },
   pricingDiscount: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#41B883',
   },
@@ -276,29 +293,29 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
   },
   pricingTotalLabel: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     color: '#1A1A1A',
   },
   pricingTotalValue: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
-    color: '#4B2E83',
+    color: '#8259D2',
   },
 
   proceedButton: {
-    marginTop: 20,
+    marginTop: 23,
     marginHorizontal: 24,
-    height: 58,
+    height: 48,
   },
   proceedGradient: {
     flex: 1,
-    borderRadius: 29,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
   },
   proceedText: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     color: '#FFFFFF',
   },

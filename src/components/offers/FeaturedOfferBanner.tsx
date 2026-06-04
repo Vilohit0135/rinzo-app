@@ -9,7 +9,7 @@ interface FeaturedOfferBannerProps {
 const FeaturedOfferBanner = ({ onClaimPress }: FeaturedOfferBannerProps) => {
   return (
     <LinearGradient
-      colors={['#8457DB', '#B194F2']}
+      colors={['#8259D2', '#8259D2']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={styles.banner}

@@ -29,7 +29,7 @@ const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliver
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={[styles.card, style]}>
       <View style={styles.leftIconSection}>
         <View style={styles.iconContainer}>
-          <Ionicons name={icon || 'shirt-outline'} size={28} color="#7C4DFF" />
+          <Ionicons name={icon || 'shirt-outline'} size={28} color="#8259D2" />
         </View>
       </View>
       <View style={styles.rightContent}>
@@ -50,7 +50,7 @@ const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliver
         <View style={styles.tagsRow}>
           {tags.map((tag, index) => (
             <View key={index} style={styles.tag}>
-              <Ionicons name={tagIcons[tag] || 'pricetag-outline'} size={12} color="#7C4DFF" />
+              <Ionicons name={tagIcons[tag] || 'pricetag-outline'} size={12} color="#8259D2" />
               <Text style={styles.tagText}>{tag}</Text>
             </View>
           ))}

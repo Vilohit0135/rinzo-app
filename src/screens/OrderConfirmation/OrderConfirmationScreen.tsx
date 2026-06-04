@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View,
   Text,
+  Image,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
@@ -28,11 +29,16 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
       <StatusBar style="dark" />
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text style={[styles.title, { fontSize: fs(32) }]}>
+          <Image
+            source={require('../../../assets/images/order-confirm.gif')}
+            style={styles.gif}
+            resizeMode="contain"
+          />
+          <Text style={[styles.title, { fontSize: fs(22) }]}>
             Order Confirmation
           </Text>
 
-          <Text style={[styles.subtitle, { marginTop: hp(16), fontSize: fs(16) }]}>
+          <Text style={[styles.subtitle, { marginTop: hp(8), fontSize: fs(13) }]}>
             Your order has been placed successfully
           </Text>
 
@@ -40,57 +46,57 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
             style={[
               styles.detailCard,
               {
-                marginTop: hp(40),
-                height: hp(126),
-                borderRadius: wp(20),
-                padding: wp(20),
+                marginTop: hp(20),
+                height: hp(100),
+                borderRadius: wp(16),
+                padding: wp(14),
               },
             ]}
           >
             <View style={styles.row}>
-              <Text style={[styles.rowLabel, { fontSize: fs(16) }]}>Order ID</Text>
-              <Text style={[styles.rowValue, { fontSize: fs(16) }]}>
+              <Text style={[styles.rowLabel, { fontSize: fs(13) }]}>Order ID</Text>
+              <Text style={[styles.rowValue, { fontSize: fs(13) }]}>
                 R1212178173819
               </Text>
             </View>
 
-            <View style={[styles.divider, { marginVertical: hp(14) }]} />
+            <View style={[styles.divider, { marginVertical: hp(10) }]} />
 
             <View>
-              <Text style={[styles.rowLabel, { fontSize: fs(16) }]}>Pickup Time</Text>
-              <Text style={[styles.timeValue, { fontSize: fs(15), marginTop: hp(4) }]}>
+              <Text style={[styles.rowLabel, { fontSize: fs(13) }]}>Pickup Time</Text>
+              <Text style={[styles.timeValue, { fontSize: fs(13), marginTop: hp(4) }]}>
                 Tomorrow , 2:00–4:00 PM
               </Text>
             </View>
           </View>
 
-          <Text style={[styles.trackingMsg, { marginTop: hp(40), fontSize: fs(16) }]}>
+          <Text style={[styles.trackingMsg, { marginTop: hp(16), fontSize: fs(13) }]}>
             You can track your order in real time
           </Text>
 
           <TouchableOpacity
-            style={[styles.trackButton, { marginTop: hp(40), height: hp(56) }]}
+            style={[styles.trackButton, { marginTop: hp(16), height: hp(40) }]}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate('OrderTracking')}
+            onPress={() => navigation.navigate('OrderPickedUp')}
           >
             <LinearGradient
-              colors={['#8B5CF6', '#7C4DFF']}
+              colors={['#8259D2', '#8259D2']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.trackGradient, { borderRadius: hp(28) }]}
+              style={[styles.trackGradient, { borderRadius: hp(23) }]}
             >
-              <Text style={[styles.trackText, { fontSize: fs(20) }]}>
+              <Text style={[styles.trackText, { fontSize: fs(16) }]}>
                 Track Order
               </Text>
             </LinearGradient>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.homeButton, { marginTop: hp(28) }]}
+            style={[styles.homeButton, { marginTop: hp(14) }]}
             activeOpacity={0.7}
             onPress={() => navigation.navigate('BookPickup')}
           >
-            <Text style={[styles.homeText, { fontSize: fs(18) }]}>
+            <Text style={[styles.homeText, { fontSize: fs(14) }]}>
               Back to Home
             </Text>
           </TouchableOpacity>
@@ -101,15 +107,21 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
 };
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#F7F6FB' },
+  safeArea: { flex: 1, backgroundColor: '#FFFFFF' },
   container: { flex: 1 },
   content: {
     flex: 1,
+    top: hp(20),
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
   },
 
+  gif: {
+    width: 320,
+    height: 320,
+    marginBottom: 28,
+  },
   title: {
     fontWeight: '700',
     color: '#1D1D1F',
@@ -130,7 +142,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
-    elevation: 3,
+    elevation: 1,
+    marginBottom: hp(17),
   },
   row: {
     flexDirection: 'row',
@@ -155,6 +168,8 @@ const styles = StyleSheet.create({
   },
 
   trackingMsg: {
+    top: hp(4),
+    marginBottom: hp(10),
     fontWeight: '500',
     color: '#9E9E9E',
     textAlign: 'center',

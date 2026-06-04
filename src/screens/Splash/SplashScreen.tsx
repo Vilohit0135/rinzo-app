@@ -72,7 +72,7 @@ const SplashScreen = ({ onFinish }: SplashScreenProps) => {
               cx={30}
               cy={30}
               r={RADIUS}
-              stroke="#8B5CF6"
+              stroke="#8259D2"
               strokeWidth={STROKE_WIDTH}
               fill="none"
               strokeDasharray={`${PROGRESS_LENGTH} ${CIRCUMFERENCE - PROGRESS_LENGTH}`}

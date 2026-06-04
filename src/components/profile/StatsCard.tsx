@@ -9,7 +9,7 @@ interface StatsCardProps {
 const StatsCard = ({ totalOrders, totalSavings }: StatsCardProps) => {
   return (
     <LinearGradient
-      colors={['#8B5CF6', '#7C4DFF']}
+      colors={['#8259D2', '#8259D2']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={styles.card}

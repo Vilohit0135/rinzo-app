@@ -130,7 +130,7 @@ const PaymentScreen = ({ navigation }: Props) => {
             onPress={() => navigation.navigate("OrderConfirmation")}
           >
             <LinearGradient
-              colors={["#8B5CF6", "#7C58D6"]}
+              colors={["#8259D2", "#8259D2"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.payGradient}

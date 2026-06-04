@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
   },
   gradient: {
-    height: 64,
-    borderRadius: 18,
+    height: 54,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
   },

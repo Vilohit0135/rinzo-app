@@ -41,10 +41,11 @@ export type RootStackParamList = {
   Signup: undefined;
   BookPickup: undefined;
   PickupDetails: undefined;
-  SchedulePickupTime: undefined;
+  SchedulePickup: undefined;
   OrderSummary: undefined;
   Payment: undefined;
   OrderConfirmation: undefined;
+  OrderPickedUp: undefined;
   OrderTracking: undefined;
 };
 

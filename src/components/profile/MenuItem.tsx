@@ -17,7 +17,7 @@ const MenuItem = ({ icon, title, isLast, onPress }: MenuItemProps) => {
           <Ionicons name={icon} size={18} color={COLORS.purple} />
           <Text style={styles.title}>{title}</Text>
         </View>
-        <Ionicons name="chevron-forward" size={16} color="#8B5CF6" />
+        <Ionicons name="chevron-forward" size={16} color="#8259D2" />
       </TouchableOpacity>
       {!isLast && <View style={styles.divider} />}
     </View>
