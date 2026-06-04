@@ -34,10 +34,11 @@ import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
 import SignupScreen from './src/screens/Auth/SignupScreen';
 import BookPickupScreen from './src/screens/BookPickup/BookPickupScreen';
 import PickupDetailsScreen from './src/screens/PickupDetails/PickupDetailsScreen';
-import SchedulePickupTimeScreen from './src/screens/SchedulePickupTime/SchedulePickupTimeScreen';
+import SchedulePickupScreen from './src/screens/orders/SchedulePickupScreen';
 import OrderSummaryScreen from './src/screens/OrderSummary/OrderSummaryScreen';
 import PaymentScreen from './src/screens/Payment/PaymentScreen';
 import OrderConfirmationScreen from './src/screens/OrderConfirmation/OrderConfirmationScreen';
+import OrderPickedUpScreen from './src/screens/orders/OrderPickedUpScreen';
 import OrderTrackingScreen from './src/screens/OrderTracking/OrderTrackingScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -221,8 +222,8 @@ export default function App() {
             component={PickupDetailsScreen}
           />
           <Stack.Screen
-            name="SchedulePickupTime"
-            component={SchedulePickupTimeScreen}
+            name="SchedulePickup"
+            component={SchedulePickupScreen}
           />
           <Stack.Screen
             name="OrderSummary"
@@ -236,6 +237,12 @@ export default function App() {
             name="OrderConfirmation"
             component={OrderConfirmationScreen}
           />
+
+          <Stack.Screen
+            name="OrderPickedUp"
+            component={OrderPickedUpScreen}
+          />
+
           <Stack.Screen
             name="OrderTracking"
             component={OrderTrackingScreen}

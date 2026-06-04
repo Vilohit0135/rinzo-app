@@ -9,7 +9,7 @@ export const COLORS = {
   purplelocation:'#8259D2',
   purpleDark: '#4D2CA3',
   purpleLight: '#EEE8FF',
-  gradientStart: '#8B5CF6',
+  gradientStart: '#8259D2',
   gradientEnd: '#8259D2',
   promoStart: '#D9C3FF',
   promoEnd: '#C8A4FF',

@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#7C4DFF',
+    color: '#8259D2',
   },
 });
 

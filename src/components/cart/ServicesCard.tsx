@@ -23,7 +23,7 @@ const ServicesCard = ({ services }: ServicesCardProps) => {
             <View style={styles.row}>
               <View style={styles.left}>
                 <View style={styles.iconContainer}>
-                  <Ionicons name={service.icon} size={16} color="#7C4DFF" />
+                  <Ionicons name={service.icon} size={16} color="#8259D2" />
                 </View>
                 <View style={styles.textStack}>
                   <Text style={styles.serviceName}>{service.name}</Text>

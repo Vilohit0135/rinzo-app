@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#7C4DFF',
+    color: '#8259D2',
   },
   tagsRow: {
     marginTop: 6,
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   tagText: {
     fontSize: 10,
     fontWeight: '600',
-    color: '#7C4DFF',
+    color: '#8259D2',
   },
   deliveryRow: {
     marginTop: 8,

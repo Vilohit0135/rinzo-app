@@ -13,10 +13,10 @@ const SupportMenuItem = ({ item, isLast, onPress }: SupportMenuItemProps) => {
     <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
       <View style={styles.row}>
         <View style={styles.iconContainer}>
-          <Ionicons name={item.icon} size={22} color="#7D57D8" />
+          <Ionicons name={item.icon} size={22} color="#8259D2" />
         </View>
         <Text style={styles.title}>{item.title}</Text>
-        <Ionicons name="chevron-forward" size={18} color="#7D57D8" />
+        <Ionicons name="chevron-forward" size={18} color="#8259D2" />
       </View>
       {!isLast && <View style={styles.divider} />}
     </TouchableOpacity>

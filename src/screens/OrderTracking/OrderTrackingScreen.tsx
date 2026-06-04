@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
-import BottomTabBar from '../../components/navigation/BottomTabBar';
+import BottomTabBar from '../../components/home/BottomTabBar';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderTracking'>;
 
@@ -41,14 +41,14 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={22} color="#A7A7A7" />
+              <Ionicons name="chevron-back" size={20} color="#A7A7A7" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Order Tracking</Text>
           </View>
 
           <View style={styles.statusCard}>
             <LinearGradient
-              colors={['#7C4DFF', '#B89AF8']}
+              colors={['#8259D2', '#8259D2']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.statusGradient}
@@ -62,7 +62,7 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
 
           <View style={styles.timelineCard}>
             {timelineSteps.map((step, index) => {
-              const connectorColor = step.status !== 'pending' ? '#C8B3FF' : '#D0D0D0';
+              const connectorColor = step.status !== 'pending' ? '#8259D2' : '#D0D0D0';
 
               return (
                 <View key={step.id}>
@@ -77,13 +77,13 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
                         ]}
                       >
                         {step.status === 'completed' && (
-                          <Ionicons name="checkmark" size={18} color="#FFFFFF" />
+                          <Ionicons name="checkmark" size={16} color="#FFFFFF" />
                         )}
                         {step.status === 'active' && (
-                          <Ionicons name="sync-outline" size={18} color="#7C4DFF" />
+                          <Ionicons name="sync-outline" size={16} color="#8259D2" />
                         )}
                         {step.status === 'pending' && (
-                          <Ionicons name="refresh-outline" size={18} color="#D0D0D0" />
+                          <Ionicons name="refresh-outline" size={16} color="#D0D0D0" />
                         )}
                       </View>
                     </View>
@@ -129,10 +129,10 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
             </View>
             <View style={styles.deliveryActions}>
               <TouchableOpacity style={styles.contactBtn} activeOpacity={0.7}>
-                <Ionicons name="call-outline" size={22} color="#7C4DFF" />
+                <Ionicons name="call-outline" size={20} color="#8259D2" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.contactBtn} activeOpacity={0.7}>
-                <Ionicons name="chatbubble-outline" size={22} color="#7C4DFF" />
+                <Ionicons name="chatbubble-outline" size={20} color="#8259D2" />
               </TouchableOpacity>
             </View>
           </View>
@@ -144,11 +144,11 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
 
         <BottomTabBar
           activeTab="Orders"
-          gradientColors={['#7C4DFF', '#8255F6']}
-          height={72}
-          borderRadius={36}
-          pillHeight={48}
-          pillBorderRadius={24}
+          onTabPress={(tab) => {
+            if (tab === 'Home') navigation.navigate('Home');
+            if (tab === 'Search') navigation.navigate('Search');
+            if (tab === 'Profile') navigation.navigate('Profile');
+          }}
         />
       </View>
     </SafeAreaView>
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#F6F5FA' },
   container: { flex: 1 },
   scrollContent: {
-    paddingBottom: 120,
+    paddingBottom: 100,
   },
 
   header: {
@@ -167,12 +167,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   backButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -191,44 +191,44 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     textAlign: 'center',
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: '700',
     color: '#111111',
   },
 
   statusCard: {
     marginHorizontal: 20,
-    height: 180,
-    borderRadius: 24,
+    height: 165,
+    borderRadius: 12,
     overflow: 'hidden',
-    marginBottom: 20,
+    marginBottom: 16,
   },
   statusGradient: {
     flex: 1,
-    padding: 16,
+    padding: 14,
   },
   orderId: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '400',
     color: '#FFFFFF',
     opacity: 0.95,
-    marginBottom: 24,
+    marginBottom: 16,
   },
   currentStatus: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '700',
-    lineHeight: 26,
+    lineHeight: 24,
     color: '#FFFFFF',
-    marginBottom: 25,
+    marginBottom: 18,
   },
   estimatedLabel: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '400',
     color: '#FFFFFF',
-    marginBottom: 5,
+    marginBottom: 3,
   },
   estimatedTime: {
-    fontSize: 17,
+    fontSize: 15,
     fontWeight: '500',
     color: '#FFFFFF',
   },
@@ -236,10 +236,10 @@ const styles = StyleSheet.create({
   timelineCard: {
     marginHorizontal: 20,
     backgroundColor: '#FFFFFF',
-    borderRadius: 28,
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    marginBottom: 18,
+    borderRadius: 9,
+    paddingVertical: 26,
+    paddingHorizontal: 16,
+    marginBottom: 14,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.06,
         shadowRadius: 8,
       },
-      android: { elevation: 3 },
+      android: { elevation: 1 },
     }),
   },
   timelineRow: {
@@ -255,24 +255,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   circleCol: {
-    width: 36,
+    width: 32,
     alignItems: 'center',
     justifyContent: 'center',
   },
   circle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 22,
+    height: 22,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
   },
   circleCompleted: {
-    backgroundColor: '#7C4DFF',
+    backgroundColor: '#8259D2',
   },
   circleActive: {
     backgroundColor: '#FFFFFF',
     borderWidth: 2,
-    borderColor: '#7C4DFF',
+    borderColor: '#8259D2',
   },
   circlePending: {
     backgroundColor: '#FFFFFF',
@@ -281,16 +281,16 @@ const styles = StyleSheet.create({
   },
   connectorBottom: {
     width: 2,
-    height: 28,
-    marginLeft: 17,
+    height: 42,
+    marginLeft: 16,
   },
   contentCol: {
-    marginLeft: 16,
+    marginLeft: 14,
     flex: 1,
     justifyContent: 'center',
   },
   timelineTitle: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '600',
   },
   titleCompleted: {
@@ -309,7 +309,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   activeLabel: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: '#7C4DFF',
     marginTop: 2,
@@ -318,13 +318,13 @@ const styles = StyleSheet.create({
   deliveryCard: {
     marginHorizontal: 20,
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    height: 96,
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    height: 84,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: 18,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -332,54 +332,54 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.08,
         shadowRadius: 8,
       },
-      android: { elevation: 3 },
+      android: { elevation: 1 },
     }),
   },
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
     borderWidth: 2,
     borderColor: '#F0E9FF',
   },
   deliveryInfo: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: 10,
   },
   deliveryName: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '700',
     color: '#111111',
   },
   deliverySubtitle: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '500',
     color: '#8A8A8A',
-    marginTop: 2,
+    marginTop: 1,
   },
   statusRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 2,
     gap: 4,
   },
   statusDot: {
-    fontSize: 10,
+    fontSize: 9,
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: '600',
     color: '#34C759',
   },
   deliveryActions: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 8,
     marginLeft: 'auto',
   },
   contactBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     backgroundColor: '#F6F1FF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -387,19 +387,19 @@ const styles = StyleSheet.create({
 
   helpButton: {
     marginHorizontal: 20,
-    height: 58,
-    borderRadius: 14,
+    height: 50,
+    borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#C8B3FF',
+    borderColor: '#8259D2',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
-    marginBottom: 30,
+    marginBottom: 20,
   },
   helpText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#3F2A8C',
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#8259D2',
   },
 });
 

@@ -8,9 +8,9 @@ interface BookingStepperProps {
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const scale = Math.min(SCREEN_WIDTH / 390, 1.2);
-const circleSize = Math.round(44 * scale);
-const labelFontSize = Math.round(13 * scale);
-const numFontSize = Math.round(15 * scale);
+const circleSize = Math.round(34 * scale);
+const labelFontSize = Math.round(11 * scale);
+const numFontSize = Math.round(13 * scale);
 
 const BookingStepper = ({ steps, currentStep }: BookingStepperProps) => (
   <View style={styles.container}>
@@ -53,8 +53,7 @@ const styles = StyleSheet.create({
   container: {
     width: "92%",
     alignSelf: "center",
-    marginTop: 20,
-    marginBottom: 0,
+    marginTop: 12,
   },
   stepsRow: {
     flexDirection: "row",
@@ -76,7 +75,7 @@ const styles = StyleSheet.create({
     borderColor: "#BDBDBD",
   },
   circleActive: {
-    backgroundColor: "#8B5CF6",
+    backgroundColor: "#8259D2",
     borderWidth: 0,
   },
   num: {
@@ -89,7 +88,7 @@ const styles = StyleSheet.create({
   },
   connector: {
     flex: 1,
-    height: 3,
+    height: 2,
     backgroundColor: "#9E9E9E",
     marginHorizontal: 3,
     alignSelf: "center",
@@ -98,7 +97,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginTop: 8,
+    marginTop: 4,
   },
   spacer: {
     flex: 1,
@@ -116,7 +115,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   labelActive: {
-    color: "#8B5CF6",
+    color: "#8259D2",
     fontWeight: "700",
   },
 });

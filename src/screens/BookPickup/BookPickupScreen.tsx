@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
-import BottomTabBar from '../../components/navigation/BottomTabBar';
+import BottomTabBar from '../../components/home/BottomTabBar';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BookPickup'>;
 
@@ -77,7 +77,7 @@ const BookPickupScreen = ({ navigation }: Props) => {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home')} activeOpacity={0.7}>
               <Ionicons name="chevron-back" size={20} color="#B3B3B3" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Book Pickup</Text>
@@ -152,13 +152,20 @@ const BookPickupScreen = ({ navigation }: Props) => {
             activeOpacity={0.8}
             onPress={() => navigation.navigate('PickupDetails')}
           >
-            <LinearGradient colors={['#8B5CF6', '#7C4DFF']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.continueGradient}>
+            <LinearGradient colors={['#8259D2', '#8259D2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.continueGradient}>
               <Text style={styles.continueText}>Continue</Text>
             </LinearGradient>
           </TouchableOpacity>
         </ScrollView>
 
-        <BottomTabBar />
+        <BottomTabBar
+          activeTab="Home"
+          onTabPress={(tab) => {
+            if (tab === 'Search') navigation.navigate('Search');
+            if (tab === 'Orders') navigation.navigate('YourCart');
+            if (tab === 'Profile') navigation.navigate('Profile');
+          }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -167,18 +174,18 @@ const BookPickupScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#F7F6FB' },
   container: { flex: 1 },
-  scrollContent: { paddingBottom: 120 },
+  scrollContent: { paddingBottom: 100 },
 
   header: {
-    paddingTop: 24,
+    paddingTop: 16,
     paddingHorizontal: 24,
     flexDirection: 'row',
     alignItems: 'center',
   },
   backButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: '#F4F4F4',
     justifyContent: 'center',
     alignItems: 'center',
@@ -188,44 +195,44 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     textAlign: 'center',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '700',
     color: '#1D1D1F',
     paddingHorizontal: 24,
   },
 
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#22223B',
-    marginTop: 24,
-    marginBottom: 16,
-    paddingHorizontal: 24,
-  },
-  sectionTitleInstructions: {
     fontSize: 16,
     fontWeight: '700',
     color: '#22223B',
-    marginTop: 18,
-    marginBottom: 10,
+    marginTop: 28,
+    marginBottom: 12,
+    paddingHorizontal: 24,
+  },
+  sectionTitleInstructions: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#22223B',
+    marginTop: 20,
+    marginBottom: 8,
     paddingHorizontal: 24,
   },
   optionalText: {
     fontWeight: '500',
-    color: '#A7A7A7',
-    fontSize: 12,
+    color: '#000000',
+    fontSize: 14,
   },
 
   servicesList: {
     paddingHorizontal: 24,
-    gap: 14,
+    gap: 10,
   },
   serviceCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    height: 105,
-    paddingHorizontal: 18,
-    paddingVertical: 14,
+    borderRadius: 18,
+    height: 92,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -234,7 +241,7 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
       },
       android: {
-        elevation: 4,
+        elevation: 1,
       },
     }),
   },
@@ -252,25 +259,25 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   serviceTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: '#1D1D1F',
   },
   servicePrice: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: '700',
-    color: '#7C4DFF',
+    color: '#8259D2',
   },
   servicePriceUnit: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '600',
     color: '#9A9A9A',
   },
   serviceSubtitle: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '500',
     color: '#AFAFAF',
-    marginTop: 4,
+    marginTop: 2,
   },
   serviceSpacer: {
     flex: 1,
@@ -287,15 +294,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#BDBDBD',
-    borderRadius: 18,
-    width: 110,
-    height: 36,
+    borderRadius: 16,
+    width: 77,
+    height: 22,
     gap: 4,
   },
   counterBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    width: 16,
+    height: 16,
+    borderRadius: 13,
     backgroundColor: '#AFAFAF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -304,19 +311,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#D0D0D0',
   },
   counterValue: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '700',
     color: '#000000',
   },
 
   instructionsInput: {
+    top: 4,
     marginHorizontal: 24,
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: '#E8E5F4',
-    padding: 14,
-    fontSize: 14,
+    padding: 12,
+    fontSize: 13,
     fontWeight: '500',
     color: '#1D1D1F',
     height: 100,
@@ -328,14 +336,14 @@ const styles = StyleSheet.create({
         shadowRadius: 12,
       },
       android: {
-        elevation: 4,
+        elevation: 1,
       },
     }),
   },
 
-  continueButton: { marginHorizontal: 24, marginTop: 16, marginBottom: 100, height: 54 },
-  continueGradient: { flex: 1, borderRadius: 27, justifyContent: 'center', alignItems: 'center' },
-  continueText: { fontSize: 18, fontWeight: '700', color: '#FFFFFF' },
+  continueButton: { marginHorizontal: 24, marginTop: 37, marginBottom: 80, height: 43 },
+  continueGradient: { flex: 1, borderRadius: 24, justifyContent: 'center', alignItems: 'center' },
+  continueText: { fontSize: 16, fontWeight: '700', color: '#FFFFFF' },
 });
 
 export default BookPickupScreen;

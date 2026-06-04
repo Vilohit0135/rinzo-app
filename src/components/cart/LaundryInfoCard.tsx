@@ -24,7 +24,7 @@ const LaundryInfoCard = ({ name, rating, reviews, distance, price }: LaundryInfo
         </View>
         <View style={styles.row2}>
           <View style={styles.locationGroup}>
-            <Ionicons name="location-outline" size={12} color="#7C4DFF" />
+            <Ionicons name="location-outline" size={12} color="#8259D2" />
             <Text style={styles.distance}>{distance}</Text>
           </View>
           <Text style={styles.price}>{price}</Text>
