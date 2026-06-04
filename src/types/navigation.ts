@@ -15,8 +15,19 @@ export type RootStackParamList = {
   ContactSupport: undefined;
   TermsPrivacy: undefined;
   PersonalInformation: undefined;
+  PaymentMethods: undefined;
   SavedAddress: undefined;
   AddAddress: undefined;
+  AddAddressDetails: undefined;
+  EditAddress: {
+    index: number;
+    addressType: string;
+    title: string;
+    address1: string;
+    address2: string;
+    contact: string;
+    isDefault: boolean;
+  };
   LaundryDetail: { id: string };
   MyOrders: undefined;
   OtpVerification: undefined;

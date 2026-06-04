@@ -21,6 +21,7 @@ type RootStackParamList = {
   HelpCenter: undefined;
   ContactSupport: undefined;
   TermsPrivacy: undefined;
+  PaymentMethods: undefined;
   Profile: undefined;
   PersonalInformation: undefined;
   SavedAddress: undefined;
@@ -47,6 +48,8 @@ const ProfileScreen = () => {
               ? { ...item, onPress: () => navigation.navigate('PersonalInformation') }
               : item.title === 'Saved Address'
               ? { ...item, onPress: () => navigation.navigate('SavedAddress') }
+              : item.title === 'Payment Methods'
+              ? { ...item, onPress: () => navigation.navigate('PaymentMethods') }
               : item
           )}
         />

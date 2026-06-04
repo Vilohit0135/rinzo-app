@@ -14,6 +14,7 @@ import YourCartScreen from './src/screens/YourCart/YourCartScreen';
 import ProfileScreen from './src/screens/Profile/ProfileScreen';
 import PersonalInformationScreen from './src/screens/Profile/PersonalInformationScreen';
 import FavouritesScreen from './src/screens/Profile/FavouritesScreen';
+import PaymentMethodsScreen from './src/screens/PaymentMethods/PaymentMethodsScreen';
 import MyReviewsScreen from './src/screens/Profile/MyReviewsScreen';
 import HelpCenterScreen from './src/screens/Profile/HelpCenterScreen';
 import ContactSupportScreen from './src/screens/Profile/ContactSupportScreen';
@@ -21,6 +22,7 @@ import TermsPrivacyScreen from './src/screens/Profile/TermsPrivacyScreen';
 import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
 import SavedAddressScreen from './src/screens/SavedAddress/SavedAddressScreen';
 import AddAddressScreen from './src/screens/AddAddress/AddAddressScreen';
+import EditAddressScreen from './src/screens/EditAddress/EditAddressScreen';
 import MyOrdersScreen from './src/screens/MyOrders/MyOrdersScreen';
 import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
 import SignupScreen from './src/screens/Auth/SignupScreen';
@@ -107,6 +109,11 @@ export default function App() {
           />
 
           <Stack.Screen
+            name="PaymentMethods"
+            component={PaymentMethodsScreen}
+          />
+
+          <Stack.Screen
             name="MyReviews"
             component={MyReviewsScreen}
           />
@@ -138,6 +145,14 @@ export default function App() {
           <Stack.Screen
             name="AddAddress"
             component={AddAddressScreen}
+          />
+          <Stack.Screen
+            name="AddAddressDetails"
+            component={AddAddressScreen}
+          />
+          <Stack.Screen
+            name="EditAddress"
+            component={EditAddressScreen}
           />
 
           <Stack.Screen
