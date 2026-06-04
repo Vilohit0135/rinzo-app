@@ -17,6 +17,10 @@ type RootStackParamList = {
   YourCart: undefined;
   MyOrders: undefined;
   Favourites: undefined;
+  MyReviews: undefined;
+  HelpCenter: undefined;
+  ContactSupport: undefined;
+  TermsPrivacy: undefined;
   Profile: undefined;
   PersonalInformation: undefined;
   SavedAddress: undefined;
@@ -53,10 +57,23 @@ const ProfileScreen = () => {
               ? { ...item, onPress: () => navigation.navigate('MyOrders') }
               : item.title === 'Favourites'
               ? { ...item, onPress: () => navigation.navigate('Favourites') }
+              : item.title === 'Review and Ratings'
+              ? { ...item, onPress: () => navigation.navigate('MyReviews') }
               : item
           )}
         />
-        <MenuSection {...profileData.supportMenu} />
+        <MenuSection
+          heading={profileData.supportMenu.heading}
+          items={profileData.supportMenu.items.map((item) =>
+            item.title === 'Help Center'
+              ? { ...item, onPress: () => navigation.navigate('HelpCenter') }
+              : item.title === 'Contact Support'
+              ? { ...item, onPress: () => navigation.navigate('ContactSupport') }
+              : item.title === 'Terms and Privacy'
+              ? { ...item, onPress: () => navigation.navigate('TermsPrivacy') }
+              : item
+          )}
+        />
 
         <LogoutButton />
       </ScrollView>

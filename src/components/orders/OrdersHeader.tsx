@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
+    fontFamily: 'Poppins-Medium',
     fontWeight: '500',
     color: '#111111',
     textAlign: 'center',

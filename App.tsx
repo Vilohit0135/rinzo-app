@@ -14,6 +14,10 @@ import YourCartScreen from './src/screens/YourCart/YourCartScreen';
 import ProfileScreen from './src/screens/Profile/ProfileScreen';
 import PersonalInformationScreen from './src/screens/Profile/PersonalInformationScreen';
 import FavouritesScreen from './src/screens/Profile/FavouritesScreen';
+import MyReviewsScreen from './src/screens/Profile/MyReviewsScreen';
+import HelpCenterScreen from './src/screens/Profile/HelpCenterScreen';
+import ContactSupportScreen from './src/screens/Profile/ContactSupportScreen';
+import TermsPrivacyScreen from './src/screens/Profile/TermsPrivacyScreen';
 import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
 import SavedAddressScreen from './src/screens/SavedAddress/SavedAddressScreen';
 import AddAddressScreen from './src/screens/AddAddress/AddAddressScreen';
@@ -100,6 +104,26 @@ export default function App() {
           <Stack.Screen
             name="Favourites"
             component={FavouritesScreen}
+          />
+
+          <Stack.Screen
+            name="MyReviews"
+            component={MyReviewsScreen}
+          />
+
+          <Stack.Screen
+            name="HelpCenter"
+            component={HelpCenterScreen}
+          />
+
+          <Stack.Screen
+            name="ContactSupport"
+            component={ContactSupportScreen}
+          />
+
+          <Stack.Screen
+            name="TermsPrivacy"
+            component={TermsPrivacyScreen}
           />
 
           <Stack.Screen
