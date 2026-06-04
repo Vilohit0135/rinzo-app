@@ -2,7 +2,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants/colors';
 
-const PromoBanner = () => {
+interface PromoBannerProps {
+  onClaimPress?: () => void;
+}
+
+const PromoBanner = ({ onClaimPress }: PromoBannerProps) => {
   return (
     <LinearGradient
       colors={[COLORS.promoStart, COLORS.promoEnd]}
@@ -17,7 +21,7 @@ const PromoBanner = () => {
         <Text style={styles.title}>Get 30% Off</Text>
         <Text style={styles.subtitle}>On your first order</Text>
       </View>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8}>
+      <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={onClaimPress}>
         <Text style={styles.buttonText}>Claim Now →</Text>
       </TouchableOpacity>
     </LinearGradient>

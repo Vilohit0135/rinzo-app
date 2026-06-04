@@ -4,8 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { RootStackParamList } from './src/types/navigation';
 
-import SplashScreen from './src/screens/Splash/SplashScreen';
-import OnboardingScreen1 from './src/screens/Onboarding/OnboardingScreen1';
+import OnboardingScreenOne from './src/screens/Onboarding/OnboardingScreenOne';
+import OnboardingScreenTwo from './src/screens/Onboarding/OnboardingScreenTwo';
+import OnboardingScreenThree from './src/screens/Onboarding/OnboardingScreenThree';
 import LocationAccessScreen from './src/screens/LocationAccess/LocationAccessScreen';
 import LoginScreen from './src/screens/Login/LoginScreen';
 import HomeScreen from './src/screens/Home/HomeScreen';
@@ -19,6 +20,11 @@ import MyReviewsScreen from './src/screens/Profile/MyReviewsScreen';
 import HelpCenterScreen from './src/screens/Profile/HelpCenterScreen';
 import ContactSupportScreen from './src/screens/Profile/ContactSupportScreen';
 import TermsPrivacyScreen from './src/screens/Profile/TermsPrivacyScreen';
+import HelpAndSupportScreen from './src/screens/support/HelpAndSupportScreen';
+import ChatSupportScreen from './src/screens/support/ChatSupportScreen';
+import ReportIssueScreen from './src/screens/support/ReportIssueScreen';
+import NotificationsScreen from './src/screens/Notifications/NotificationsScreen';
+import OffersScreen from './src/screens/Offers/OffersScreen';
 import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
 import SavedAddressScreen from './src/screens/SavedAddress/SavedAddressScreen';
 import AddAddressScreen from './src/screens/AddAddress/AddAddressScreen';
@@ -41,24 +47,32 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Splash"
+          initialRouteName="Onboarding"
           screenOptions={{
             headerShown: false,
           }}
         >
           <Stack.Screen
-            name="Splash"
+            name="Onboarding"
           >
             {({ navigation }) => (
-              <SplashScreen onFinish={() => navigation.replace('Onboarding')} />
+              <OnboardingScreenOne onNext={() => navigation.navigate('OnboardingTwo')} />
             )}
           </Stack.Screen>
 
           <Stack.Screen
-            name="Onboarding"
+            name="OnboardingTwo"
           >
             {({ navigation }) => (
-              <OnboardingScreen1 onNext={() => navigation.navigate('LocationAccess')} />
+              <OnboardingScreenTwo onNext={() => navigation.navigate('OnboardingThree')} />
+            )}
+          </Stack.Screen>
+
+          <Stack.Screen
+            name="OnboardingThree"
+          >
+            {({ navigation }) => (
+              <OnboardingScreenThree onNext={() => navigation.navigate('LocationAccess')} />
             )}
           </Stack.Screen>
 
@@ -131,6 +145,31 @@ export default function App() {
           <Stack.Screen
             name="TermsPrivacy"
             component={TermsPrivacyScreen}
+          />
+
+          <Stack.Screen
+            name="HelpAndSupport"
+            component={HelpAndSupportScreen}
+          />
+
+          <Stack.Screen
+            name="ChatSupport"
+            component={ChatSupportScreen}
+          />
+
+          <Stack.Screen
+            name="ReportIssue"
+            component={ReportIssueScreen}
+          />
+
+          <Stack.Screen
+            name="Notifications"
+            component={NotificationsScreen}
+          />
+
+          <Stack.Screen
+            name="Offers"
+            component={OffersScreen}
           />
 
           <Stack.Screen

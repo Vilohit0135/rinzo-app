@@ -61,6 +61,7 @@ export const profileData: ProfileData = {
     heading: 'Support',
     items: [
       { icon: 'help-circle', title: 'Help Center' },
+      { icon: 'help-circle-outline', title: 'Help and Support' },
       { icon: 'chatbubble', title: 'Contact Support' },
       { icon: 'lock-closed', title: 'Terms and Privacy' },
     ],

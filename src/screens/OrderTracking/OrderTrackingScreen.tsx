@@ -137,7 +137,7 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.helpButton} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.helpButton} activeOpacity={0.7} onPress={() => navigation.navigate('HelpAndSupport')}>
             <Text style={styles.helpText}>Need Help</Text>
           </TouchableOpacity>
         </ScrollView>

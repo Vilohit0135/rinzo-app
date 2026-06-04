@@ -18,6 +18,7 @@ type RootStackParamList = {
   MyOrders: undefined;
   Favourites: undefined;
   MyReviews: undefined;
+  HelpAndSupport: undefined;
   HelpCenter: undefined;
   ContactSupport: undefined;
   TermsPrivacy: undefined;
@@ -70,6 +71,8 @@ const ProfileScreen = () => {
           items={profileData.supportMenu.items.map((item) =>
             item.title === 'Help Center'
               ? { ...item, onPress: () => navigation.navigate('HelpCenter') }
+              : item.title === 'Help and Support'
+              ? { ...item, onPress: () => navigation.navigate('HelpAndSupport') }
               : item.title === 'Contact Support'
               ? { ...item, onPress: () => navigation.navigate('ContactSupport') }
               : item.title === 'Terms and Privacy'
