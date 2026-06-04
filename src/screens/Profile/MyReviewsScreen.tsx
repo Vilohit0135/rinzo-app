@@ -3,11 +3,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import FavouritesHeader from '../../components/favourites/FavouritesHeader';
-import FavouriteLaundryCard from '../../components/favourites/FavouriteLaundryCard';
+import ReviewsHeader from '../../components/reviews/ReviewsHeader';
+import ReviewCard from '../../components/reviews/ReviewCard';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
-import { favouritesData } from '../../data/favourites/favouritesData';
+import { reviewsData } from '../../data/reviews/reviewsData';
 
 type RootStackParamList = {
   Home: undefined;
@@ -16,7 +16,7 @@ type RootStackParamList = {
   Profile: undefined;
 };
 
-const FavouritesScreen = () => {
+const MyReviewsScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
 
   return (
@@ -26,11 +26,16 @@ const FavouritesScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
       >
-        <FavouritesHeader onBackPress={() => navigation.goBack()} />
+        <ReviewsHeader onBackPress={() => navigation.goBack()} />
 
         <View style={styles.listSection}>
-          {favouritesData.map((item) => (
-            <FavouriteLaundryCard key={item.id} laundryId={item.laundryId} />
+          {reviewsData.map((item) => (
+            <ReviewCard
+              key={item.id}
+              laundryId={item.laundryId}
+              reviewDate={item.reviewDate}
+              reviewText={item.reviewText}
+            />
           ))}
         </View>
       </ScrollView>
@@ -45,12 +50,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scroll: {
-    paddingHorizontal: 18,
-    paddingBottom: 140,
+    paddingHorizontal: 16,
+    paddingBottom: 130,
   },
   listSection: {
-    marginTop: 42,
+    marginTop: 44,
   },
 });
 
-export default FavouritesScreen;
+export default MyReviewsScreen;

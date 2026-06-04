@@ -1,24 +1,24 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-interface FavouritesHeaderProps {
+interface ReviewsHeaderProps {
   onBackPress: () => void;
 }
 
-const FavouritesHeader = ({ onBackPress }: FavouritesHeaderProps) => {
+const ReviewsHeader = ({ onBackPress }: ReviewsHeaderProps) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.backButton} onPress={onBackPress} activeOpacity={0.7}>
         <Ionicons name="chevron-back" size={24} color="#8C8C8C" />
       </TouchableOpacity>
-      <Text style={styles.title}>Favourites</Text>
+      <Text style={styles.title}>My reviews</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 12,
+    marginTop: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -36,11 +36,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 22,
-    top: 8,
+    fontSize: 20,
+    top: 10,
     fontWeight: '600',
     color: '#111111',
   },
 });
 
-export default FavouritesHeader;
+export default ReviewsHeader;
