@@ -17,6 +17,8 @@ import { laundryItems } from '../../data/laundry/laundryData';
 
 type RootStackParamList = {
   Home: undefined;
+  Notifications: undefined;
+  Offers: undefined;
   Search: undefined;
   YourCart: undefined;
   MyOrders: undefined;
@@ -69,7 +71,7 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <HeaderSection />
+        <HeaderSection onNotificationPress={() => navigation.navigate('Notifications')} />
         <SearchBar onPress={() => navigation.navigate('Search')} />
 
         <View style={styles.servicesSection}>
@@ -125,7 +127,7 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.promoWrap}>
-          <PromoBanner />
+          <PromoBanner onClaimPress={() => navigation.navigate('Offers')} />
         </View>
 
         <View style={styles.orderSection}>

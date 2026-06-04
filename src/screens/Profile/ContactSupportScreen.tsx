@@ -16,6 +16,7 @@ type RootStackParamList = {
   Search: undefined;
   YourCart: undefined;
   Profile: undefined;
+  HelpAndSupport: undefined;
 };
 
 const ContactSupportScreen = () => {
@@ -31,7 +32,7 @@ const ContactSupportScreen = () => {
         <ContactSupportHeader onBackPress={() => navigation.goBack()} />
 
         <View style={styles.heroSection}>
-          <SupportHeroCard />
+          <SupportHeroCard onChatPress={() => navigation.navigate('HelpAndSupport')} />
         </View>
 
         <Text style={styles.sectionTitle}>Choose a way to contact</Text>

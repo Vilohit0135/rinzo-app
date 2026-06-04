@@ -2,7 +2,14 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 export type RootStackParamList = {
   Splash: undefined;
+  HelpAndSupport: undefined;
+  ChatSupport: undefined;
+  ReportIssue: undefined;
+  Notifications: undefined;
+  Offers: undefined;
   Onboarding: undefined;
+  OnboardingTwo: undefined;
+  OnboardingThree: undefined;
   LocationAccess: undefined;
   Login: undefined;
   Home: undefined;

@@ -1,4 +1,4 @@
-﻿import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+﻿import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import SearchResultCard from '../../components/search/SearchResultCard';
+import EmptySearchState from '../../components/search/EmptySearchState';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 
@@ -60,10 +61,7 @@ const SearchScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
+      <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.searchBar}>
           <Ionicons name="search-outline" size={24} color={COLORS.placeholder} />
           <TextInput
@@ -76,43 +74,54 @@ const SearchScreen = () => {
           <Ionicons name="options-outline" size={22} color={COLORS.placeholder} />
         </View>
 
-        <View style={styles.recentSection}>
-          <View style={styles.recentHeader}>
-            <Text style={styles.recentTitle}>Recent Searches</Text>
-            <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.clearText}>Clear</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.chipsRow}>
-            {recentSearches.map((item) => (
-              <TouchableOpacity key={item} style={styles.chip} activeOpacity={0.8} onPress={() => setSearchQuery(item)}>
-                <Text style={styles.chipText}>{item}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        {searchQuery && filteredResults.length === 0 ? (
+          <EmptySearchState query={searchQuery} />
+        ) : (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+          >
+            {!searchQuery && (
+              <View style={styles.recentSection}>
+                <View style={styles.recentHeader}>
+                  <Text style={styles.recentTitle}>Recent Searches</Text>
+                  <TouchableOpacity activeOpacity={0.7}>
+                    <Text style={styles.clearText}>Clear</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.chipsRow}>
+                  {recentSearches.map((item) => (
+                    <TouchableOpacity key={item} style={styles.chip} activeOpacity={0.8} onPress={() => setSearchQuery(item)}>
+                      <Text style={styles.chipText}>{item}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
 
-        <View style={styles.filterSection}>
-          <View style={styles.filterRow}>
-            {filterButtons.map((button) => (
-              <TouchableOpacity
-                key={button}
-                style={styles.filterButton}
-                activeOpacity={0.8}
-                onPress={() => setActiveFilter(activeFilter === button ? '' : button)}
-              >
-                <Text style={styles.filterButtonText}>{button}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+            <View style={styles.filterSection}>
+              <View style={styles.filterRow}>
+                {filterButtons.map((button) => (
+                  <TouchableOpacity
+                    key={button}
+                    style={styles.filterButton}
+                    activeOpacity={0.8}
+                    onPress={() => setActiveFilter(activeFilter === button ? '' : button)}
+                  >
+                    <Text style={styles.filterButtonText}>{button}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
 
-        <View style={styles.resultsSection}>
-          {filteredResults.map((item) => (
-            <SearchResultCard key={item.name} {...item} />
-          ))}
-        </View>
-      </ScrollView>
+            <View style={styles.resultsSection}>
+              {filteredResults.map((item) => (
+                <SearchResultCard key={item.name} {...item} />
+              ))}
+            </View>
+          </ScrollView>
+        )}
+      </KeyboardAvoidingView>
       <BottomTabBar activeTab="Search" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Orders') navigation.navigate('YourCart'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
     </SafeAreaView>
   );
@@ -123,8 +132,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  scrollContent: {
+  flex: {
+    flex: 1,
     paddingHorizontal: 20,
+  },
+  scrollContent: {
     paddingBottom: 140,
   },
   searchBar: {

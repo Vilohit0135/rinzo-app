@@ -1,12 +1,16 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const SupportHeroCard = () => {
+interface SupportHeroCardProps {
+  onChatPress?: () => void;
+}
+
+const SupportHeroCard = ({ onChatPress }: SupportHeroCardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.leftContent}>
         <Text style={styles.title}>Cant find your answer ?</Text>
         <Text style={styles.subtitle}>Chat with our support team</Text>
-        <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={onChatPress}>
           <Text style={styles.buttonText}>Chat Now</Text>
         </TouchableOpacity>
       </View>

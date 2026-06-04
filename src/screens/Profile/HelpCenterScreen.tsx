@@ -16,6 +16,7 @@ type RootStackParamList = {
   Search: undefined;
   YourCart: undefined;
   Profile: undefined;
+  HelpAndSupport: undefined;
 };
 
 const HelpCenterScreen = () => {
@@ -49,7 +50,7 @@ const HelpCenterScreen = () => {
         </View>
 
         <View style={styles.supportSection}>
-          <SupportCard />
+          <SupportCard onChatPress={() => navigation.navigate('HelpAndSupport')} />
         </View>
       </ScrollView>
       <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />

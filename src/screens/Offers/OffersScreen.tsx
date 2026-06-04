@@ -1,14 +1,14 @@
-import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import TermsPrivacyHeader from '../../components/legal/TermsPrivacyHeader';
-import LegalMenuCard from '../../components/legal/LegalMenuCard';
-import LegalIllustration from '../../components/legal/LegalIllustration';
+import OffersHeader from '../../components/offers/OffersHeader';
+import FeaturedOfferBanner from '../../components/offers/FeaturedOfferBanner';
+import OfferCard from '../../components/offers/OfferCard';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
-import { legalMenuItems } from '../../data/legal/legalData';
+import { offersData } from '../../data/offers/offersData';
 
 type RootStackParamList = {
   Home: undefined;
@@ -17,8 +17,8 @@ type RootStackParamList = {
   Profile: undefined;
 };
 
-const TermsPrivacyScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
+const OffersScreen = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -27,21 +27,14 @@ const TermsPrivacyScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
       >
-        <TermsPrivacyHeader onBackPress={() => navigation.goBack()} />
+        <OffersHeader onBackPress={() => navigation.goBack()} />
+        <FeaturedOfferBanner />
 
-        <View style={styles.menuSection}>
-          <FlatList
-            data={legalMenuItems}
-            keyExtractor={(item) => item.id}
-            scrollEnabled={false}
-            nestedScrollEnabled
-            renderItem={({ item }) => (
-              <LegalMenuCard item={item} />
-            )}
-          />
+        <View style={styles.listSection}>
+          {offersData.map((offer, index) => (
+            <OfferCard key={offer.id} offer={offer} index={index} />
+          ))}
         </View>
-
-        <LegalIllustration />
       </ScrollView>
       <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
     </SafeAreaView>
@@ -51,15 +44,15 @@ const TermsPrivacyScreen = () => {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor:'#F9F8FD',
+    backgroundColor: COLORS.background,
   },
   scroll: {
-    paddingHorizontal: 14,
-    paddingBottom: 120,
+    paddingBottom: 180,
   },
-  menuSection: {
-    marginTop: 20,
+  listSection: {
+    marginTop: 24,
+    paddingHorizontal: 20,
   },
 });
 
-export default TermsPrivacyScreen;
+export default OffersScreen;

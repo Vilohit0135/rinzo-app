@@ -1,13 +1,17 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const SupportCard = () => {
+interface SupportCardProps {
+  onChatPress?: () => void;
+}
+
+const SupportCard = ({ onChatPress }: SupportCardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.leftContent}>
         <Text style={styles.title}>Cant find your answer ?</Text>
         <Text style={styles.subtitle}>Chat with our support team</Text>
-        <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={onChatPress}>
           <Text style={styles.buttonText}>Chat Now</Text>
         </TouchableOpacity>
       </View>

@@ -2,7 +2,11 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '../../constants/colors';
 
-const HeaderSection = () => {
+interface HeaderSectionProps {
+  onNotificationPress?: () => void;
+}
+
+const HeaderSection = ({ onNotificationPress }: HeaderSectionProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
@@ -11,7 +15,7 @@ const HeaderSection = () => {
           style={styles.profileImage}
           resizeMode="cover"
         />
-        <TouchableOpacity activeOpacity={0.7}>
+        <TouchableOpacity activeOpacity={0.7} onPress={onNotificationPress}>
           <Ionicons name="notifications-outline" size={21} color={COLORS.textDark} />
         </TouchableOpacity>
       </View>
