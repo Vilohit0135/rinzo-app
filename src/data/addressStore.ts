@@ -41,6 +41,16 @@ export function addAddress(addr: AddressItem): void {
   listeners.forEach((l) => l());
 }
 
+export function updateAddress(index: number, addr: AddressItem): void {
+  addresses = addresses.map((item, i) => (i === index ? addr : item));
+  listeners.forEach((l) => l());
+}
+
+export function deleteAddress(index: number): void {
+  addresses = addresses.filter((_, i) => i !== index);
+  listeners.forEach((l) => l());
+}
+
 export function subscribe(listener: () => void): () => void {
   listeners.add(listener);
   return () => {

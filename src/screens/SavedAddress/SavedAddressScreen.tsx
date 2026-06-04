@@ -16,6 +16,16 @@ type RootStackParamList = {
   Profile: undefined;
   SavedAddress: undefined;
   AddAddress: undefined;
+  AddAddressDetails: undefined;
+  EditAddress: {
+    index: number;
+    addressType: string;
+    title: string;
+    address1: string;
+    address2: string;
+    contact: string;
+    isDefault: boolean;
+  };
 };
 
 const SavedAddressScreen = () => {
@@ -38,7 +48,7 @@ const SavedAddressScreen = () => {
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Saved Address</Text>
           </View>
-          <TouchableOpacity style={styles.addNewRow} onPress={() => navigation.navigate('Home')} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.addNewRow} onPress={() => navigation.navigate('AddAddress')} activeOpacity={0.7}>
             <Ionicons name="add" size={24} color="#4B238D" />
             <Text style={styles.addNewText}>Add New</Text>
           </TouchableOpacity>
@@ -53,10 +63,20 @@ const SavedAddressScreen = () => {
               address2={item.address2}
               contact={item.contact}
               isDefault={item.isDefault}
-              onEdit={() => console.log('Edit Address', item.title)}
+              onEdit={() =>
+                navigation.navigate('EditAddress', {
+                  index,
+                  addressType: item.title,
+                  title: item.title,
+                  address1: item.address1,
+                  address2: item.address2,
+                  contact: item.contact,
+                  isDefault: item.isDefault,
+                })
+              }
             />
           ))}
-          <TouchableOpacity style={styles.bottomCta} onPress={() => navigation.navigate('AddAddress')} activeOpacity={0.8}>
+          <TouchableOpacity style={styles.bottomCta} onPress={() => navigation.navigate('AddAddressDetails')} activeOpacity={0.8}>
             <Ionicons name="add" size={24} color="#4B238D" />
             <Text style={styles.bottomCtaText}>Add New Address</Text>
           </TouchableOpacity>
