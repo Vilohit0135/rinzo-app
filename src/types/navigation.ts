@@ -11,6 +11,8 @@ export type RootStackParamList = {
   Profile: undefined;
   Favourites: undefined;
   PersonalInformation: undefined;
+  SavedAddress: undefined;
+  AddAddress: undefined;
   LaundryDetail: { id: string };
   MyOrders: undefined;
   OtpVerification: undefined;

@@ -15,6 +15,8 @@ import ProfileScreen from './src/screens/Profile/ProfileScreen';
 import PersonalInformationScreen from './src/screens/Profile/PersonalInformationScreen';
 import FavouritesScreen from './src/screens/Profile/FavouritesScreen';
 import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
+import SavedAddressScreen from './src/screens/SavedAddress/SavedAddressScreen';
+import AddAddressScreen from './src/screens/AddAddress/AddAddressScreen';
 import MyOrdersScreen from './src/screens/MyOrders/MyOrdersScreen';
 import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
 import SignupScreen from './src/screens/Auth/SignupScreen';
@@ -103,6 +105,15 @@ export default function App() {
           <Stack.Screen
             name="LaundryDetail"
             component={LaundryDetailScreen}
+          />
+
+          <Stack.Screen
+            name="SavedAddress"
+            component={SavedAddressScreen}
+          />
+          <Stack.Screen
+            name="AddAddress"
+            component={AddAddressScreen}
           />
 
           <Stack.Screen
