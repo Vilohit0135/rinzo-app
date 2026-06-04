@@ -16,6 +16,7 @@ type RootStackParamList = {
   Search: undefined;
   YourCart: undefined;
   MyOrders: undefined;
+  Favourites: undefined;
   Profile: undefined;
   PersonalInformation: undefined;
 };
@@ -47,6 +48,8 @@ const ProfileScreen = () => {
           items={profileData.activityMenu.items.map((item) =>
             item.title === 'Order History'
               ? { ...item, onPress: () => navigation.navigate('MyOrders') }
+              : item.title === 'Favourites'
+              ? { ...item, onPress: () => navigation.navigate('Favourites') }
               : item
           )}
         />
