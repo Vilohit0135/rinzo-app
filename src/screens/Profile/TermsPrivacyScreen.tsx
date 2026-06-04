@@ -1,13 +1,14 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import FavouritesHeader from '../../components/favourites/FavouritesHeader';
-import FavouriteLaundryCard from '../../components/favourites/FavouriteLaundryCard';
+import TermsPrivacyHeader from '../../components/legal/TermsPrivacyHeader';
+import LegalMenuCard from '../../components/legal/LegalMenuCard';
+import LegalIllustration from '../../components/legal/LegalIllustration';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
-import { favouritesData } from '../../data/favourites/favouritesData';
+import { legalMenuItems } from '../../data/legal/legalData';
 
 type RootStackParamList = {
   Home: undefined;
@@ -16,7 +17,7 @@ type RootStackParamList = {
   Profile: undefined;
 };
 
-const FavouritesScreen = () => {
+const TermsPrivacyScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
 
   return (
@@ -26,13 +27,21 @@ const FavouritesScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
       >
-        <FavouritesHeader onBackPress={() => navigation.goBack()} />
+        <TermsPrivacyHeader onBackPress={() => navigation.goBack()} />
 
-        <View style={styles.listSection}>
-          {favouritesData.map((item) => (
-            <FavouriteLaundryCard key={item.id} laundryId={item.laundryId} />
-          ))}
+        <View style={styles.menuSection}>
+          <FlatList
+            data={legalMenuItems}
+            keyExtractor={(item) => item.id}
+            scrollEnabled={false}
+            nestedScrollEnabled
+            renderItem={({ item }) => (
+              <LegalMenuCard item={item} />
+            )}
+          />
         </View>
+
+        <LegalIllustration />
       </ScrollView>
       <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
     </SafeAreaView>
@@ -45,12 +54,12 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scroll: {
-    paddingHorizontal: 18,
-    paddingBottom: 140,
+    paddingHorizontal: 14,
+    paddingBottom: 120,
   },
-  listSection: {
-    marginTop: 42,
+  menuSection: {
+    marginTop: 20,
   },
 });
 
-export default FavouritesScreen;
+export default TermsPrivacyScreen;

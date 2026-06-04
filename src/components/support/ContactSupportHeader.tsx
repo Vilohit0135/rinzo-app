@@ -1,24 +1,24 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-interface FavouritesHeaderProps {
+interface ContactSupportHeaderProps {
   onBackPress: () => void;
 }
 
-const FavouritesHeader = ({ onBackPress }: FavouritesHeaderProps) => {
+const ContactSupportHeader = ({ onBackPress }: ContactSupportHeaderProps) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.backButton} onPress={onBackPress} activeOpacity={0.7}>
-        <Ionicons name="chevron-back" size={24} color="#8C8C8C" />
+        <Ionicons name="chevron-back" size={22} color="#8C8C8C" />
       </TouchableOpacity>
-      <Text style={styles.title}>Favourites</Text>
+      <Text style={styles.title}>Contact Support</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 12,
+    marginTop: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -27,20 +27,20 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     zIndex: 1,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
+    top: 6,
+    fontSize: 20,
     fontFamily: 'Poppins-Medium',
-    fontSize: 22,
-    top: 8,
     fontWeight: '600',
     color: '#111111',
   },
 });
 
-export default FavouritesHeader;
+export default ContactSupportHeader;
