@@ -13,6 +13,7 @@ import SearchScreen from './src/screens/Search/SearchScreen';
 import YourCartScreen from './src/screens/YourCart/YourCartScreen';
 import ProfileScreen from './src/screens/Profile/ProfileScreen';
 import PersonalInformationScreen from './src/screens/Profile/PersonalInformationScreen';
+import FavouritesScreen from './src/screens/Profile/FavouritesScreen';
 import LaundryDetailScreen from './src/screens/LaundryDetail/LaundryDetailScreen';
 import MyOrdersScreen from './src/screens/MyOrders/MyOrdersScreen';
 import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
@@ -95,6 +96,11 @@ export default function App() {
           />
 
           <Stack.Screen
+            name="Favourites"
+            component={FavouritesScreen}
+          />
+
+          <Stack.Screen
             name="LaundryDetail"
             component={LaundryDetailScreen}
           />
@@ -150,4 +156,3 @@ export default function App() {
     </SafeAreaProvider>
   );
 }
-

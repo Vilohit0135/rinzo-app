@@ -18,6 +18,7 @@ type RootStackParamList = {
   MyOrders: undefined;
   Profile: undefined;
   PersonalInformation: undefined;
+  SavedAddress: undefined;
 };
 
 const ProfileScreen = () => {
@@ -39,6 +40,8 @@ const ProfileScreen = () => {
           items={profileData.accountMenu.items.map((item) =>
             item.title === 'Personal Information'
               ? { ...item, onPress: () => navigation.navigate('PersonalInformation') }
+              : item.title === 'Saved Address'
+              ? { ...item, onPress: () => navigation.navigate('SavedAddress') }
               : item
           )}
         />
