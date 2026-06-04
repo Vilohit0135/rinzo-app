@@ -102,7 +102,7 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
 
             <View style={[styles.divider, { marginVertical: hp(12) }]} />
 
-            <TouchableOpacity style={styles.addAddressRow} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.addAddressRow} activeOpacity={0.7} onPress={() => navigation.navigate('AddAddressDetails')}>
               <Ionicons name="add-circle-outline" size={wp(22)} color="#8B5CF6" />
               <Text style={[styles.addAddressText, { fontSize: fs(16) }]}>
                 Add New Address

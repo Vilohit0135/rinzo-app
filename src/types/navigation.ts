@@ -10,6 +10,10 @@ export type RootStackParamList = {
   YourCart: undefined;
   Profile: undefined;
   Favourites: undefined;
+  MyReviews: undefined;
+  HelpCenter: undefined;
+  ContactSupport: undefined;
+  TermsPrivacy: undefined;
   PersonalInformation: undefined;
   SavedAddress: undefined;
   AddAddress: undefined;
@@ -28,3 +32,4 @@ export type RootStackParamList = {
 
 export type ScreenProps<T extends keyof RootStackParamList> =
   NativeStackScreenProps<RootStackParamList, T>;
+  

@@ -1,15 +1,23 @@
-import { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StatusBar } from 'expo-status-bar';
-import { LinearGradient } from 'expo-linear-gradient';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import BottomTabBar from '../../components/home/BottomTabBar';
-import { addAddress } from '../../data/addressStore';
-import CityIcon from '../../assets/icons/city.png';
-import LocationIcon from '../../assets/icons/location.png';
+import { useState } from "react";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { StatusBar } from "expo-status-bar";
+import { LinearGradient } from "expo-linear-gradient";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import BottomTabBar from "../../components/home/BottomTabBar";
+import { addAddress } from "../../data/addressStore";
+import CityIcon from "../../assets/icons/city.png";
+import LocationIcon from "../../assets/icons/location.png";
 
 type RootStackParamList = {
   Home: undefined;
@@ -21,31 +29,45 @@ type RootStackParamList = {
 };
 
 const AddAddressScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'AddAddress'>>();
+  const navigation =
+    useNavigation<
+      NativeStackNavigationProp<RootStackParamList, "AddAddress">
+    >();
 
-  const [selectedRadio, setSelectedRadio] = useState<'Myself' | 'someone else'>('Myself');
-  const [addressType, setAddressType] = useState<'Home' | 'Work' | 'Other'>('Home');
-  const [receiverName, setReceiverName] = useState('');
-  const [mobile, setMobile] = useState('');
-  const [address, setAddress] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
-  const [selectedArea, setSelectedArea] = useState('');
+  const [selectedRadio, setSelectedRadio] = useState<"Myself" | "someone else">(
+    "Myself",
+  );
+  const [addressType, setAddressType] = useState<"Home" | "Work" | "Other">(
+    "Home",
+  );
+  const [receiverName, setReceiverName] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [address, setAddress] = useState("");
+  const [selectedCity, setSelectedCity] = useState("");
+  const [selectedArea, setSelectedArea] = useState("");
 
   const handleSave = () => {
-    const cityPart = selectedCity ? `${selectedCity}` : '';
-    const areaPart = selectedArea ? `, ${selectedArea}` : '';
+    const cityPart = selectedCity ? `${selectedCity}` : "";
+    const areaPart = selectedArea ? `, ${selectedArea}` : "";
     addAddress({
-      title: addressType === 'Home' ? 'Home ( Default )' : addressType,
-      address1: address || '221b Baker Street',
-      address2: `${cityPart}${areaPart}` || 'Bengaluru, 500012',
-      contact: `${receiverName || 'Ms Mira Sharma'} – ${mobile || '94444283283'}`,
-      isDefault: addressType === 'Home',
+      title: addressType === "Home" ? "Home ( Default )" : addressType,
+      address1: address || "221b Baker Street",
+      address2: `${cityPart}${areaPart}` || "Bengaluru, 500012",
+      contact: `${receiverName || "Ms Mira Sharma"} – ${mobile || "94444283283"}`,
+      isDefault: addressType === "Home",
     });
     navigation.goBack();
   };
 
-  const radioOptions: Array<'Myself' | 'someone else'> = ['Myself', 'someone else'];
-  const addressTypes: Array<'Home' | 'Work' | 'Other'> = ['Home', 'Work', 'Other'];
+  const radioOptions: Array<"Myself" | "someone else"> = [
+    "Myself",
+    "someone else",
+  ];
+  const addressTypes: Array<"Home" | "Work" | "Other"> = [
+    "Home",
+    "Work",
+    "Other",
+  ];
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -53,22 +75,37 @@ const AddAddressScreen = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => navigation.goBack()}
+              activeOpacity={0.7}
+            >
               <Ionicons name="chevron-back" size={26} color="#BDBDBD" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Add address details</Text>
           </View>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+        >
           {/* Section 1: Current Location Card */}
           <View style={[styles.card, styles.locationCard]}>
-            <Ionicons name="location-outline" size={42} color="#111111" />
+            <Ionicons name="location-outline" size={36} color="#111111" />
             <View style={styles.locationTextCol}>
-              <Text style={styles.locationTitle}>Adding address at your current location ?</Text>
-              <Text style={styles.locationSubtitle}>Enable it to auto-fill address</Text>
+              <Text style={styles.locationTitle}>
+                Adding address at your current location ?
+              </Text>
+              <Text style={styles.locationSubtitle}>
+                Enable it to auto-fill address
+              </Text>
             </View>
-            <TouchableOpacity style={styles.enableBtn} onPress={() => console.log('Enable location')} activeOpacity={0.8}>
+            <TouchableOpacity
+              style={styles.enableBtn}
+              onPress={() => console.log("Enable location")}
+              activeOpacity={0.8}
+            >
               <Text style={styles.enableBtnText}>Enable</Text>
             </TouchableOpacity>
           </View>
@@ -77,22 +114,48 @@ const AddAddressScreen = () => {
           <View style={[styles.card, styles.formCard]}>
             {/* City Selector */}
             <View style={styles.selector}>
-              <Image source={CityIcon} style={styles.iconImage} resizeMode="contain" />
-              <Text style={[styles.selectorPlaceholder, selectedCity ? styles.selectorValue : null]}>
-                {selectedCity || 'Select a city'}
+              <Image
+                source={CityIcon}
+                style={styles.iconImage}
+                resizeMode="contain"
+              />
+              <Text
+                style={[
+                  styles.selectorPlaceholder,
+                  selectedCity ? styles.selectorValue : null,
+                ]}
+              >
+                {selectedCity || "Select a city"}
               </Text>
-              <TouchableOpacity style={styles.selectBtn} onPress={() => console.log('Open city picker')} activeOpacity={0.8}>
+              <TouchableOpacity
+                style={styles.selectBtn}
+                onPress={() => console.log("Open city picker")}
+                activeOpacity={0.8}
+              >
                 <Text style={styles.selectBtnText}>Select</Text>
               </TouchableOpacity>
             </View>
 
             {/* Area Selector */}
-            <View style={[styles.selector, { marginTop: 14 }]}>
-              <Image source={LocationIcon} style={styles.iconImage} resizeMode="contain" />
-              <Text style={[styles.selectorPlaceholder, selectedArea ? styles.selectorValue : null]}>
-                {selectedArea || 'Select an area, Street'}
+            <View style={[styles.selector, { marginTop: 10 }]}>
+              <Image
+                source={LocationIcon}
+                style={styles.iconImage}
+                resizeMode="contain"
+              />
+              <Text
+                style={[
+                  styles.selectorPlaceholder,
+                  selectedArea ? styles.selectorValue : null,
+                ]}
+              >
+                {selectedArea || "Select an area, Street"}
               </Text>
-              <TouchableOpacity style={styles.selectBtn} onPress={() => console.log('Open area picker')} activeOpacity={0.8}>
+              <TouchableOpacity
+                style={styles.selectBtn}
+                onPress={() => console.log("Open area picker")}
+                activeOpacity={0.8}
+              >
                 <Text style={styles.selectBtnText}>Select</Text>
               </TouchableOpacity>
             </View>
@@ -126,7 +189,12 @@ const AddAddressScreen = () => {
                     activeOpacity={0.7}
                     onPress={() => setSelectedRadio(option)}
                   >
-                    <View style={[styles.radioOuter, active && styles.radioOuterActive]}>
+                    <View
+                      style={[
+                        styles.radioOuter,
+                        active && styles.radioOuterActive,
+                      ]}
+                    >
                       {active && <View style={styles.radioInner} />}
                     </View>
                     <Text style={styles.radioLabel}>{option}</Text>
@@ -168,11 +236,21 @@ const AddAddressScreen = () => {
               return (
                 <TouchableOpacity
                   key={type}
-                  style={[styles.segmentBtn, active ? styles.segmentActive : styles.segmentInactive]}
+                  style={[
+                    styles.segmentBtn,
+                    active ? styles.segmentActive : styles.segmentInactive,
+                  ]}
                   activeOpacity={0.8}
                   onPress={() => setAddressType(type)}
                 >
-                  <Text style={[styles.segmentText, active ? styles.segmentTextActive : styles.segmentTextInactive]}>
+                  <Text
+                    style={[
+                      styles.segmentText,
+                      active
+                        ? styles.segmentTextActive
+                        : styles.segmentTextInactive,
+                    ]}
+                  >
                     {type}
                   </Text>
                 </TouchableOpacity>
@@ -181,9 +259,13 @@ const AddAddressScreen = () => {
           </View>
 
           {/* Save Changes Button */}
-          <TouchableOpacity activeOpacity={0.9} onPress={handleSave} style={styles.saveBtnWrapper}>
+          <TouchableOpacity
+            activeOpacity={0.9}
+            onPress={handleSave}
+            style={styles.saveBtnWrapper}
+          >
             <LinearGradient
-              colors={['#7C5CE6', '#8C63EA']}
+              colors={["#7C5CE6", "#8C63EA"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.saveBtn}
@@ -196,9 +278,9 @@ const AddAddressScreen = () => {
         <BottomTabBar
           activeTab="Profile"
           onTabPress={(tab) => {
-            if (tab === 'Home') navigation.navigate('Home');
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Orders') navigation.navigate('YourCart');
+            if (tab === "Home") navigation.navigate("Home");
+            if (tab === "Search") navigation.navigate("Search");
+            if (tab === "Orders") navigation.navigate("YourCart");
           }}
         />
       </View>
@@ -209,51 +291,51 @@ const AddAddressScreen = () => {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F7F5FC',
+    backgroundColor: "#F7F5FC",
   },
   container: {
     flex: 1,
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 24,
+    paddingTop: 16,
     paddingBottom: 4,
   },
   headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     height: 40,
   },
   backBtn: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#FFFFFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#FFFFFF",
+    justifyContent: "center",
+    alignItems: "center",
     zIndex: 1,
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#111111',
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#111111",
   },
   scrollContent: {
-    paddingTop: 16,
-    paddingBottom: 140,
+    paddingTop: 10,
+    paddingBottom: 110,
     paddingHorizontal: 16,
   },
 
   /* Shared Card Style */
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: "#FFFFFF",
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#ECE8F7',
-    shadowColor: '#000',
+    borderColor: "#ECE8F7",
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
@@ -262,211 +344,211 @@ const styles = StyleSheet.create({
 
   /* Location Card */
   locationCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 110,
-    paddingHorizontal: 18,
-    gap: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    height: 95,
+    paddingHorizontal: 12,
+    gap: 10,
   },
   locationTextCol: {
     flex: 1,
   },
   locationTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111111',
-    marginBottom: 4,
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#111111",
+    marginBottom: 2,
   },
   locationSubtitle: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#9B9B9B',
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#9B9B9B",
   },
   enableBtn: {
-    height: 34,
-    width: 84,
-    borderRadius: 17,
-    backgroundColor: '#F1EAFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 32,
+    width: 80,
+    borderRadius: 16,
+    backgroundColor: "#F1EAFF",
+    justifyContent: "center",
+    alignItems: "center",
   },
   enableBtnText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#4B238D',
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#4B238D",
   },
 
   /* Form Card */
   formCard: {
-    padding: 14,
-    marginTop: 16,
+    padding: 12,
+    marginTop: 10,
   },
   selector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    height: 72,
-    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    height: 62,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#D8D8D8',
-    paddingHorizontal: 16,
-    gap: 12,
+    borderColor: "#D8D8D8",
+    paddingHorizontal: 14,
+    gap: 10,
   },
   selectorPlaceholder: {
     flex: 1,
-    fontSize: 17,
-    color: '#A0A0A0',
+    fontSize: 15,
+    color: "#A0A0A0",
   },
   selectorValue: {
-    color: '#111111',
+    color: "#111111",
   },
   selectBtn: {
-    height: 34,
-    width: 84,
-    borderRadius: 17,
-    backgroundColor: '#F1EAFF',
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 30,
+    width: 76,
+    borderRadius: 15,
+    backgroundColor: "#F1EAFF",
+    justifyContent: "center",
+    alignItems: "center",
   },
   selectBtnText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#4B238D',
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#4B238D",
   },
   iconImage: {
-    width: 42,
-    height: 42,
-    marginRight: 16,
+    width: 30,
+    height: 30,
+    marginRight: 12,
   },
   addressLabel: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#111111',
-    marginTop: 16,
-    marginBottom: 12,
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#111111",
+    marginTop: 12,
+    marginBottom: 8,
   },
   addressInput: {
-    height: 70,
-    borderRadius: 16,
+    height: 58,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#D8D8D8',
-    paddingHorizontal: 16,
-    paddingTop: 14,
-    fontSize: 17,
-    color: '#111111',
+    borderColor: "#D8D8D8",
+    paddingHorizontal: 14,
+    paddingTop: 12,
+    fontSize: 15,
+    color: "#111111",
   },
 
   /* Contact Card */
   contactCard: {
-    padding: 16,
-    marginTop: 18,
+    padding: 12,
+    marginTop: 10,
   },
   contactTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#111111',
-    marginBottom: 16,
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#111111",
+    marginBottom: 12,
   },
   radioGroup: {
-    flexDirection: 'row',
-    gap: 24,
-    marginBottom: 16,
+    flexDirection: "row",
+    gap: 16,
+    marginBottom: 12,
   },
   radioRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   radioOuter: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     borderWidth: 2,
-    borderColor: '#111111',
-    justifyContent: 'center',
-    alignItems: 'center',
+    borderColor: "#111111",
+    justifyContent: "center",
+    alignItems: "center",
   },
   radioOuterActive: {
-    borderColor: '#7C5CE6',
+    borderColor: "#7C5CE6",
   },
   radioInner: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: '#7C5CE6',
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#7C5CE6",
   },
   radioLabel: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#111111',
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#111111",
   },
   contactInput: {
-    height: 70,
-    borderRadius: 16,
+    height: 58,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: '#D8D8D8',
-    paddingHorizontal: 16,
-    fontSize: 17,
-    color: '#111111',
-    marginBottom: 16,
+    borderColor: "#D8D8D8",
+    paddingHorizontal: 14,
+    fontSize: 15,
+    color: "#111111",
+    marginBottom: 10,
   },
   mobileLabel: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#111111',
-    marginBottom: 10,
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#111111",
+    marginBottom: 8,
   },
 
   /* Save Address As */
   saveAsLabel: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: '#111111',
-    marginTop: 22,
-    marginBottom: 14,
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#111111",
+    marginTop: 14,
+    marginBottom: 10,
   },
   segmentRow: {
-    flexDirection: 'row',
-    gap: 12,
+    flexDirection: "row",
+    gap: 10,
   },
   segmentBtn: {
     flex: 1,
-    height: 52,
-    borderRadius: 26,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 44,
+    borderRadius: 22,
+    justifyContent: "center",
+    alignItems: "center",
   },
   segmentActive: {
-    backgroundColor: '#7C5CE6',
+    backgroundColor: "#7C5CE6",
   },
   segmentInactive: {
-    backgroundColor: '#F2F2F2',
+    backgroundColor: "#F2F2F2",
   },
   segmentText: {
-    fontSize: 17,
-    fontWeight: '600',
+    fontSize: 15,
+    fontWeight: "600",
   },
   segmentTextActive: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
   },
   segmentTextInactive: {
-    color: '#111111',
+    color: "#111111",
   },
 
   /* Save Button */
   saveBtnWrapper: {
-    marginTop: 24,
+    marginTop: 16,
     marginBottom: 0,
   },
   saveBtn: {
-    height: 72,
-    borderRadius: 36,
-    justifyContent: 'center',
-    alignItems: 'center',
+    height: 58,
+    borderRadius: 29,
+    justifyContent: "center",
+    alignItems: "center",
   },
   saveBtnText: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#FFFFFF",
   },
 });
 

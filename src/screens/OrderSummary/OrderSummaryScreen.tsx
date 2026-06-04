@@ -35,6 +35,8 @@ const deliveryCharge = 20;
 const discount = 20;
 const total = 485;
 
+const formatCurrency = (amount: number) => `₹${amount}`;
+
 const OrderSummaryScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -82,20 +84,20 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
           <View style={styles.pricingCard}>
             <View style={styles.pricingRow}>
               <Text style={styles.pricingLabel}>Subtotal</Text>
-              <Text style={styles.pricingValue}>${subtotal}</Text>
+              <Text style={styles.pricingValue}>{formatCurrency(subtotal)}</Text>
             </View>
             <View style={styles.pricingRow}>
               <Text style={styles.pricingLabel}>Delivery Charge</Text>
-              <Text style={styles.pricingValue}>${deliveryCharge}</Text>
+              <Text style={styles.pricingValue}>{formatCurrency(deliveryCharge)}</Text>
             </View>
             <View style={styles.pricingRow}>
               <Text style={styles.pricingLabelDiscount}>Discount</Text>
-              <Text style={styles.pricingDiscount}>-${discount}</Text>
+              <Text style={styles.pricingDiscount}>-{formatCurrency(discount)}</Text>
             </View>
             <View style={styles.pricingDivider} />
             <View style={styles.pricingRow}>
               <Text style={styles.pricingTotalLabel}>Total</Text>
-              <Text style={styles.pricingTotalValue}>${total}</Text>
+              <Text style={styles.pricingTotalValue}>{formatCurrency(total)}</Text>
             </View>
           </View>
 
