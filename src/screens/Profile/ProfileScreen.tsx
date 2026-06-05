@@ -10,6 +10,7 @@ import LogoutButton from '../../components/profile/LogoutButton';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { profileData } from '../../data/profile/profileData';
+import { useAuthStore } from '../../store/authStore';
 
 type RootStackParamList = {
   Home: undefined;
@@ -31,6 +32,12 @@ type RootStackParamList = {
 
 const ProfileScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
+  const signOut = useAuthStore((s) => s.signOut);
+
+  const handleLogout = async () => {
+    await signOut();
+    navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -82,7 +89,7 @@ const ProfileScreen = () => {
           )}
         />
 
-        <LogoutButton onPress={() => navigation.navigate('Login')} />
+        <LogoutButton onPress={handleLogout} />
       </ScrollView>
       <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
     </SafeAreaView>

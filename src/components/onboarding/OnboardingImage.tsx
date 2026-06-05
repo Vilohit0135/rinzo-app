@@ -18,9 +18,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   image: {
-    top: 80,
-    width: 320,
-    height: 320,
+    top: 30,
+    width: 350,
+    height: 350,
   },
 });
 

@@ -2,6 +2,7 @@
   "expo": {
     "name": "rinzo-app",
     "slug": "rinzo-app",
+    "scheme": "rinzo",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +25,13 @@
     },
     "plugins": [
       "expo-font",
-      "expo-image"
-    ]
+      "expo-image",
+      "expo-web-browser"
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "13592353-cbdd-4cbc-9668-0ecf8f6f8084"
+      }
+    }
   }
 }
