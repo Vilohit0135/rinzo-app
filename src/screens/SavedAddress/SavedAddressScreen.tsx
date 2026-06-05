@@ -31,6 +31,7 @@ type RootStackParamList = {
 const SavedAddressScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'SavedAddress'>>();
   const [addresses, setAddresses] = useState(getAddresses);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const unsub = subscribe(() => setAddresses(getAddresses()));
@@ -63,6 +64,8 @@ const SavedAddressScreen = () => {
               address2={item.address2}
               contact={item.contact}
               isDefault={item.isDefault}
+              selected={selectedIndex === index}
+              onSelect={() => setSelectedIndex(index)}
               onEdit={() =>
                 navigation.navigate('EditAddress', {
                   index,

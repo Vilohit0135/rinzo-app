@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface ProfileCardProps {
@@ -9,7 +9,7 @@ interface ProfileCardProps {
 const ProfileCard = ({ name, email }: ProfileCardProps) => {
   return (
     <View style={styles.card}>
-      <View style={styles.avatar} />
+      <Image source={require('../../assets/images/profile.png')} style={styles.avatar} />
       <View style={styles.info}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.email}>{email}</Text>
@@ -37,7 +37,6 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: '#EEE8FF',
   },
   info: {
     flex: 1,

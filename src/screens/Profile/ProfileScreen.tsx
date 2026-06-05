@@ -26,6 +26,7 @@ type RootStackParamList = {
   Profile: undefined;
   PersonalInformation: undefined;
   SavedAddress: undefined;
+  Login: undefined;
 };
 
 const ProfileScreen = () => {
@@ -81,7 +82,7 @@ const ProfileScreen = () => {
           )}
         />
 
-        <LogoutButton />
+        <LogoutButton onPress={() => navigation.navigate('Login')} />
       </ScrollView>
       <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
     </SafeAreaView>

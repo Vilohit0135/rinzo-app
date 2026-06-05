@@ -7,12 +7,18 @@ interface AddressCardProps {
   address2: string;
   contact: string;
   isDefault?: boolean;
+  selected?: boolean;
+  onSelect?: () => void;
   onEdit?: () => void;
 }
 
-const AddressCard = ({ title, address1, address2, contact, isDefault, onEdit }: AddressCardProps) => {
+const AddressCard = ({ title, address1, address2, contact, isDefault, selected, onSelect, onEdit }: AddressCardProps) => {
   return (
-    <View style={[styles.card, isDefault && styles.cardDefault]}>
+    <TouchableOpacity
+      style={[styles.card, selected && styles.cardSelected]}
+      activeOpacity={0.8}
+      onPress={onSelect}
+    >
       <View style={styles.left}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.addressText}>{address1}</Text>
@@ -22,7 +28,7 @@ const AddressCard = ({ title, address1, address2, contact, isDefault, onEdit }: 
       <TouchableOpacity style={styles.editBtn} onPress={onEdit} activeOpacity={0.7} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
         <Ionicons name="create-outline" size={22} color="#4B238D" />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -47,6 +53,15 @@ const styles = StyleSheet.create({
     shadowColor: '#A07AF5',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.12,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  cardSelected: {
+    borderWidth: 2,
+    borderColor: '#7C5CE6',
+    shadowColor: '#7C5CE6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 6,
   },

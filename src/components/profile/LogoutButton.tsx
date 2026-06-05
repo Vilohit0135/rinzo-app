@@ -1,9 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const LogoutButton = () => {
+interface LogoutButtonProps {
+  onPress?: () => void;
+}
+
+const LogoutButton = ({ onPress }: LogoutButtonProps) => {
   return (
-    <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.button} activeOpacity={0.7} onPress={onPress}>
       <View style={styles.row}>
         <Ionicons name="log-out-outline" size={18} color="#FF4D4F" />
         <Text style={styles.text}>Logout</Text>
