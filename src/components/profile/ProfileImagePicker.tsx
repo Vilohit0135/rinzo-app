@@ -3,14 +3,15 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface ProfileImagePickerProps {
   imageSource: number;
+  onPress?: () => void;
 }
 
-const ProfileImagePicker = ({ imageSource }: ProfileImagePickerProps) => {
+const ProfileImagePicker = ({ imageSource, onPress }: ProfileImagePickerProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageWrapper}>
         <Image source={imageSource} style={styles.image} />
-        <TouchableOpacity style={styles.badge} activeOpacity={0.8}>
+        <TouchableOpacity style={styles.badge} activeOpacity={0.8} onPress={onPress}>
           <Ionicons name="camera" size={14} color="#FFFFFF" />
         </TouchableOpacity>
       </View>

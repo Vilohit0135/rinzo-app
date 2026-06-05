@@ -1,21 +1,22 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface ProfileCardProps {
   name: string;
   email: string;
+  onPress?: () => void;
 }
 
-const ProfileCard = ({ name, email }: ProfileCardProps) => {
+const ProfileCard = ({ name, email, onPress }: ProfileCardProps) => {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={onPress}>
       <Image source={require('../../assets/images/profile.png')} style={styles.avatar} />
       <View style={styles.info}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.email}>{email}</Text>
       </View>
       <Ionicons name="create-outline" size={20} color="#222222" />
-    </View>
+    </TouchableOpacity>
   );
 };
 

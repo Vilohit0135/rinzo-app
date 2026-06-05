@@ -1,7 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { FavouriteButton } from '../favourites/FavouriteButton';
 
 interface LaundryCardProps {
+  id: string;
   name: string;
   rating: number;
   reviewCount: number;
@@ -12,6 +14,8 @@ interface LaundryCardProps {
   icon?: string;
   style?: ViewStyle;
   onPress?: () => void;
+  isFavourite: boolean;
+  onToggleFavourite: (id: string) => void;
 }
 
 const tagIcons: Record<string, string> = {
@@ -24,7 +28,7 @@ const tagIcons: Record<string, string> = {
   'Budget': 'wallet-outline',
 };
 
-const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliveryTime, icon, style, onPress }: LaundryCardProps) => {
+const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, icon, style, onPress, isFavourite, onToggleFavourite }: LaundryCardProps) => {
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={[styles.card, style]}>
       <View style={styles.leftIconSection}>
@@ -59,6 +63,14 @@ const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliver
         <View style={styles.deliveryRow}>
           <Text style={styles.deliveryText}>🕒 Delivery by {deliveryTime}</Text>
         </View>
+      </View>
+
+      <View style={styles.favouriteWrap}>
+        <FavouriteButton
+          isFavourite={isFavourite}
+          onPress={() => onToggleFavourite(id)}
+          size={22}
+        />
       </View>
     </TouchableOpacity>
   );
@@ -164,6 +176,13 @@ const styles = StyleSheet.create({
   deliveryText: {
     fontSize: 12,
     color: '#8E8EAA',
+  },
+  favouriteWrap: {
+    position: 'absolute',
+    bottom: 8,
+    right: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

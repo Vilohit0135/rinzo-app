@@ -11,10 +11,6 @@ interface LoginScreenProps {
 }
 
 const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
-  const handleSocialLogin = (provider: string) => {
-    console.log('Social login:', provider);
-  };
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
@@ -35,7 +31,7 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
         <Text style={[styles.label, styles.phoneLabel]}>Phone number</Text>
         <TextInput
           style={styles.input}
-          placeholder="+ 91 8777734343"
+          placeholder="+91 8777734343"
           placeholderTextColor="#8E8E8E"
           keyboardType="phone-pad"
         />
@@ -43,16 +39,13 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
         <Text style={[styles.label, styles.otpLabel]}>OTP</Text>
         <TextInput
           style={styles.input}
-          placeholder="Enter Otp"
+          placeholder="Enter OTP"
           placeholderTextColor="#8E8E8E"
           keyboardType="number-pad"
+          maxLength={6}
         />
 
-        <TouchableOpacity
-          style={styles.buttonWrapper}
-          activeOpacity={0.8}
-          onPress={onLoginSuccess}
-        >
+        <TouchableOpacity style={styles.buttonWrapper} activeOpacity={0.8} onPress={onLoginSuccess}>
           <LinearGradient
             colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
             style={styles.buttonGradient}
@@ -68,9 +61,9 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
         </View>
 
         <View style={styles.socialRow}>
-          <SocialButton provider="google" onPress={() => handleSocialLogin('google')} />
-          <SocialButton provider="facebook" onPress={() => handleSocialLogin('facebook')} />
-          <SocialButton provider="apple" onPress={() => handleSocialLogin('apple')} />
+          <SocialButton provider="google" onPress={() => {}} />
+          <SocialButton provider="facebook" onPress={() => {}} />
+          <SocialButton provider="apple" onPress={() => {}} />
         </View>
 
         <TouchableOpacity style={styles.signupLink} activeOpacity={0.7} onPress={onSignupPress}>

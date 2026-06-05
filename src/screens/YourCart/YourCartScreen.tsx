@@ -1,4 +1,5 @@
-﻿import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+﻿import { useMemo } from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +16,7 @@ import EmptyCartState from '../../components/cart/EmptyCartState';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { cartData } from '../../data/cart/cartData';
-import { cartStateData } from '../../data/cart/cartStateData';
+import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from '../../store/bookingStore';
 
 type RootStackParamList = {
   Home: undefined;
@@ -25,9 +26,45 @@ type RootStackParamList = {
   Profile: undefined;
 };
 
+const serviceIcons: Record<string, string> = {
+  '1': 'shirt-outline',
+  '2': 'sparkles-outline',
+  '3': 'water-outline',
+};
+
 const YourCartScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'YourCart'>>();
-  const { itemCount, title, subtitle } = cartStateData;
+  const storeServices = useBookingStore((s) => s.services);
+  const address = useBookingStore((s) => s.address);
+  const pickupDate = useBookingStore((s) => s.pickupDate);
+  const pickupTime = useBookingStore((s) => s.pickupTime);
+
+  const hasItems = storeServices.some((s) => s.quantity > 0);
+
+  const services = useMemo(
+    () =>
+      storeServices
+        .filter((s) => s.quantity > 0)
+        .map((s) => ({
+          name: s.title,
+          price: `₹${s.unitPrice}/${s.unit}`,
+          quantity: `${s.quantity} ${s.unit === 'Kg' ? 'kg' : 'items'}`,
+          total: s.quantity * s.unitPrice,
+          icon: serviceIcons[s.id] || 'shirt-outline',
+        })),
+    [storeServices]
+  );
+
+  const subtotal = useMemo(
+    () => storeServices.reduce((sum, s) => sum + s.quantity * s.unitPrice, 0),
+    [storeServices]
+  );
+
+  const total = subtotal + DELIVERY_CHARGE - DISCOUNT;
+
+  const pickupLabel = pickupTime
+    ? `${pickupTime}${pickupDate ? `, ${pickupDate}` : ''}`
+    : 'Not selected';
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -36,8 +73,11 @@ const YourCartScreen = () => {
         <CartHeader onBackPress={() => navigation.goBack()} />
 
         <View style={styles.content}>
-          {itemCount === 0 ? (
-            <EmptyCartState title={title} subtitle={subtitle} />
+          {!hasItems ? (
+            <EmptyCartState
+              title="Your cart is empty"
+              subtitle="Looks like you haven't add any service yet"
+            />
           ) : (
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -47,7 +87,7 @@ const YourCartScreen = () => {
 
               <View style={styles.sectionServices}>
                 <Text style={styles.sectionTitle}>Services</Text>
-                <ServicesCard services={cartData.services} />
+                <ServicesCard services={services} />
               </View>
 
               <View style={styles.sectionClothes}>
@@ -57,7 +97,7 @@ const YourCartScreen = () => {
 
               <View style={styles.sectionPickup}>
                 <Text style={styles.sectionTitle}>Pickup Details</Text>
-                <PickupDetailsCard {...cartData.pickupDetails} />
+                <PickupDetailsCard address={address} pickupTime={pickupLabel} />
               </View>
 
               <View style={styles.sectionCoupon}>
@@ -66,7 +106,14 @@ const YourCartScreen = () => {
               </View>
 
               <View style={styles.sectionPricing}>
-                <PriceSummary pricing={cartData.pricingSummary} />
+                <PriceSummary
+                  pricing={{
+                    subtotal,
+                    deliveryCharge: DELIVERY_CHARGE,
+                    discounts: [{ label: 'Discount', value: `-₹${DISCOUNT}` }],
+                    total,
+                  }}
+                />
               </View>
 
               <View style={styles.checkoutWrap}>
@@ -123,4 +170,3 @@ const styles = StyleSheet.create({
 });
 
 export default YourCartScreen;
-

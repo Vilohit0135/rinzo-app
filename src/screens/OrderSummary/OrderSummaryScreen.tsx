@@ -14,30 +14,32 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
 import BottomTabBar from '../../components/home/BottomTabBar';
+import { useBookingStore } from '../../store/bookingStore';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderSummary'>;
 
 const steps = ['Service', 'Address', 'Time', 'Confirm'];
 
-interface ServiceItem {
-  name: string;
-  price: number;
-}
-
-const services: ServiceItem[] = [
-  { name: 'Wash and Fold ( 4 Kg )', price: 200 },
-  { name: 'Iron Only ( 6 Items )', price: 76 },
-  { name: 'Dry Cleaning ( 2 Items )', price: 240 },
-];
-
-const subtotal = 515;
-const deliveryCharge = 20;
-const discount = 20;
-const total = 485;
+const DELIVERY_CHARGE = 20;
+const DISCOUNT = 20;
 
 const formatCurrency = (amount: number) => `₹${amount}`;
 
 const OrderSummaryScreen = ({ navigation }: Props) => {
+  const services = useBookingStore((s) => s.services);
+  const pickupDate = useBookingStore((s) => s.pickupDate);
+  const pickupTime = useBookingStore((s) => s.pickupTime);
+
+  const lineItems = services
+    .filter((s) => s.quantity > 0)
+    .map((s) => ({
+      name: `${s.title} ( ${s.quantity} ${s.unit} )`,
+      price: s.quantity * s.unitPrice,
+    }));
+
+  const subtotal = lineItems.reduce((sum, item) => sum + item.price, 0);
+  const total = subtotal + DELIVERY_CHARGE - DISCOUNT;
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
@@ -55,12 +57,12 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
           <Text style={styles.sectionTitle}>Order Summary</Text>
 
           <View style={styles.summaryCard}>
-            {services.map((item, index) => (
+            {lineItems.map((item, index) => (
               <React.Fragment key={item.name}>
                 {index > 0 && <View style={styles.summaryDivider} />}
                 <View style={styles.summaryRow}>
                   <Text style={styles.summaryLabel}>{item.name}</Text>
-                  <Text style={styles.summaryPrice}>₹{item.price}</Text>
+                  <Text style={styles.summaryPrice}>{formatCurrency(item.price)}</Text>
                 </View>
               </React.Fragment>
             ))}
@@ -83,7 +85,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
                 <Text style={styles.changeText}>Change</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.timeText}>12 PM - 1 PM, Saturday 17th May</Text>
+            <Text style={styles.timeText}>{pickupTime}{pickupDate ? `, ${pickupDate}` : ''}</Text>
           </View>
 
           <View style={styles.pricingCard}>
@@ -93,11 +95,11 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
             </View>
             <View style={styles.pricingRow}>
               <Text style={styles.pricingLabel}>Delivery Charge</Text>
-              <Text style={styles.pricingValue}>{formatCurrency(deliveryCharge)}</Text>
+              <Text style={styles.pricingValue}>{formatCurrency(DELIVERY_CHARGE)}</Text>
             </View>
             <View style={styles.pricingRow}>
               <Text style={styles.pricingLabelDiscount}>Discount</Text>
-              <Text style={styles.pricingDiscount}>-{formatCurrency(discount)}</Text>
+              <Text style={styles.pricingDiscount}>-{formatCurrency(DISCOUNT)}</Text>
             </View>
             <View style={styles.pricingDivider} />
             <View style={styles.pricingRow}>

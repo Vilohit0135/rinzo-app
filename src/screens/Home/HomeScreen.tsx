@@ -14,6 +14,7 @@ import OrderCard from '../../components/home/OrderCard';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { laundryItems } from '../../data/laundry/laundryData';
+import { useFavouritesStore } from '../../store/favouritesStore';
 
 type RootStackParamList = {
   Home: undefined;
@@ -23,6 +24,7 @@ type RootStackParamList = {
   YourCart: undefined;
   MyOrders: undefined;
   Profile: undefined;
+  PersonalInformation: undefined;
   LaundryDetail: { id: string };
   BookPickup: undefined;
   OrderTracking: { from?: string } | undefined;
@@ -51,10 +53,10 @@ const quickActions: QuickAction[] = [
   { title: 'Repeat Order', icon: 'refresh-outline' },
 ];
 
-const SectionHeader = ({ title }: { title: string }) => (
+const SectionHeader = ({ title, onViewAll }: { title: string; onViewAll?: () => void }) => (
   <View style={styles.sectionHeader}>
     <Text style={styles.sectionTitle}>{title}</Text>
-    <TouchableOpacity style={styles.viewAll} activeOpacity={0.7}>
+    <TouchableOpacity style={styles.viewAll} activeOpacity={0.7} onPress={onViewAll}>
       <Text style={styles.viewAllText}>View all</Text>
       <Ionicons name="chevron-forward" size={15} color={COLORS.purpleDark} />
     </TouchableOpacity>
@@ -63,6 +65,8 @@ const SectionHeader = ({ title }: { title: string }) => (
 
 const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
+  const favouriteIds = useFavouritesStore((s) => s.favouriteIds);
+  const toggleFavourite = useFavouritesStore((s) => s.toggleFavourite);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -71,7 +75,10 @@ const HomeScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <HeaderSection onNotificationPress={() => navigation.navigate('Notifications')} />
+        <HeaderSection
+          onNotificationPress={() => navigation.navigate('Notifications')}
+          onProfilePress={() => navigation.navigate('PersonalInformation')}
+        />
         <SearchBar onPress={() => navigation.navigate('Search')} />
 
         <View style={styles.servicesSection}>
@@ -120,14 +127,21 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.popularSection}>
-          <SectionHeader title="Popular Laundry Nearby" />
+          <SectionHeader title="Popular Laundry Nearby" onViewAll={() => navigation.navigate('Search')} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.laundryCardsRow}
           >
             {laundryItems.map((item) => (
-              <LaundryCard key={item.id} {...item} style={{ width: 340 }} onPress={() => navigation.navigate('LaundryDetail', { id: item.id })} />
+              <LaundryCard
+                key={item.id}
+                {...item}
+                style={{ width: 340 }}
+                onPress={() => navigation.navigate('LaundryDetail', { id: item.id })}
+                isFavourite={favouriteIds.includes(item.id)}
+                onToggleFavourite={toggleFavourite}
+              />
             ))}
           </ScrollView>
         </View>

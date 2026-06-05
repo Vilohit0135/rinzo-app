@@ -1,7 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { FavouriteButton } from '../favourites/FavouriteButton';
 
 interface SearchResultCardProps {
+  id: string;
   name: string;
   rating: number;
   reviewCount: number;
@@ -9,9 +11,11 @@ interface SearchResultCardProps {
   price: string;
   tags: string[];
   deliveryTime: string;
+  isFavourite: boolean;
+  onToggleFavourite: (id: string) => void;
 }
 
-const SearchResultCard = ({ name, rating, reviewCount, distance, price, tags, deliveryTime }: SearchResultCardProps) => {
+const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, isFavourite, onToggleFavourite }: SearchResultCardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.thumbnail} />
@@ -44,7 +48,10 @@ const SearchResultCard = ({ name, rating, reviewCount, distance, price, tags, de
       </View>
 
       <View style={styles.favouriteWrap}>
-        <Ionicons name="heart-outline" size={26} color="#000000" />
+        <FavouriteButton
+          isFavourite={isFavourite}
+          onPress={() => onToggleFavourite(id)}
+        />
       </View>
     </View>
   );
@@ -52,7 +59,8 @@ const SearchResultCard = ({ name, rating, reviewCount, distance, price, tags, de
 
 const styles = StyleSheet.create({
   card: {
-    width: '100%',
+    width: '98%',
+    marginLeft: 2,
     height: 115,
     backgroundColor: '#FFFFFF',
     borderRadius: 18,

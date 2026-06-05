@@ -9,6 +9,7 @@ import SearchResultCard from '../../components/search/SearchResultCard';
 import EmptySearchState from '../../components/search/EmptySearchState';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
+import { useFavouritesStore } from '../../store/favouritesStore';
 
 type RootStackParamList = {
   Home: undefined;
@@ -23,16 +24,18 @@ const recentSearches = ['Dry Clean', 'Krishna Laundry', 'Iron Service'];
 const filterButtons = ['Nearby', 'Top Rated', 'Pickup', 'Open Now'];
 
 const searchResults = [
-  { name: 'Krishna Laundry', rating: 4.8, reviewCount: 231, distance: '1.2 km away', price: '₹ 50/kg', tags: ['Pickup', 'Fast Service'], deliveryTime: '2:00 PM' },
-  { name: 'Sparkle Dry Clean', rating: 4.6, reviewCount: 189, distance: '2.5 km away', price: '₹ 80/kg', tags: ['Dry Clean', 'Free Pickup'], deliveryTime: '4:00 PM' },
-  { name: 'Royal Wash', rating: 4.9, reviewCount: 345, distance: '0.8 km away', price: '₹ 60/kg', tags: ['Express', 'Eco Friendly'], deliveryTime: '1:00 PM' },
-  { name: 'Eco Laundry Hub', rating: 4.7, reviewCount: 156, distance: '3.1 km away', price: '₹ 45/kg', tags: ['Budget', 'Pickup'], deliveryTime: '5:00 PM' },
+  { id: 'krishna-laundry', name: 'Krishna Laundry', rating: 4.8, reviewCount: 231, distance: '1.2 km away', price: '₹ 50/kg', tags: ['Pickup', 'Fast Service'], deliveryTime: '2:00 PM' },
+  { id: 'sparkle-dry-clean', name: 'Sparkle Dry Clean', rating: 4.6, reviewCount: 189, distance: '2.5 km away', price: '₹ 80/kg', tags: ['Dry Clean', 'Free Pickup'], deliveryTime: '4:00 PM' },
+  { id: 'royal-wash', name: 'Royal Wash', rating: 4.9, reviewCount: 345, distance: '0.8 km away', price: '₹ 60/kg', tags: ['Express', 'Eco Friendly'], deliveryTime: '1:00 PM' },
+  { id: 'eco-laundry-hub', name: 'Eco Laundry Hub', rating: 4.7, reviewCount: 156, distance: '3.1 km away', price: '₹ 45/kg', tags: ['Budget', 'Pickup'], deliveryTime: '5:00 PM' },
 ];
 
 const SearchScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Search'>>();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('');
+  const favouriteIds = useFavouritesStore((s) => s.favouriteIds);
+  const toggleFavourite = useFavouritesStore((s) => s.toggleFavourite);
 
   const getFilteredResults = () => {
     let results = searchResults.filter((item) =>
@@ -116,7 +119,12 @@ const SearchScreen = () => {
 
             <View style={styles.resultsSection}>
               {filteredResults.map((item) => (
-                <SearchResultCard key={item.name} {...item} />
+                <SearchResultCard
+                  key={item.id}
+                  {...item}
+                  isFavourite={favouriteIds.includes(item.id)}
+                  onToggleFavourite={toggleFavourite}
+                />
               ))}
             </View>
           </ScrollView>

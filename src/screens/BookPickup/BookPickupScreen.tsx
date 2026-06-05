@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -16,60 +15,17 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
 import BottomTabBar from '../../components/home/BottomTabBar';
+import { useBookingStore } from '../../store/bookingStore';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BookPickup'>;
 
 const steps = ['Service', 'Address', 'Time', 'Confirm'];
 
-interface Service {
-  id: string;
-  title: string;
-  price: string;
-  priceUnit: string;
-  unit: string;
-  subtitle: string;
-}
-
-const services: Service[] = [
-  {
-    id: '1',
-    title: 'Wash and Fold',
-    price: '₹50',
-    priceUnit: 'Kg',
-    unit: 'Kg',
-    subtitle: 'Wash , Dry and Neatly Folded',
-  },
-  {
-    id: '2',
-    title: 'Iron Only',
-    price: '₹15',
-    priceUnit: '/Item',
-    unit: 'Itm',
-    subtitle: 'Wash , Dry and Neatly Folded',
-  },
-  {
-    id: '3',
-    title: 'Dry Clean',
-    price: '₹120',
-    priceUnit: '/Item',
-    unit: 'Itm',
-    subtitle: 'Wash , Dry and Neatly Folded',
-  },
-];
-
-const initialQtys: Record<string, number> = { '1': 4, '2': 5, '3': 5 };
-
 const BookPickupScreen = ({ navigation }: Props) => {
-  const [quantities, setQuantities] = useState<Record<string, number>>(initialQtys);
-  const [instructions, setInstructions] = useState('');
-
-  const increment = (id: string) => {
-    setQuantities((prev) => ({ ...prev, [id]: prev[id] + 1 }));
-  };
-
-  const decrement = (id: string) => {
-    setQuantities((prev) => ({ ...prev, [id]: Math.max(0, prev[id] - 1) }));
-  };
+  const services = useBookingStore((s) => s.services);
+  const updateQuantity = useBookingStore((s) => s.updateQuantity);
+  const instructions = useBookingStore((s) => s.instructions);
+  const setInstructions = useBookingStore((s) => s.setInstructions);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -89,15 +45,14 @@ const BookPickupScreen = ({ navigation }: Props) => {
 
           <View style={styles.servicesList}>
             {services.map((item) => {
-              const qty = quantities[item.id];
               return (
                 <View key={item.id} style={styles.serviceCard}>
                   <View style={styles.serviceContent}>
                     <View style={styles.serviceTopRow}>
                       <Text style={styles.serviceTitle}>{item.title}</Text>
                       <View style={styles.priceRow}>
-                        <Text style={styles.servicePrice}>{item.price}</Text>
-                        <Text style={styles.servicePriceUnit}>{item.priceUnit}</Text>
+                        <Text style={styles.servicePrice}>₹{item.unitPrice}</Text>
+                        <Text style={styles.servicePriceUnit}>/{item.unit}</Text>
                       </View>
                     </View>
                     <Text style={styles.serviceSubtitle}>{item.subtitle}</Text>
@@ -105,19 +60,19 @@ const BookPickupScreen = ({ navigation }: Props) => {
                     <View style={styles.serviceCounterRow}>
                       <View style={styles.counterPill}>
                         <TouchableOpacity
-                          onPress={() => decrement(item.id)}
+                          onPress={() => updateQuantity(item.id, item.quantity - 1)}
                           activeOpacity={0.7}
                           hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                         >
-                          <View style={[styles.counterBtn, qty === 0 && styles.counterBtnDisabled]}>
+                          <View style={[styles.counterBtn, item.quantity === 0 && styles.counterBtnDisabled]}>
                             <Ionicons name="remove" size={14} color="#FFFFFF" />
                           </View>
                         </TouchableOpacity>
                         <Text style={styles.counterValue}>
-                          {qty}{item.unit}
+                          {item.quantity}{item.unit}
                         </Text>
                         <TouchableOpacity
-                          onPress={() => increment(item.id)}
+                          onPress={() => updateQuantity(item.id, item.quantity + 1)}
                           activeOpacity={0.7}
                           hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                         >

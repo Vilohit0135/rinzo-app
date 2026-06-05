@@ -1,7 +1,8 @@
-import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
+import { Alert, Image, Linking, Platform, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
+import * as Location from 'expo-location';
 import { COLORS } from '../../constants/theme';
 
 interface LocationAccessScreenProps {
@@ -10,6 +11,45 @@ interface LocationAccessScreenProps {
 
 const LocationAccessScreen = ({ onNext }: LocationAccessScreenProps) => {
   const { width } = useWindowDimensions();
+
+  const handleAllowLocation = async () => {
+    try {
+      const enabled = await Location.hasServicesEnabledAsync();
+
+      if (!enabled) {
+        if (Platform.OS === 'android') {
+          await Location.enableNetworkProviderAsync();
+        } else {
+          Alert.alert(
+            'Location Services Off',
+            'Please enable location services in Settings to use this feature.',
+            [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Open Settings', onPress: () => Linking.openSettings() },
+            ],
+          );
+          return;
+        }
+      }
+
+      const { granted } = await Location.requestForegroundPermissionsAsync();
+
+      if (granted) {
+        onNext?.();
+      } else {
+        Alert.alert(
+          'Permission Denied',
+          'Location permission is needed to find nearby laundries. You can enable it in Settings.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Open Settings', onPress: () => Linking.openSettings() },
+          ],
+        );
+      }
+    } catch {
+      Alert.alert('Error', 'Something went wrong while requesting location access.');
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -38,7 +78,7 @@ const LocationAccessScreen = ({ onNext }: LocationAccessScreenProps) => {
         <TouchableOpacity
           style={styles.buttonContainer}
           activeOpacity={0.8}
-          onPress={onNext}
+          onPress={handleAllowLocation}
         >
           <LinearGradient
             colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}

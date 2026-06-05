@@ -1,9 +1,13 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const SaveButton = () => {
+interface SaveButtonProps {
+  onPress?: () => void;
+}
+
+const SaveButton = ({ onPress }: SaveButtonProps) => {
   return (
-    <TouchableOpacity style={styles.wrapper} activeOpacity={0.8}>
+    <TouchableOpacity style={styles.wrapper} activeOpacity={0.8} onPress={onPress}>
       <LinearGradient
         colors={['#8259D2', '#8259D2']}
         start={{ x: 0, y: 0 }}

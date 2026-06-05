@@ -10,6 +10,7 @@ import ReviewSection from '../../components/laundry/ReviewSection';
 import CheckoutButton from '../../components/laundry/CheckoutButton';
 import { COLORS } from '../../constants/colors';
 import { getLaundryById } from '../../data/laundry/laundryData';
+import { useFavouritesStore } from '../../store/favouritesStore';
 
 type RootStackParamList = {
   LaundryDetail: { id: string };
@@ -19,6 +20,8 @@ const LaundryDetailScreen = () => {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'LaundryDetail'>>();
   const item = getLaundryById(route.params.id);
+  const favouriteIds = useFavouritesStore((s) => s.favouriteIds);
+  const toggleFavourite = useFavouritesStore((s) => s.toggleFavourite);
 
   if (!item) {
     return null;
@@ -31,7 +34,11 @@ const LaundryDetailScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
       >
-        <LaundryHero onBackPress={() => navigation.goBack()} />
+        <LaundryHero
+          onBackPress={() => navigation.goBack()}
+          isFavourite={favouriteIds.includes(item.id)}
+          onToggleFavourite={() => toggleFavourite(item.id)}
+        />
 
         <View style={styles.details}>
           <LaundryInfo

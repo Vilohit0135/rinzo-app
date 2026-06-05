@@ -1,21 +1,27 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 interface OnboardingPaginationProps {
   total: number;
   activeIndex: number;
+  onDotPress?: (index: number) => void;
 }
 
-const OnboardingPagination = ({ total, activeIndex }: OnboardingPaginationProps) => {
+const OnboardingPagination = ({ total, activeIndex, onDotPress }: OnboardingPaginationProps) => {
   return (
     <View style={styles.container}>
       {Array.from({ length: total }).map((_, index) => (
-        <View
+        <TouchableOpacity
           key={index}
-          style={[
-            styles.dot,
-            index === activeIndex ? styles.activeDot : styles.inactiveDot,
-          ]}
-        />
+          activeOpacity={0.7}
+          onPress={() => onDotPress?.(index)}
+        >
+          <View
+            style={[
+              styles.dot,
+              index === activeIndex ? styles.activeDot : styles.inactiveDot,
+            ]}
+          />
+        </TouchableOpacity>
       ))}
     </View>
   );
@@ -26,10 +32,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop:-40,
+    marginTop:-70,
     gap: 14,
   },
   dot: {
+    top: -65,
     width: 14,
     height: 14,
     borderRadius: 7,

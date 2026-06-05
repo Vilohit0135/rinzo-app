@@ -1,9 +1,12 @@
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants/theme';
 import { SocialButton } from '../../components/buttons/SocialButton';
+import type { SocialProvider } from '../../components/buttons/SocialButton';
+import { authService } from '../../services/authService';
 
 interface SignupScreenProps {
   onSignupSuccess?: () => void;
@@ -11,9 +14,61 @@ interface SignupScreenProps {
 }
 
 const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
-  const handleSocialLogin = (provider: string) => {
-    console.log('Social login:', provider);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async () => {
+    if (!email.trim()) {
+      Alert.alert('Error', 'Please enter your email');
+      return;
+    }
+    if (!password) {
+      Alert.alert('Error', 'Please enter a password');
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters');
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error, data } = await authService.signUp(email, password);
+      if (error) throw error;
+      Alert.alert(
+        'Check your email',
+        data.user?.identities?.length
+          ? 'Account created! Please check your email to confirm.'
+          : 'An account with this email already exists. Please log in.',
+        [{ text: 'OK', onPress: () => onSignupSuccess?.() }]
+      );
+    } catch (err: any) {
+      Alert.alert('Error', err.message || 'Sign up failed');
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleOAuth = async (provider: SocialProvider) => {
+    setLoading(true);
+    try {
+      await authService.signInWithProvider(provider);
+      onSignupSuccess?.();
+    } catch (err: any) {
+      if (err.message !== 'OAuth cancelled') {
+        Alert.alert('Error', err.message || 'OAuth failed');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const canSubmit = !loading && email.trim().length > 0 && password.length > 0 && password === confirmPassword;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -38,6 +93,10 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
           placeholder="Email"
           placeholderTextColor="#8E8E8E"
           keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+          editable={!loading}
         />
 
         <Text style={[styles.label, styles.passwordLabel]}>Password</Text>
@@ -46,18 +105,33 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
           placeholder="Enter your password"
           placeholderTextColor="#8E8E8E"
           secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+          editable={!loading}
+        />
+
+        <Text style={[styles.label, styles.passwordLabel]}>Confirm Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Re-enter your password"
+          placeholderTextColor="#8E8E8E"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          editable={!loading}
         />
 
         <TouchableOpacity
-          style={styles.buttonWrapper}
+          style={[styles.buttonWrapper, !canSubmit ? styles.buttonDisabled : null]}
           activeOpacity={0.8}
-          onPress={onSignupSuccess}
+          onPress={handleSignUp}
+          disabled={!canSubmit}
         >
           <LinearGradient
             colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
             style={styles.buttonGradient}
           >
-            <Text style={styles.buttonText}>Signup</Text>
+            <Text style={styles.buttonText}>{loading ? 'Creating account...' : 'Signup'}</Text>
           </LinearGradient>
         </TouchableOpacity>
 
@@ -68,9 +142,9 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
         </View>
 
         <View style={styles.socialRow}>
-          <SocialButton provider="google" onPress={() => handleSocialLogin('google')} />
-          <SocialButton provider="facebook" onPress={() => handleSocialLogin('facebook')} />
-          <SocialButton provider="apple" onPress={() => handleSocialLogin('apple')} />
+          <SocialButton provider="google" onPress={() => handleOAuth('google')} />
+          <SocialButton provider="facebook" onPress={() => handleOAuth('facebook')} />
+          <SocialButton provider="apple" onPress={() => handleOAuth('apple')} />
         </View>
 
         <TouchableOpacity style={styles.loginLink} activeOpacity={0.7} onPress={onLoginPress}>
@@ -137,6 +211,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     overflow: 'hidden',
   },
+  buttonDisabled: {
+    opacity: 0.5,
+  },
   buttonGradient: {
     flex: 1,
     justifyContent: 'center',
@@ -150,7 +227,7 @@ const styles = StyleSheet.create({
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 90,
+    marginTop: 40,
   },
   dividerLine: {
     flex: 1,
