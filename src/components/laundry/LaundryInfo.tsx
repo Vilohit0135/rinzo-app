@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tag: {
-    height: 30,
+    height: 27,
     paddingHorizontal: 12,
     borderRadius: 15,
     backgroundColor: '#EEE8FF',

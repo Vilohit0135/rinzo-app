@@ -60,7 +60,7 @@ const LaundryDetailScreen = () => {
           </View>
         </View>
       </ScrollView>
-      <CheckoutButton />
+      <CheckoutButton onPress={() => navigation.navigate('BookPickup' as never)} />
     </SafeAreaView>
   );
 };

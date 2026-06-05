@@ -25,7 +25,7 @@ type RootStackParamList = {
   Profile: undefined;
   LaundryDetail: { id: string };
   BookPickup: undefined;
-  OrderTracking: undefined;
+  OrderTracking: { from?: string } | undefined;
 };
 
 type IconName = string;
@@ -47,7 +47,7 @@ const services: Array<{ title: string; icon: IconName }> = [
 
 const quickActions: QuickAction[] = [
   { title: 'Schedule Pickup', icon: 'calendar-outline', route: 'BookPickup' },
-  { title: 'Track Order', icon: 'navigate-outline', route: 'OrderTracking' },
+  { title: 'Track Order', icon: 'navigate-outline', route: 'OrderTracking' as const },
   { title: 'Repeat Order', icon: 'refresh-outline' },
 ];
 
@@ -106,7 +106,13 @@ const HomeScreen = () => {
                   key={action.title}
                   title={action.title}
                   icon={action.icon}
-                  onPress={route ? () => navigation.navigate(route) : undefined}
+                  onPress={route ? () => {
+                    if (route === 'OrderTracking') {
+                      navigation.navigate('OrderTracking', { from: 'Home' });
+                    } else {
+                      navigation.navigate(route);
+                    }
+                  } : undefined}
                 />
               );
             })}
@@ -174,6 +180,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
   },
   serviceCardsRow: {
+    marginLeft: 5,
     marginTop: 18,
     marginBottom: 5,
     gap: 12,

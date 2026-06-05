@@ -94,7 +94,7 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             style={[styles.homeButton, { marginTop: hp(14) }]}
             activeOpacity={0.7}
-            onPress={() => navigation.navigate('BookPickup')}
+            onPress={() => navigation.navigate('Home')}
           >
             <Text style={[styles.homeText, { fontSize: fs(14) }]}>
               Back to Home

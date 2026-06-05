@@ -29,7 +29,7 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
           resizeMode="contain"
         />
 
-        <Text style={styles.welcomeText}>Welcome Back</Text>
+        <Text style={styles.welcomeText}>Welcome to Rinzo</Text>
         <Text style={styles.subtitle}>Please enter your details</Text>
 
         <Text style={[styles.label, styles.emailLabel]}>Email</Text>

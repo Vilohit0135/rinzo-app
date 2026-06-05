@@ -1,9 +1,13 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const LaundryCheckoutButton = () => {
+interface CheckoutButtonProps {
+  onPress?: () => void;
+}
+
+const LaundryCheckoutButton = ({ onPress }: CheckoutButtonProps) => {
   return (
-    <TouchableOpacity activeOpacity={0.9} style={styles.wrapper}>
+    <TouchableOpacity activeOpacity={0.9} style={styles.wrapper} onPress={onPress}>
       <LinearGradient
         colors={['#8259D2', '#8259D2']}
         start={{ x: 0, y: 0 }}
@@ -19,7 +23,7 @@ const LaundryCheckoutButton = () => {
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    bottom: 16,
+    bottom: 26,
     left: 16,
     right: 16,
   },

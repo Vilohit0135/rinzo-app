@@ -20,7 +20,7 @@ const ServiceCard = ({ title, icon }: ServiceCardProps) => {
 
 const styles = StyleSheet.create({
   card: {
-    width: 85,
+    width: 83,
     height: 85,
     backgroundColor: COLORS.white,
     borderRadius: 20,
@@ -33,18 +33,20 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.07,
     shadowRadius: 14,
-    elevation: 3,
+    elevation: 1,
   },
   iconWrap: {
+    alignSelf: 'center',
     width: 44,
     height: 44,
-    borderRadius: 17,
-    backgroundColor: COLORS.purpleLight,
+    borderRadius: 7,
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
-    fontSize: 10,
+    top: 5,
+    alignSelf: 'center',
+    fontSize: 9.5,
     fontWeight: '700',
     color: COLORS.textPrimary,
   },

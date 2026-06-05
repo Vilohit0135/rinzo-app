@@ -20,11 +20,11 @@ const ReviewSection = ({ rating, reviewCount, reviewSummary }: ReviewSectionProp
       <View style={styles.ratingBlock}>
         <Text style={styles.ratingNumber}>{rating}</Text>
         <View style={styles.starsRow}>
-          <Ionicons name="star" size={16} color="#E6A12D" />
-          <Ionicons name="star" size={16} color="#E6A12D" />
-          <Ionicons name="star" size={16} color="#E6A12D" />
-          <Ionicons name="star" size={16} color="#E6A12D" />
-          <Ionicons name="star-outline" size={16} color="#E5E5E5" />
+          <Ionicons name="star" size={20} color="#E6A12D" />
+          <Ionicons name="star" size={20} color="#E6A12D" />
+          <Ionicons name="star" size={20} color="#E6A12D" />
+          <Ionicons name="star" size={20} color="#E6A12D" />
+          <Ionicons name="star-outline" size={20} color="#E5E5E5" />
         </View>
       </View>
 
@@ -53,13 +53,14 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   ratingNumber: {
-    fontSize: 56,
+    fontSize: 50,
     fontWeight: '700',
     color: '#1E1E2D',
   },
   starsRow: {
+    marginLeft: 20,
     flexDirection: 'row',
-    gap: 3,
+    gap: 4,
   },
 
   barRow: {
@@ -69,10 +70,10 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   barLabel: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
     color: '#1E1E2D',
-    width: 45,
+    width: 95,
   },
   barBg: {
     flex: 1,
