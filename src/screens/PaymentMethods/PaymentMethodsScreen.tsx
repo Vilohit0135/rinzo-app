@@ -82,7 +82,7 @@ const PaymentMethodsScreen = () => {
           ))}
 
           <TouchableOpacity style={styles.outlinedBtn} activeOpacity={0.8}>
-            <Ionicons name="add" size={20} color="#4C1D95" />
+            <Ionicons name="add" size={18} color="#4C1D95" />
             <Text style={styles.outlinedBtnText}>Add New Card</Text>
           </TouchableOpacity>
 
@@ -130,12 +130,12 @@ const PaymentMethodsScreen = () => {
                 <Text style={styles.walletTitle}>{wallet.title}</Text>
                 <Text style={styles.walletSubtitle}>{wallet.subtitle}</Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color="#8259D2" />
+              <Ionicons name="chevron-forward" size={16} color="#8259D2" />
             </TouchableOpacity>
           ))}
 
           <TouchableOpacity style={styles.outlinedBtn} activeOpacity={0.8}>
-            <Ionicons name="add" size={20} color="#4C1D95" />
+            <Ionicons name="add" size={18} color="#4C1D95" />
             <Text style={styles.outlinedBtnText}>Add UPI/Wallet</Text>
           </TouchableOpacity>
         </ScrollView>
@@ -163,20 +163,21 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 0,
-    paddingBottom: 0,
+    paddingTop: 8,
+    paddingBottom: 2,
   },
   headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    height: 36,
   },
   backBtn: {
     position: 'absolute',
     left: 0,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -194,32 +195,31 @@ const styles = StyleSheet.create({
     }),
   },
   headerTitle: {
-    fontFamily: 'Poppins-medium-bold',
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 18,
+    fontWeight: '700',
     color: '#111111',
   },
   scrollContent: {
     paddingHorizontal: 16,
-    paddingTop: 0,
-    paddingBottom: 90,
+    paddingTop: 4,
+    paddingBottom: 85,
   },
 
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: '700',
     color: '#111111',
-    marginTop: 16,
-    marginBottom: 10,
+    marginTop: 12,
+    marginBottom: 8,
   },
 
   card: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    height: 88,
-    paddingHorizontal: 14,
+    borderRadius: 14,
+    height: 68,
+    paddingHorizontal: 12,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -234,38 +234,38 @@ const styles = StyleSheet.create({
   },
   cardMiddle: {
     flex: 1,
-    marginLeft: 14,
+    marginLeft: 10,
   },
   cardNumber: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#111111',
   },
   cardExpires: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     color: '#8A8A8A',
-    marginTop: 4,
+    marginTop: 2,
   },
 
   upiId: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#111111',
   },
   upiBank: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '500',
     color: '#8A8A8A',
-    marginTop: 4,
+    marginTop: 2,
   },
   upiCard: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    height: 88,
-    paddingHorizontal: 14,
+    borderRadius: 14,
+    height: 68,
+    paddingHorizontal: 12,
     borderWidth: 1,
     borderColor: '#E5E5E5',
     ...Platform.select({
@@ -287,59 +287,59 @@ const styles = StyleSheet.create({
   },
 
   walletTitle: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#111111',
   },
   walletSubtitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: '500',
     color: '#8A8A8A',
-    marginTop: 4,
+    marginTop: 2,
   },
 
   radioSelected: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     backgroundColor: '#8259D2',
     justifyContent: 'center',
     alignItems: 'center',
   },
   radioUnselected: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: '#D9D9D9',
   },
 
   logoPlaceholder: {
-    width: 52,
-    height: 36,
-    borderRadius: 8,
+    width: 42,
+    height: 28,
+    borderRadius: 6,
   },
   logoCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
+    width: 38,
+    height: 38,
+    borderRadius: 10,
   },
 
   outlinedBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    height: 48,
-    borderRadius: 12,
+    height: 40,
+    borderRadius: 10,
     borderWidth: 1.5,
     borderColor: '#A78BFA',
     backgroundColor: 'transparent',
-    gap: 8,
-    marginTop: 12,
-    marginBottom: 24,
+    gap: 6,
+    marginTop: 10,
+    marginBottom: 18,
   },
   outlinedBtnText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     color: '#4C1D95',
   },

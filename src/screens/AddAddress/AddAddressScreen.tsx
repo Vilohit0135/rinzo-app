@@ -80,7 +80,7 @@ const AddAddressScreen = () => {
               onPress={() => navigation.goBack()}
               activeOpacity={0.7}
             >
-              <Ionicons name="chevron-back" size={26} color="#BDBDBD" />
+              <Ionicons name="chevron-back" size={22} color="#BDBDBD" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Add address details</Text>
           </View>
@@ -92,7 +92,7 @@ const AddAddressScreen = () => {
         >
           {/* Section 1: Current Location Card */}
           <View style={[styles.card, styles.locationCard]}>
-            <Ionicons name="location-outline" size={36} color="#111111" />
+            <Ionicons name="location-outline" size={26} color="#111111" />
             <View style={styles.locationTextCol}>
               <Text style={styles.locationTitle}>
                 Adding address at your current location ?
@@ -224,38 +224,38 @@ const AddAddressScreen = () => {
               onChangeText={setMobile}
               keyboardType="phone-pad"
             />
-          </View>
 
-          {/* Save Address As */}
-          <Text style={styles.saveAsLabel}>Save address as</Text>
+            {/* Save Address As */}
+            <Text style={styles.saveAsLabel}>Save address as</Text>
 
-          {/* Segmented Buttons */}
-          <View style={styles.segmentRow}>
-            {addressTypes.map((type) => {
-              const active = type === addressType;
-              return (
-                <TouchableOpacity
-                  key={type}
-                  style={[
-                    styles.segmentBtn,
-                    active ? styles.segmentActive : styles.segmentInactive,
-                  ]}
-                  activeOpacity={0.8}
-                  onPress={() => setAddressType(type)}
-                >
-                  <Text
+            {/* Segmented Buttons */}
+            <View style={styles.segmentRow}>
+              {addressTypes.map((type) => {
+                const active = type === addressType;
+                return (
+                  <TouchableOpacity
+                    key={type}
                     style={[
-                      styles.segmentText,
-                      active
-                        ? styles.segmentTextActive
-                        : styles.segmentTextInactive,
+                      styles.segmentBtn,
+                      active ? styles.segmentActive : styles.segmentInactive,
                     ]}
+                    activeOpacity={0.8}
+                    onPress={() => setAddressType(type)}
                   >
-                    {type}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+                    <Text
+                      style={[
+                        styles.segmentText,
+                        active
+                          ? styles.segmentTextActive
+                          : styles.segmentTextInactive,
+                      ]}
+                    >
+                      {type}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           </View>
 
           {/* Save Changes Button */}
@@ -298,170 +298,168 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 4,
+    paddingTop: 8,
+    paddingBottom: 2,
   },
   headerRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    height: 40,
+    height: 36,
   },
   backBtn: {
     position: "absolute",
     left: 0,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 1,
   },
   headerTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "700",
     color: "#111111",
   },
   scrollContent: {
-    paddingTop: 10,
-    paddingBottom: 110,
+    paddingTop: 6,
+    paddingBottom: 100,
     paddingHorizontal: 16,
   },
 
-  /* Shared Card Style */
   card: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 24,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: "#ECE8F7",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 1,
   },
 
-  /* Location Card */
   locationCard: {
     flexDirection: "row",
     alignItems: "center",
-    height: 95,
-    paddingHorizontal: 12,
-    gap: 10,
+    height: 68,
+    paddingHorizontal: 10,
+    gap: 8,
   },
   locationTextCol: {
     flex: 1,
   },
   locationTitle: {
-    fontSize: 16,
+    fontSize: 12.7,
     fontWeight: "600",
     color: "#111111",
-    marginBottom: 2,
+    marginBottom: 1,
   },
   locationSubtitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "500",
     color: "#9B9B9B",
   },
   enableBtn: {
-    height: 32,
-    width: 80,
-    borderRadius: 16,
+    height: 24,
+    width: 68,
+    borderRadius: 14,
     backgroundColor: "#F1EAFF",
     justifyContent: "center",
     alignItems: "center",
   },
   enableBtnText: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: "600",
     color: "#4B238D",
   },
 
-  /* Form Card */
   formCard: {
-    padding: 12,
-    marginTop: 10,
+    padding: 10,
+    marginTop: 8,
   },
   selector: {
     flexDirection: "row",
     alignItems: "center",
-    height: 62,
-    borderRadius: 14,
+    height: 46,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: "#D8D8D8",
-    paddingHorizontal: 14,
-    gap: 10,
+    paddingHorizontal: 10,
+    gap: 8,
   },
   selectorPlaceholder: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 13,
     color: "#A0A0A0",
   },
   selectorValue: {
     color: "#111111",
   },
   selectBtn: {
-    height: 30,
-    width: 76,
-    borderRadius: 15,
+    height: 18,
+    width: 64,
+    borderRadius: 13,
     backgroundColor: "#F1EAFF",
     justifyContent: "center",
     alignItems: "center",
   },
   selectBtnText: {
-    fontSize: 13,
+    fontSize: 10,
     fontWeight: "600",
     color: "#4B238D",
   },
   iconImage: {
-    width: 30,
-    height: 30,
-    marginRight: 12,
+    width: 22,
+    height: 22,
+    marginRight: 8,
   },
   addressLabel: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "500",
     color: "#111111",
-    marginTop: 12,
-    marginBottom: 8,
+    marginTop: 8,
+    marginBottom: 6,
   },
   addressInput: {
-    height: 58,
-    borderRadius: 14,
+    height: 44,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: "#D8D8D8",
-    paddingHorizontal: 14,
-    paddingTop: 12,
-    fontSize: 15,
+    paddingHorizontal: 12,
+    paddingTop: 8,
+    fontSize: 13,
     color: "#111111",
   },
 
-  /* Contact Card */
   contactCard: {
-    padding: 12,
-    marginTop: 10,
+    padding: 10,
+    marginTop: 8,
   },
   contactTitle: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "700",
     color: "#111111",
-    marginBottom: 12,
+    marginBottom: 8,
   },
   radioGroup: {
     flexDirection: "row",
-    gap: 16,
-    marginBottom: 12,
+    gap: 12,
+    marginBottom: 8,
   },
   radioRow: {
+    marginLeft: 14,
+    marginRight: 12,
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
+    gap: 6,
   },
   radioOuter: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: 16,
+    height: 15,
+    borderRadius: 10,
     borderWidth: 2,
     borderColor: "#111111",
     justifyContent: "center",
@@ -471,49 +469,50 @@ const styles = StyleSheet.create({
     borderColor: "#7C5CE6",
   },
   radioInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
     backgroundColor: "#7C5CE6",
   },
   radioLabel: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: "600",
     color: "#111111",
   },
   contactInput: {
-    height: 58,
-    borderRadius: 14,
+    height: 44,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: "#D8D8D8",
-    paddingHorizontal: 14,
-    fontSize: 15,
-    color: "#111111",
-    marginBottom: 10,
-  },
-  mobileLabel: {
-    fontSize: 15,
-    fontWeight: "500",
+    paddingHorizontal: 12,
+    fontSize: 13,
     color: "#111111",
     marginBottom: 8,
   },
-
-  /* Save Address As */
-  saveAsLabel: {
-    fontSize: 15,
+  mobileLabel: {
+    fontSize: 13,
     fontWeight: "500",
     color: "#111111",
-    marginTop: 14,
-    marginBottom: 10,
+    marginBottom: 6,
+  },
+
+  saveAsLabel: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#111111",
+    marginTop: 10,
+    marginBottom: 8,
   },
   segmentRow: {
+    marginLeft: 4,
+    marginBottom: 8,
     flexDirection: "row",
-    gap: 10,
+    gap: 8,
   },
   segmentBtn: {
     flex: 1,
-    height: 44,
-    borderRadius: 22,
+    height: 26,
+    borderRadius: 18,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -524,7 +523,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F2F2F2",
   },
   segmentText: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: "600",
   },
   segmentTextActive: {
@@ -534,19 +533,18 @@ const styles = StyleSheet.create({
     color: "#111111",
   },
 
-  /* Save Button */
   saveBtnWrapper: {
-    marginTop: 16,
+    marginTop: 12,
     marginBottom: 0,
   },
   saveBtn: {
-    height: 58,
-    borderRadius: 29,
+    height: 45,
+    borderRadius: 23,
     justifyContent: "center",
     alignItems: "center",
   },
   saveBtnText: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "700",
     color: "#FFFFFF",
   },
