@@ -30,8 +30,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   image: {
-    width: 320,
-    height: 320,
+    width: 280,
+    height: 280,
     marginBottom: 24,
   },
   textWrap: {

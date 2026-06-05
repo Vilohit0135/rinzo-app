@@ -12,9 +12,9 @@ const QuickActionCard = ({ title, icon, onPress }: QuickActionCardProps) => {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
       <View style={styles.iconWrap}>
-        <Ionicons name={icon} size={18} color={COLORS.purple} />
+        <Ionicons name={icon} size={24} color={COLORS.purple} />
       </View>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title}>{title.replace(' ', '\n')}</Text>
     </TouchableOpacity>
   );
 };
@@ -22,9 +22,9 @@ const QuickActionCard = ({ title, icon, onPress }: QuickActionCardProps) => {
 const styles = StyleSheet.create({
   card: {
     width: 135,
-    height: 53,
+    height: 43,
     backgroundColor: COLORS.purpleLight,
-    borderRadius: 16,
+    borderRadius: 20,
     paddingHorizontal: 14,
     flexDirection: 'row',
     alignItems: 'center',
@@ -32,14 +32,13 @@ const styles = StyleSheet.create({
   iconWrap: {
     width: 26,
     height: 26,
-    borderRadius: 16,
-    backgroundColor: COLORS.white,
+    borderRadius: 9,
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
-    marginLeft: 11,
-    fontSize: 10,
+    marginLeft: 10,
+    fontSize: 11,
     fontWeight: '700',
     color: '#331970',
   },

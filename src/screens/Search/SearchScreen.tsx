@@ -140,7 +140,7 @@ const styles = StyleSheet.create({
     paddingBottom: 140,
   },
   searchBar: {
-    height: 56,
+    height: 46,
     borderRadius: 28,
     backgroundColor: COLORS.white,
     marginTop: 20,
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
-    elevation: 2,
+    elevation: 5,
   },
   searchInput: {
     flex: 1,
@@ -201,11 +201,11 @@ const styles = StyleSheet.create({
   },
   filterRow: {
     flexDirection: 'row',
-    gap: 10,
+    gap: 7,
   },
   filterButton: {
-    height: 34,
-    paddingHorizontal: 17,
+    height: 30,
+    paddingHorizontal: 16,
     borderRadius: 22,
     backgroundColor: COLORS.purple,
     alignItems: 'center',
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
   filterButtonText: {
     color: COLORS.white,
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '400',
   },
   resultsSection: {
     marginTop: 28,

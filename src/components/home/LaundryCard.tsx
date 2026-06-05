@@ -29,7 +29,7 @@ const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliver
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={[styles.card, style]}>
       <View style={styles.leftIconSection}>
         <View style={styles.iconContainer}>
-          <Ionicons name={icon || 'shirt-outline'} size={28} color="#8259D2" />
+          <Ionicons name={icon || 'shirt-outline'} size={24} color="#8259D2" />
         </View>
       </View>
       <View style={styles.rightContent}>
@@ -66,6 +66,7 @@ const LaundryCard = ({ name, rating, reviewCount, distance, price, tags, deliver
 
 const styles = StyleSheet.create({
   card: {
+    marginLeft: 2,
     width: '100%',
     height: 115,
     flexDirection: 'row',
@@ -77,16 +78,17 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 10,
-    elevation: 2,
+    elevation: 1,
   },
   leftIconSection: {
-    width: 72,
+    width: 75,
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconContainer: {
-    width: 52,
-    height: 52,
+    marginLeft: -10,
+    width: 78,
+    height: 82,
     borderRadius: 14,
     backgroundColor: '#F3E8FF',
     alignItems: 'center',
@@ -103,7 +105,7 @@ const styles = StyleSheet.create({
   },
   name: {
     flexShrink: 1,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '700',
     color: '#1E1E2D',
   },
@@ -128,11 +130,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   distance: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#8E8EAA',
   },
   price: {
-    fontSize: 15,
+    fontSize: 14,
+    marginTop: 3,
     fontWeight: '700',
     color: '#6C4DFF',
   },
@@ -156,10 +159,10 @@ const styles = StyleSheet.create({
     color: '#7C4DFF',
   },
   deliveryRow: {
-    marginTop: 10,
+    marginTop: 7,
   },
   deliveryText: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#8E8EAA',
   },
 });

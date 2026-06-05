@@ -54,8 +54,8 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
   },
   title: {
-    marginTop: -5,
-    fontSize: 20,
+    marginTop: 0,
+    fontSize: 24,
     fontWeight: '700',
     color: COLORS.textPrimary,
     lineHeight: 36,

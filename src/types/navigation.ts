@@ -46,7 +46,7 @@ export type RootStackParamList = {
   Payment: undefined;
   OrderConfirmation: undefined;
   OrderPickedUp: undefined;
-  OrderTracking: undefined;
+  OrderTracking: { from?: string } | undefined;
 };
 
 export type ScreenProps<T extends keyof RootStackParamList> =

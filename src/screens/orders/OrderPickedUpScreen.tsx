@@ -16,14 +16,14 @@ const OrderPickedUpScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} activeOpacity={0.7}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('OrderConfirmation')} activeOpacity={0.7}>
         <Ionicons name="chevron-back" size={20} color="#A9A9A9" />
       </TouchableOpacity>
       <View style={styles.content}>
         <OrderStatusIllustration />
         <OrderStatusContent orderId={orderStatusData.orderId} />
         <OrderStatusTime pickupTime={orderStatusData.pickupTime} />
-        <TrackOrderButton style={styles.buttonWrapper} onPress={() => navigation.navigate('OrderTracking')} />
+        <TrackOrderButton style={styles.buttonWrapper} onPress={() => navigation.navigate('OrderTracking', { from: 'OrderPickedUp' })} />
       </View>
     </SafeAreaView>
   );

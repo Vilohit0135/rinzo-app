@@ -33,17 +33,25 @@ const timelineSteps: TimelineStep[] = [
   { id: 5, title: 'Delivered', time: '', status: 'pending' },
 ];
 
-const OrderTrackingScreen = ({ navigation }: Props) => {
+const OrderTrackingScreen = ({ navigation, route }: Props) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => navigation.goBack()}>
+            <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => {
+              const from = route.params?.from;
+              if (from === 'Home') navigation.navigate('Home');
+              else if (from === 'OrderPickedUp') navigation.navigate('OrderPickedUp');
+              else navigation.goBack();
+            }}>
               <Ionicons name="chevron-back" size={20} color="#A7A7A7" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Order Tracking</Text>
+            <View style={styles.headerTitleWrap}>
+              <Text style={styles.headerTitle}>Order Tracking</Text>
+            </View>
+            <View style={styles.headerRight} />
           </View>
 
           <View style={styles.statusCard}>
@@ -186,14 +194,17 @@ const styles = StyleSheet.create({
       android: { elevation: 2 },
     }),
   },
+  headerTitleWrap: {
+    flex: 1,
+    alignItems: 'center',
+  },
   headerTitle: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    textAlign: 'center',
     fontSize: 20,
     fontWeight: '700',
     color: '#111111',
+  },
+  headerRight: {
+    width: 40,
   },
 
   statusCard: {

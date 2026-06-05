@@ -74,8 +74,6 @@ const styles = StyleSheet.create({
   },
   outerCard: {
     height: 330,
-    borderWidth: 2,
-    borderColor: '#EAEAEA',
     borderRadius: 30,
     padding: 10,
     marginTop: 50,
@@ -89,8 +87,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   locationImage: {
-    width: 240,
-    height: 310,
+    marginLeft: -40,
+    width: 320,
+    height: 320,
   },
   descriptionWrapper: {
     maxWidth: '75%',
@@ -117,17 +116,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '300',
     color: '#FFFFFF',
   },
   secondaryText: {
-    fontSize: 22,
+    fontSize: 18,
     fontFamily: 'Inter',
     fontWeight: '500',
     color: '#331970',
     textAlign: 'center',
-    marginTop: 24,
+    marginTop: 20,
     marginBottom: 34,
   },
 });
