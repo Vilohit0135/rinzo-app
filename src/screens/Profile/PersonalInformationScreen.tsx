@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useState } from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import ProfileImagePicker from '../../components/profile/ProfileImagePicker';
 import ProfileInput from '../../components/profile/ProfileInput';
 import GenderSelector from '../../components/profile/GenderSelector';
 import LanguageSelector from '../../components/profile/LanguageSelector';
 import SaveButton from '../../components/profile/SaveButton';
+import DatePickerModal from '../../components/profile/DatePickerModal';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { profileData } from '../../data/profile/profileData';
@@ -26,7 +27,26 @@ const genderOptions = ['Female', 'Male', 'Other'];
 const PersonalInformationScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
   const { userProfile } = profileData;
-  const [gender, setGender] = useState('');
+
+  const [name, setName] = useState(userProfile.name);
+  const [email, setEmail] = useState(userProfile.email);
+  const [mobile, setMobile] = useState(userProfile.mobile);
+  const [dob, setDob] = useState(userProfile.dateOfBirth);
+  const [showDobPicker, setShowDobPicker] = useState(false);
+  const [gender, setGender] = useState(userProfile.gender);
+  const [language, setLanguage] = useState(userProfile.preferredLanguage);
+
+  const handleSave = () => {
+    Alert.alert('Saved', 'Your changes have been saved successfully.');
+  };
+
+  const handleImagePick = () => {
+    Alert.alert('Change Photo', 'Choose an option', [
+      { text: 'Take Photo' },
+      { text: 'Choose from Gallery' },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -42,24 +62,21 @@ const PersonalInformationScreen = () => {
           <Text style={styles.title}>Personal Information</Text>
         </View>
 
-        <ProfileImagePicker imageSource={userProfile.profileImage} />
+        <ProfileImagePicker imageSource={userProfile.profileImage} onPress={handleImagePick} />
 
         <View style={styles.form}>
-          <ProfileInput label="Name" value="" placeholder={userProfile.name} />
-          <ProfileInput label="Email" value="" placeholder={userProfile.email} />
-          <ProfileInput label="Mobile" value="" placeholder={userProfile.mobile} />
-          <ProfileInput
-            label="Date of Birth"
-            value=""
-            placeholder={userProfile.dateOfBirth}
-            rightIcon="calendar-outline"
-            editable={false}
-          />
+          <ProfileInput label="Name" value={name} onChangeText={setName} />
+          <ProfileInput label="Email" value={email} onChangeText={setEmail} keyboardType="email-address" />
+          <ProfileInput label="Mobile" value={mobile} onChangeText={setMobile} keyboardType="phone-pad" />
+          <TouchableOpacity activeOpacity={0.7} onPress={() => setShowDobPicker(true)}>
+            <ProfileInput label="Date of Birth" value={dob} editable={false} rightIcon="calendar-outline" />
+          </TouchableOpacity>
+          <DatePickerModal visible={showDobPicker} value={dob} onSelect={setDob} onClose={() => setShowDobPicker(false)} />
 
           <GenderSelector value={gender} options={genderOptions} onChange={setGender} />
-          <LanguageSelector value={userProfile.preferredLanguage} />
+          <LanguageSelector value={language} onChange={setLanguage} />
 
-          <SaveButton />
+          <SaveButton onPress={handleSave} />
         </View>
       </ScrollView>
       <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />

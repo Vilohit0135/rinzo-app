@@ -46,7 +46,7 @@ const ProfileScreen = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
       >
-        <ProfileCard {...profileData.userProfile} />
+        <ProfileCard {...profileData.userProfile} onPress={() => navigation.navigate('PersonalInformation')} />
 
         <StatsCard {...profileData.stats} />
 

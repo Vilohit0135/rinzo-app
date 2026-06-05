@@ -3,9 +3,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface LaundryHeroProps {
   onBackPress?: () => void;
+  isFavourite?: boolean;
+  onToggleFavourite?: () => void;
 }
 
-const LaundryHero = ({ onBackPress }: LaundryHeroProps) => {
+const LaundryHero = ({ onBackPress, isFavourite, onToggleFavourite }: LaundryHeroProps) => {
   return (
     <ImageBackground
       style={styles.hero}
@@ -15,8 +17,12 @@ const LaundryHero = ({ onBackPress }: LaundryHeroProps) => {
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.8} onPress={onBackPress}>
           <Ionicons name="arrow-back" size={18} color="#1E1E2D" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.8}>
-          <Ionicons name="heart-outline" size={18} color="#1E1E2D" />
+        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.8} onPress={onToggleFavourite}>
+          <Ionicons
+            name={isFavourite ? 'heart' : 'heart-outline'}
+            size={18}
+            color={isFavourite ? '#FF3040' : '#1E1E2D'}
+          />
         </TouchableOpacity>
       </View>
     </ImageBackground>

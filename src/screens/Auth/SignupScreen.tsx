@@ -227,7 +227,7 @@ const styles = StyleSheet.create({
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 90,
+    marginTop: 40,
   },
   dividerLine: {
     flex: 1,

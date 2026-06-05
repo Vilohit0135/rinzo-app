@@ -7,9 +7,11 @@ interface ProfileInputProps {
   placeholder?: string;
   rightIcon?: string;
   editable?: boolean;
+  keyboardType?: 'default' | 'email-address' | 'phone-pad';
+  onChangeText?: (text: string) => void;
 }
 
-const ProfileInput = ({ label, value, placeholder, rightIcon, editable = true }: ProfileInputProps) => {
+const ProfileInput = ({ label, value, placeholder, rightIcon, editable = true, keyboardType, onChangeText }: ProfileInputProps) => {
   return (
     <View style={styles.field}>
       <Text style={styles.label}>{label}</Text>
@@ -20,6 +22,8 @@ const ProfileInput = ({ label, value, placeholder, rightIcon, editable = true }:
           placeholder={placeholder}
           placeholderTextColor="#B3B3B3"
           editable={editable}
+          keyboardType={keyboardType}
+          onChangeText={onChangeText}
         />
         {rightIcon && (
           <Ionicons name={rightIcon} size={18} color="#B0B0B0" style={styles.icon} />

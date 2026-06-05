@@ -1,9 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getLaundryById } from '../../data/laundry/laundryData';
+import { FavouriteButton } from './FavouriteButton';
 
 interface FavouriteLaundryCardProps {
   laundryId: string;
+  isFavourite: boolean;
+  onToggleFavourite: (id: string) => void;
 }
 
 const tagIcons: Record<string, string> = {
@@ -16,7 +19,7 @@ const tagIcons: Record<string, string> = {
   'Budget': 'wallet-outline',
 };
 
-const FavouriteLaundryCard = ({ laundryId }: FavouriteLaundryCardProps) => {
+const FavouriteLaundryCard = ({ laundryId, isFavourite, onToggleFavourite }: FavouriteLaundryCardProps) => {
   const laundry = getLaundryById(laundryId);
 
   if (!laundry) {
@@ -59,7 +62,11 @@ const FavouriteLaundryCard = ({ laundryId }: FavouriteLaundryCardProps) => {
       </View>
 
       <View style={styles.favouriteIcon}>
-        <Ionicons name="heart-outline" size={24} color="#000000" />
+        <FavouriteButton
+          isFavourite={isFavourite}
+          onPress={() => onToggleFavourite(laundryId)}
+          size={22}
+        />
       </View>
     </View>
   );

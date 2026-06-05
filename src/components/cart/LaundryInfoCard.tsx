@@ -37,6 +37,7 @@ const LaundryInfoCard = ({ name, rating, reviews, distance, price }: LaundryInfo
 const styles = StyleSheet.create({
   card: {
     height: 96,
+    top: 15,
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     borderWidth: 1,

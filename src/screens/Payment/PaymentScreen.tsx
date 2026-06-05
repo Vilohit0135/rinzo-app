@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -6,6 +6,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { RootStackParamList } from "../../types/navigation";
+import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from "../../store/bookingStore";
 
 interface PaymentMethod {
   id: string;
@@ -41,12 +42,18 @@ const paymentMethods: PaymentMethod[] = [
   },
 ];
 
-const totalAmount = 200;
-
 type Props = NativeStackScreenProps<RootStackParamList, "Payment">;
 
 const PaymentScreen = ({ navigation }: Props) => {
   const [selectedMethod, setSelectedMethod] = useState<string>("UPI");
+  const services = useBookingStore((s) => s.services);
+
+  const totalAmount = useMemo(() => {
+    const subtotal = services
+      .filter((s) => s.quantity > 0)
+      .reduce((sum, s) => sum + s.quantity * s.unitPrice, 0);
+    return subtotal + DELIVERY_CHARGE - DISCOUNT;
+  }, [services]);
 
   return (
     <SafeAreaView style={styles.safeArea}>

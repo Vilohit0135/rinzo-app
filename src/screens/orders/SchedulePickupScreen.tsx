@@ -8,17 +8,35 @@ import { pickupDates, pickupTimeSlots } from '../../data/schedulePickup/schedule
 import ScheduleHeader from '../../components/schedule-pickup/ScheduleHeader';
 import DateSelector from '../../components/schedule-pickup/DateSelector';
 import TimeSlotList from '../../components/schedule-pickup/TimeSlotList';
+import { useBookingStore } from '../../store/bookingStore';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SchedulePickup'>;
 
 const SchedulePickupScreen = ({ navigation }: Props) => {
-  const [selectedDate, setSelectedDate] = useState<string>('1');
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('1');
+  const [selectedDate, setSelectedDate] = useState<string>('2');
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('2');
+  const setPickupDate = useBookingStore((s) => s.setPickupDate);
+  const setPickupTime = useBookingStore((s) => s.setPickupTime);
+
+  const handleSelectSlot = (id: string) => {
+    setSelectedTimeSlot(id);
+    const date = pickupDates.find((d) => d.id === selectedDate);
+    const slot = pickupTimeSlots.find((s) => s.id === id);
+    if (date && slot) {
+      setPickupDate(
+        date.day === 'Today'
+          ? `${date.day} ${date.date}`
+          : `${date.day}, ${date.date}`
+      );
+      setPickupTime(slot.label);
+    }
+    setTimeout(() => navigation.navigate('OrderSummary'), 200);
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScheduleHeader onBack={() => navigation.navigate('Home')} />
+      <ScheduleHeader onBack={() => navigation.goBack()} />
       <View style={styles.content}>
         <Text style={styles.sectionTitle}>Choose Date</Text>
         <DateSelector
@@ -30,10 +48,7 @@ const SchedulePickupScreen = ({ navigation }: Props) => {
         <TimeSlotList
           slots={pickupTimeSlots}
           selectedSlot={selectedTimeSlot}
-          onSelectSlot={(id) => {
-            setSelectedTimeSlot(id);
-            setTimeout(() => navigation.navigate('OrderSummary'), 200);
-          }}
+          onSelectSlot={handleSelectSlot}
         />
       </View>
     </SafeAreaView>

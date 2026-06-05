@@ -16,6 +16,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
 import BottomTabBar from '../../components/home/BottomTabBar';
+import { useBookingStore } from '../../store/bookingStore';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PickupDetails'>;
 
@@ -31,6 +32,14 @@ const fs = (px: number) => Math.round(px * Math.min(scale, 1.15));
 
 const PickupDetailsScreen = ({ navigation }: Props) => {
   const insets = useSafeAreaInsets();
+  const pickupDate = useBookingStore((s) => s.pickupDate);
+  const pickupTime = useBookingStore((s) => s.pickupTime);
+  const setAddress = useBookingStore((s) => s.setAddress);
+
+  const handleContinue = () => {
+    setAddress('221b Baker Street, Bangalore - 50001, Karnataka');
+    navigation.navigate('SchedulePickup');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -114,7 +123,9 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
             Pickup Date
           </Text>
 
-          <View
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('SchedulePickup')}
             style={[
               styles.fieldCard,
               {
@@ -125,16 +136,26 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
               },
             ]}
           >
-            <Text style={[styles.fieldText, { fontSize: fs(12) }]}>
-              Tomorrow , 21 May
-            </Text>
-          </View>
+            <View style={styles.fieldRow}>
+              <Text
+                style={[
+                  styles.fieldText,
+                  { fontSize: fs(12), color: pickupDate ? '#1D1D1F' : '#B8B8B8' },
+                ]}
+              >
+                {pickupDate || 'Select pickup date'}
+              </Text>
+              <Ionicons name="chevron-forward" size={wp(14)} color="#B8B8B8" />
+            </View>
+          </TouchableOpacity>
 
           <Text style={[styles.fieldSectionTitle, { marginTop: hp(14), fontSize: fs(15) }]}>
             Pickup Time
           </Text>
 
-          <View
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => navigation.navigate('SchedulePickup')}
             style={[
               styles.fieldCard,
               {
@@ -145,10 +166,18 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
               },
             ]}
           >
-            <Text style={[styles.fieldText, { fontSize: fs(12) }]}>
-              2:00 PM – 4:00 PM
-            </Text>
-          </View>
+            <View style={styles.fieldRow}>
+              <Text
+                style={[
+                  styles.fieldText,
+                  { fontSize: fs(12), color: pickupTime ? '#1D1D1F' : '#B8B8B8' },
+                ]}
+              >
+                {pickupTime || 'Select pickup time'}
+              </Text>
+              <Ionicons name="chevron-forward" size={wp(14)} color="#B8B8B8" />
+            </View>
+          </TouchableOpacity>
 
           <TouchableOpacity
             style={[
@@ -160,7 +189,7 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
               },
             ]}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate('SchedulePickup')}
+            onPress={handleContinue}
           >
             <LinearGradient
               colors={['#8259D2', '#8259D2']}
@@ -310,6 +339,11 @@ const styles = StyleSheet.create({
         elevation: 1,
       },
     }),
+  },
+  fieldRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   fieldText: {
     fontWeight: '600',
