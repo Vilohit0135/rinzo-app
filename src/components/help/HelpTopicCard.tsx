@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import type { HelpTopic } from '../../data/help/helpCenterData';
 
 interface HelpTopicCardProps {
@@ -12,7 +12,7 @@ const HelpTopicCard = ({ topic, isLast }: HelpTopicCardProps) => {
     <View>
       <View style={styles.row}>
         <View style={styles.iconContainer}>
-          <Ionicons name={topic.icon} size={20} color="#8259D2" />
+          <Ionicons name={topic.icon as any} size={20} color="#8259D2" />
         </View>
         <Text style={styles.title} numberOfLines={1}>{topic.title}</Text>
         <Ionicons name="chevron-forward" size={18} color="#8259D2" />

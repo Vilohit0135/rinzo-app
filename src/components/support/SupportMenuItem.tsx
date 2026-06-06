@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { SupportMenu } from '../../data/support/helpSupportData';
 
 interface SupportMenuItemProps {
@@ -13,7 +13,7 @@ const SupportMenuItem = ({ item, isLast, onPress }: SupportMenuItemProps) => {
     <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
       <View style={styles.row}>
         <View style={styles.iconContainer}>
-          <Ionicons name={item.icon} size={22} color="#8259D2" />
+          <Ionicons name={item.icon as any} size={22} color="#8259D2" />
         </View>
         <Text style={styles.title}>{item.title}</Text>
         <Ionicons name="chevron-forward" size={18} color="#8259D2" />

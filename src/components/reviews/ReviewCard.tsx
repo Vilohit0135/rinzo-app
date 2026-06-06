@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { getLaundryById } from '../../data/laundry/laundryData';
 import RatingStars from './RatingStars';
 

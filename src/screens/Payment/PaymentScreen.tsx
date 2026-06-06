@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { LinearGradient } from "expo-linear-gradient";
 import { RootStackParamList } from "../../types/navigation";
 import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from "../../store/bookingStore";

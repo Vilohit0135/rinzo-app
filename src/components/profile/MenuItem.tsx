@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
 
 interface MenuItemProps {
@@ -14,7 +14,7 @@ const MenuItem = ({ icon, title, isLast, onPress }: MenuItemProps) => {
     <View>
       <TouchableOpacity style={styles.row} activeOpacity={0.7} onPress={onPress} disabled={!onPress}>
         <View style={styles.left}>
-          <Ionicons name={icon} size={18} color={COLORS.purple} />
+          <Ionicons name={icon as any} size={18} color={COLORS.purple} />
           <Text style={styles.title}>{title}</Text>
         </View>
         <Ionicons name="chevron-forward" size={16} color="#8259D2" />

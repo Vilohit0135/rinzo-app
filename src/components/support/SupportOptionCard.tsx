@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import type { SupportOption } from '../../data/support/contactSupportData';
 
 interface SupportOptionCardProps {
@@ -10,7 +10,7 @@ const SupportOptionCard = ({ option }: SupportOptionCardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.iconContainer}>
-        <Ionicons name={option.icon} size={24} color="#8259D2" />
+        <Ionicons name={option.icon as any} size={24} color="#8259D2" />
       </View>
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={1}>{option.title}</Text>

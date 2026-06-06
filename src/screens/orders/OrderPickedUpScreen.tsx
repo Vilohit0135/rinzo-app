@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { RootStackParamList } from '../../types/navigation';
 import OrderStatusIllustration from '../../components/order-status/OrderStatusIllustration';
 import OrderStatusContent from '../../components/order-status/OrderStatusContent';

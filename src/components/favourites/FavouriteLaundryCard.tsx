@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { getLaundryById } from '../../data/laundry/laundryData';
 import { FavouriteButton } from './FavouriteButton';
 
@@ -49,7 +49,7 @@ const FavouriteLaundryCard = ({ laundryId, isFavourite, onToggleFavourite }: Fav
         <View style={styles.tagsRow}>
           {laundry.tags.slice(0, 2).map((tag, index) => (
             <View key={index} style={styles.tag}>
-              <Ionicons name={tagIcons[tag] || 'pricetag-outline'} size={11} color="#6C4DFF" />
+              <Ionicons name={tagIcons[tag] || 'pricetag-outline' as any} size={11} color="#6C4DFF" />
               <Text style={styles.tagText}>{tag}</Text>
             </View>
           ))}

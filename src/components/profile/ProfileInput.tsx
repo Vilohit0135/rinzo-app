@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TextInput, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 
 interface ProfileInputProps {
   label: string;
@@ -26,7 +26,7 @@ const ProfileInput = ({ label, value, placeholder, rightIcon, editable = true, k
           onChangeText={onChangeText}
         />
         {rightIcon && (
-          <Ionicons name={rightIcon} size={18} color="#B0B0B0" style={styles.icon} />
+          <Ionicons name={rightIcon as any} size={18} color="#B0B0B0" style={styles.icon} />
         )}
       </View>
     </View>
