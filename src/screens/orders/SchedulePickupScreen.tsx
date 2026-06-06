@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -8,6 +8,7 @@ import { pickupDates, pickupTimeSlots } from '../../data/schedulePickup/schedule
 import ScheduleHeader from '../../components/schedule-pickup/ScheduleHeader';
 import DateSelector from '../../components/schedule-pickup/DateSelector';
 import TimeSlotList from '../../components/schedule-pickup/TimeSlotList';
+import BottomTabBar from '../../components/home/BottomTabBar';
 import { useBookingStore } from '../../store/bookingStore';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SchedulePickup'>;
@@ -36,19 +37,29 @@ const SchedulePickupScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScheduleHeader onBack={() => navigation.goBack()} />
-      <View style={styles.content}>
-        <Text style={styles.sectionTitle}>Choose Date</Text>
-        <DateSelector
-          dates={pickupDates}
-          selectedDate={selectedDate}
-          onSelectDate={setSelectedDate}
-        />
-        <Text style={[styles.sectionTitle, styles.sectionTitleSpacing]}>Choose Time Slot</Text>
-        <TimeSlotList
-          slots={pickupTimeSlots}
-          selectedSlot={selectedTimeSlot}
-          onSelectSlot={handleSelectSlot}
+      <View style={styles.container}>
+        <ScheduleHeader onBack={() => navigation.goBack()} />
+        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <Text style={styles.sectionTitle}>Choose Date</Text>
+          <DateSelector
+            dates={pickupDates}
+            selectedDate={selectedDate}
+            onSelectDate={setSelectedDate}
+          />
+          <Text style={[styles.sectionTitle, styles.sectionTitleSpacing]}>Choose Time Slot</Text>
+          <TimeSlotList
+            slots={pickupTimeSlots}
+            selectedSlot={selectedTimeSlot}
+            onSelectSlot={handleSelectSlot}
+          />
+        </ScrollView>
+        <BottomTabBar
+          activeTab="Home"
+          onTabPress={(tab) => {
+            if (tab === 'Search') navigation.navigate('Search');
+            if (tab === 'Orders') navigation.navigate('YourCart');
+            if (tab === 'Profile') navigation.navigate('Profile');
+          }}
         />
       </View>
     </SafeAreaView>
@@ -60,6 +71,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F8F7FC',
   },
+  container: {
+    flex: 1,
+  },
   content: {
     flex: 1,
   },
@@ -67,11 +81,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     color: '#171A2C',
-    marginTop: 24,
+    marginTop: 16,
     marginLeft: 24,
   },
   sectionTitleSpacing: {
-    marginTop: 28,
+    marginTop: 12,
   },
 });
 

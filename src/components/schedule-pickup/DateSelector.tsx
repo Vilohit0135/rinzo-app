@@ -31,10 +31,8 @@ const DateSelector = ({ dates, selectedDate, onSelectDate }: DateSelectorProps) 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    gap: 12,
-    height: 96,
-    alignItems: 'center',
-    marginTop: 16,
+    gap: 8,
+    marginTop: 6,
   },
 });
 

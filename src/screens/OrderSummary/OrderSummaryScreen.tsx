@@ -50,6 +50,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
               <Ionicons name="chevron-back" size={20} color="#A7A7A7" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Book Pickup</Text>
+            <View style={styles.headerSpacer} />
           </View>
 
           <BookingStepper steps={steps} currentStep={3} />
@@ -152,13 +153,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    flex: 1,
     textAlign: 'center',
     fontSize: 18,
     fontWeight: '700',
     color: '#111111',
+  },
+  headerSpacer: {
+    width: 40,
   },
 
   sectionTitle: {
