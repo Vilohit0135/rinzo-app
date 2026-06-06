@@ -33,10 +33,11 @@ const BookPickupScreen = ({ navigation }: Props) => {
       <View style={styles.container}>
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
           <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('Home')} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} activeOpacity={0.7}>
               <Ionicons name="chevron-back" size={20} color="#B3B3B3" />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Book Pickup</Text>
+            <View style={styles.headerSpacer} />
           </View>
 
           <BookingStepper steps={steps} currentStep={0} />
@@ -146,14 +147,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    flex: 1,
     textAlign: 'center',
     fontSize: 18,
     fontWeight: '700',
     color: '#1D1D1F',
-    paddingHorizontal: 24,
+  },
+  headerSpacer: {
+    width: 40,
   },
 
   sectionTitle: {

@@ -26,8 +26,9 @@ const TimeSlotList = ({ slots, selectedSlot, onSelectSlot }: TimeSlotListProps) 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
-    gap: 12,
-    marginTop: 16,
+    gap: 8,
+    marginTop: 4,
+    paddingBottom: 16,
   },
 });
 

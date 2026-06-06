@@ -10,9 +10,10 @@ const ScheduleHeader = ({ onBack, title = 'Schedule Pickup' }: ScheduleHeaderPro
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={onBack} activeOpacity={0.7}>
-        <Ionicons name="chevron-back" size={20} color="#A9A9A9" />
+        <Ionicons name="chevron-back" size={18} color="#8E8E8E" />
       </TouchableOpacity>
       <Text style={styles.title}>{title}</Text>
+      <View style={styles.spacer} />
     </View>
   );
 };
@@ -21,25 +22,27 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 8,
+    paddingVertical: 6,
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: '#F5F5F5',
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 24,
   },
   title: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    flex: 1,
     textAlign: 'center',
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '700',
     color: '#171A2C',
+  },
+  spacer: {
+    width: 32,
+    marginRight: 24,
   },
 });
 
