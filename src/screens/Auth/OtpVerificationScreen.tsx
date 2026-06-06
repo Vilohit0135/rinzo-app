@@ -1,26 +1,28 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../types/navigation';
 import OtpHeader from '../../components/auth/OtpHeader';
 import OtpInputBoxes from '../../components/auth/OtpInputBoxes';
 import ResendTimer from '../../components/auth/ResendTimer';
 import NumericKeypad from '../../components/auth/NumericKeypad';
-import { otpData } from '../../data/auth/otpData';
-
-type RootStackParamList = {
-  Home: undefined;
-};
 
 const OtpVerificationScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'OtpVerification'>>();
+  const phone = route.params.phone;
+
   const [digits, setDigits] = useState<string[]>(['', '', '', '']);
+  const navigatedRef = useRef(false);
+
   const allFilled = digits.every((d) => d !== '');
 
   useEffect(() => {
-    if (allFilled) {
+    if (allFilled && !navigatedRef.current) {
+      navigatedRef.current = true;
       navigation.replace('Home');
     }
   }, [allFilled, navigation]);
@@ -56,7 +58,7 @@ const OtpVerificationScreen = () => {
         <Text style={styles.title}>Enter Otp</Text>
 
         <Text style={styles.description}>
-          We have sent a 4 digit code on {otpData.phoneNumber}
+          We have sent a 4 digit code on {phone}
         </Text>
 
         <View style={styles.otpSection}>
@@ -64,7 +66,7 @@ const OtpVerificationScreen = () => {
         </View>
 
         <View style={styles.timerSection}>
-          <ResendTimer seconds={otpData.timerSeconds} />
+          <ResendTimer seconds={30} />
         </View>
       </View>
 

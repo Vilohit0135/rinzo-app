@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -6,11 +7,17 @@ import { COLORS } from '../../constants/theme';
 import { SocialButton } from '../../components/buttons/SocialButton';
 
 interface LoginScreenProps {
-  onLoginSuccess?: () => void;
+  onLoginSuccess?: (phone: string) => void;
   onSignupPress?: () => void;
 }
 
 const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
+  const [phone, setPhone] = useState('');
+
+  const handleLogin = () => {
+    onLoginSuccess?.(phone);
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
@@ -34,18 +41,11 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
           placeholder="+91 8777734343"
           placeholderTextColor="#8E8E8E"
           keyboardType="phone-pad"
+          value={phone}
+          onChangeText={setPhone}
         />
 
-        <Text style={[styles.label, styles.otpLabel]}>OTP</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter OTP"
-          placeholderTextColor="#8E8E8E"
-          keyboardType="number-pad"
-          maxLength={6}
-        />
-
-        <TouchableOpacity style={styles.buttonWrapper} activeOpacity={0.8} onPress={onLoginSuccess}>
+        <TouchableOpacity style={styles.buttonWrapper} activeOpacity={0.8} onPress={handleLogin}>
           <LinearGradient
             colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
             style={styles.buttonGradient}
@@ -109,9 +109,6 @@ const styles = StyleSheet.create({
   },
   phoneLabel: {
     marginTop: 28,
-  },
-  otpLabel: {
-    marginTop: 24,
   },
   input: {
     height: 56,
