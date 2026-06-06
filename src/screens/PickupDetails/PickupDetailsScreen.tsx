@@ -70,6 +70,7 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
             <Text style={[styles.headerTitle, { fontSize: fs(20) }]}>
               Book Pickup
             </Text>
+            <View style={{ width: wp(40) }} />
           </View>
 
           <BookingStepper steps={steps} currentStep={1} />
@@ -236,13 +237,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerTitle: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
+    flex: 1,
     textAlign: 'center',
     fontWeight: '700',
     color: '#1D1D1F',
-    paddingHorizontal: 24,
   },
 
   sectionTitle: {

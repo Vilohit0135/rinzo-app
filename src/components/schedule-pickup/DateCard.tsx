@@ -1,4 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { memo } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface DateCardProps {
   day: string;
@@ -9,34 +11,40 @@ interface DateCardProps {
 
 const DateCard = ({ day, date, isSelected, onPress }: DateCardProps) => {
   return (
-    <TouchableOpacity
-      style={[styles.card, isSelected && styles.cardSelected]}
-      onPress={onPress}
-      activeOpacity={0.8}
-    >
-      <Text style={[styles.day, isSelected && styles.daySelected]}>{day}</Text>
-      <Text style={[styles.dateText, isSelected && styles.dateTextSelected]}>{date}</Text>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.8}>
+      {isSelected ? (
+        <LinearGradient
+          colors={['#8257E6', '#6C3BD5']}
+          style={styles.card}
+        >
+          <Text style={[styles.day, styles.daySelected]}>{day}</Text>
+          <Text style={[styles.dateText, styles.dateTextSelected]}>{date}</Text>
+        </LinearGradient>
+      ) : (
+        <View style={[styles.card, styles.cardUnselected]}>
+          <Text style={styles.day}>{day}</Text>
+          <Text style={styles.dateText}>{date}</Text>
+        </View>
+      )}
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    width: 90,
-    height: 90,
-    borderRadius: 16,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1.5,
-    borderColor: '#E5E5E5',
+    width: 76,
+    height: 78,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  cardSelected: {
-    backgroundColor: '#8257E6',
-    borderWidth: 0,
+  cardUnselected: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 0.5,
+    borderColor: '#E8E8E8',
   },
   day: {
-    fontSize: 17,
+    fontSize: 12,
     fontWeight: '700',
     color: '#9CA3AF',
   },
@@ -44,14 +52,14 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   dateText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
-    color: '#9CA3AF',
-    marginTop: 3,
+    color: '#171A2C',
+    marginTop: 2,
   },
   dateTextSelected: {
     color: '#FFFFFF',
   },
 });
 
-export default DateCard;
+export default memo(DateCard);

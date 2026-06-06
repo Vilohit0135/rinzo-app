@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 interface TimeSlotCardProps {
@@ -9,11 +10,11 @@ interface TimeSlotCardProps {
 const TimeSlotCard = ({ label, isSelected, onPress }: TimeSlotCardProps) => {
   return (
     <TouchableOpacity
-      style={[styles.card, isSelected && styles.cardSelected]}
+      style={[styles.card, isSelected ? styles.cardSelected : styles.cardUnselected]}
       onPress={onPress}
       activeOpacity={0.8}
     >
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, isSelected && styles.labelSelected]}>{label}</Text>
     </TouchableOpacity>
   );
 };
@@ -21,22 +22,29 @@ const TimeSlotCard = ({ label, isSelected, onPress }: TimeSlotCardProps) => {
 const styles = StyleSheet.create({
   card: {
     width: '100%',
-    height: 64,
-    borderRadius: 18,
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
+    height: 46,
+    borderRadius: 12,
+    paddingHorizontal: 14,
     justifyContent: 'center',
-    borderWidth: 0,
+  },
+  cardUnselected: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 0.5,
+    borderColor: '#E8E8E8',
   },
   cardSelected: {
-    borderWidth: 2,
-    borderColor: '#B794FF',
+    backgroundColor: '#F7F2FF',
+    borderWidth: 1.5,
+    borderColor: '#7C5CE6',
   },
   label: {
-    fontSize: 17,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: '600',
     color: '#171A2C',
+  },
+  labelSelected: {
+    color: '#5B3CC4',
   },
 });
 
-export default TimeSlotCard;
+export default memo(TimeSlotCard);
