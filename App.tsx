@@ -53,6 +53,8 @@ export default function App() {
   useEffect(() => {
     initialize();
 
+    if (!supabase) return;
+
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
