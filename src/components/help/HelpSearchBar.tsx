@@ -1,5 +1,5 @@
 import { StyleSheet, TextInput, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 
 const HelpSearchBar = () => {
   return (

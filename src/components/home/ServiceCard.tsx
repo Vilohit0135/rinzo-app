@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
 
 interface ServiceCardProps {
@@ -11,7 +11,7 @@ const ServiceCard = ({ title, icon }: ServiceCardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.iconWrap}>
-        <Ionicons name={icon} size={32} color={COLORS.purple} />
+        <Ionicons name={icon as any} size={32} color={COLORS.purple} />
       </View>
       <Text style={styles.title}>{title}</Text>
     </View>

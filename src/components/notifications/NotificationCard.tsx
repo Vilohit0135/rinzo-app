@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { NotificationItem } from '../../data/notifications/notificationsData';
 
 interface NotificationCardProps {
@@ -10,7 +10,7 @@ const NotificationCard = ({ item }: NotificationCardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.iconContainer}>
-        <Ionicons name={item.icon} size={24} color="#D0D0D0" />
+        <Ionicons name={item.icon as any} size={24} color="#D0D0D0" />
       </View>
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={1}>{item.title}</Text>

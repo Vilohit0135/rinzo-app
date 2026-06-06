@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { FavouriteButton } from '../favourites/FavouriteButton';
 
 interface LaundryCardProps {
@@ -33,7 +33,7 @@ const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, del
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={[styles.card, style]}>
       <View style={styles.leftIconSection}>
         <View style={styles.iconContainer}>
-          <Ionicons name={icon || 'shirt-outline'} size={24} color="#8259D2" />
+          <Ionicons name={icon || 'shirt-outline' as any} size={24} color="#8259D2" />
         </View>
       </View>
       <View style={styles.rightContent}>
@@ -54,7 +54,7 @@ const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, del
         <View style={styles.tagsRow}>
           {tags.map((tag, index) => (
             <View key={index} style={styles.tag}>
-              <Ionicons name={tagIcons[tag] || 'pricetag-outline'} size={12} color="#8259D2" />
+              <Ionicons name={tagIcons[tag] || 'pricetag-outline' as any} size={12} color="#8259D2" />
               <Text style={styles.tagText}>{tag}</Text>
             </View>
           ))}

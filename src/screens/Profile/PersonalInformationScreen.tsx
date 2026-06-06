@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import ProfileImagePicker from '../../components/profile/ProfileImagePicker';
 import ProfileInput from '../../components/profile/ProfileInput';
 import GenderSelector from '../../components/profile/GenderSelector';

@@ -1,5 +1,5 @@
 import { ImageBackground, StyleSheet, TouchableOpacity, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 
 interface LaundryHeroProps {
   onBackPress?: () => void;

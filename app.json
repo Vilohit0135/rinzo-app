@@ -26,7 +26,8 @@
     "plugins": [
       "expo-font",
       "expo-image",
-      "expo-web-browser"
+      "expo-web-browser",
+      "@react-native-vector-icons/ionicons"
     ],
     "extra": {
       "eas": {

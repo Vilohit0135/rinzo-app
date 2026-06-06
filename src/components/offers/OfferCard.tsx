@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { Offer } from '../../data/offers/offersData';
 
 interface OfferCardProps {
@@ -11,7 +11,7 @@ const OfferCard = ({ offer, index }: OfferCardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.iconWrapper}>
-        <Ionicons name={offer.icon} size={22} color="#B497F2" />
+        <Ionicons name={offer.icon as any} size={22} color="#B497F2" />
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>{offer.title}</Text>

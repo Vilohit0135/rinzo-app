@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import type { LegalMenuItem } from '../../data/legal/legalData';
 
 interface LegalMenuCardProps {
@@ -10,7 +10,7 @@ const LegalMenuCard = ({ item }: LegalMenuCardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.iconArea}>
-        <Ionicons name={item.icon} size={20} color="#8259D2" />
+        <Ionicons name={item.icon as any} size={20} color="#8259D2" />
       </View>
       <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
       <Ionicons name="chevron-forward" size={16} color="#999999" />

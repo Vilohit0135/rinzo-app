@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
 
 interface BottomTabBarProps {
@@ -26,12 +26,12 @@ const BottomTabBar = ({ activeTab = 'Home', onTabPress }: BottomTabBarProps) => 
       {tabs.map((tab) =>
         tab.name === activeTab ? (
           <TouchableOpacity key={tab.name} style={styles.activeTab} activeOpacity={0.8} onPress={() => onTabPress?.(tab.name)}>
-            <Ionicons name={tab.icon} size={18} color={COLORS.purple} />
+            <Ionicons name={tab.icon as any} size={18} color={COLORS.purple} />
             <Text style={styles.activeText}>{tab.name}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity key={tab.name} style={styles.inactiveTab} activeOpacity={0.8} onPress={() => onTabPress?.(tab.name)}>
-            <Ionicons name={tab.icon} size={20} color={COLORS.white} />
+            <Ionicons name={tab.icon as any} size={20} color={COLORS.white} />
           </TouchableOpacity>
         )
       )}
