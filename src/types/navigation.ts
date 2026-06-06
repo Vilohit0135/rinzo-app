@@ -37,7 +37,7 @@ export type RootStackParamList = {
   };
   LaundryDetail: { id: string };
   MyOrders: undefined;
-  OtpVerification: undefined;
+  OtpVerification: { phone: string };
   Signup: undefined;
   BookPickup: undefined;
   PickupDetails: undefined;

@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 24,
     gap: 8,
-    marginTop: 4,
+    marginTop: 1,
     paddingBottom: 16,
   },
 });

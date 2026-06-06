@@ -21,8 +21,9 @@ const TimeSlotCard = ({ label, isSelected, onPress }: TimeSlotCardProps) => {
 
 const styles = StyleSheet.create({
   card: {
+    top: 25,
     width: '100%',
-    height: 46,
+    height: 56,
     borderRadius: 12,
     paddingHorizontal: 14,
     justifyContent: 'center',

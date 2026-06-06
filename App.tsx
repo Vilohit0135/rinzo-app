@@ -99,7 +99,7 @@ export default function App() {
           <Stack.Screen name="Login">
             {({ navigation }) => (
               <LoginScreen
-                onLoginSuccess={() => navigation.reset({ index: 0, routes: [{ name: 'Home' }] })}
+                onLoginSuccess={(phone) => navigation.navigate('OtpVerification', { phone })}
                 onSignupPress={() => navigation.navigate('Signup')}
               />
             )}
