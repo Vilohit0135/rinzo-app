@@ -17,6 +17,7 @@ type RootStackParamList = {
   YourCart: undefined;
   MyOrders: undefined;
   Profile: undefined;
+  LaundryDetail: { id: string };
 };
 
 const recentSearches = ['Dry Clean', 'Krishna Laundry', 'Iron Service'];
@@ -124,6 +125,7 @@ const SearchScreen = () => {
                   {...item}
                   isFavourite={favouriteIds.includes(item.id)}
                   onToggleFavourite={toggleFavourite}
+                  onPress={() => navigation.navigate('LaundryDetail', { id: item.id })}
                 />
               ))}
             </View>

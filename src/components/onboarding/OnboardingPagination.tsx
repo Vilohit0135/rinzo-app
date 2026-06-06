@@ -14,6 +14,7 @@ const OnboardingPagination = ({ total, activeIndex, onDotPress }: OnboardingPagi
           key={index}
           activeOpacity={0.7}
           onPress={() => onDotPress?.(index)}
+          style={styles.dotTouchable}
         >
           <View
             style={[
@@ -32,11 +33,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop:-70,
     gap: 14,
   },
+  dotTouchable: {
+    top: -55,
+    padding: 3,
+  },
   dot: {
-    top: -65,
     width: 14,
     height: 14,
     borderRadius: 7,

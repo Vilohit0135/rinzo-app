@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FavouriteButton } from '../favourites/FavouriteButton';
 
@@ -11,13 +11,14 @@ interface SearchResultCardProps {
   price: string;
   tags: string[];
   deliveryTime: string;
+  onPress?: () => void;
   isFavourite: boolean;
   onToggleFavourite: (id: string) => void;
 }
 
-const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, isFavourite, onToggleFavourite }: SearchResultCardProps) => {
+const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, onPress, isFavourite, onToggleFavourite }: SearchResultCardProps) => {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={styles.card}>
       <View style={styles.thumbnail} />
       <View style={styles.content}>
         <View style={styles.topRow}>
@@ -53,7 +54,7 @@ const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags
           onPress={() => onToggleFavourite(id)}
         />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

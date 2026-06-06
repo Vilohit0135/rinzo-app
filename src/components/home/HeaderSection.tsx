@@ -36,7 +36,7 @@ const HeaderSection = ({ onNotificationPress, onProfilePress }: HeaderSectionPro
           />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} onPress={onNotificationPress}>
-          <Ionicons name="notifications-outline" size={21} color={COLORS.textDark} />
+          <Ionicons name="notifications-outline" size={26} color={COLORS.textDark} />
         </TouchableOpacity>
       </View>
 
