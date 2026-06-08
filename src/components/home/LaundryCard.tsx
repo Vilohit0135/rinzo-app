@@ -1,6 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { FavouriteButton } from '../favourites/FavouriteButton';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 interface LaundryCardProps {
   id: string;
@@ -33,7 +34,7 @@ const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, del
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={[styles.card, style]}>
       <View style={styles.leftIconSection}>
         <View style={styles.iconContainer}>
-          <Ionicons name={icon || 'shirt-outline' as any} size={24} color="#8259D2" />
+          <Image source={require('../../../assets/images/placeholder-icon.png')} style={styles.cardIcon} />
         </View>
       </View>
       <View style={styles.rightContent}>
@@ -80,35 +81,35 @@ const styles = StyleSheet.create({
   card: {
     marginLeft: 2,
     width: '100%',
-    height: 115,
+    height: verticalScale(115),
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    paddingHorizontal: 20,
-    paddingVertical: 18,
+    borderRadius: moderateScale(16),
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(18),
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: verticalScale(2) },
     shadowOpacity: 0.05,
     shadowRadius: 10,
     elevation: 1,
   },
   leftIconSection: {
-    width: 75,
+    width: scale(75),
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconContainer: {
-    marginLeft: -10,
-    width: 78,
-    height: 82,
-    borderRadius: 14,
+    marginLeft: scale(-10),
+    width: scale(78),
+    height: verticalScale(82),
+    borderRadius: moderateScale(14),
     backgroundColor: '#F3E8FF',
     alignItems: 'center',
     justifyContent: 'center',
   },
   rightContent: {
     flex: 1,
-    paddingLeft: 7,
+    paddingLeft: scale(7),
   },
   topRow: {
     flexDirection: 'row',
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   ratingGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: scale(3),
   },
   rating: {
     fontSize: 12,
@@ -136,7 +137,7 @@ const styles = StyleSheet.create({
     color: '#9A9AB0',
   },
   secondRow: {
-    marginTop: 1,
+    marginTop: verticalScale(1),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -147,23 +148,23 @@ const styles = StyleSheet.create({
   },
   price: {
     fontSize: 14,
-    marginTop: 3,
+    marginTop: verticalScale(3),
     fontWeight: '700',
     color: '#6C4DFF',
   },
   tagsRow: {
-    marginTop: 5,
+    marginTop: verticalScale(5),
     flexDirection: 'row',
-    gap: 3,
+    gap: scale(3),
   },
   tag: {
-    height: 16,
-    borderRadius: 13,
-    paddingHorizontal: 10,
+    height: verticalScale(16),
+    borderRadius: moderateScale(13),
+    paddingHorizontal: scale(10),
     backgroundColor: '#EFE9FF',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: scale(4),
   },
   tagText: {
     fontSize: 10,
@@ -171,16 +172,20 @@ const styles = StyleSheet.create({
     color: '#7C4DFF',
   },
   deliveryRow: {
-    marginTop: 7,
+    marginTop: verticalScale(7),
   },
   deliveryText: {
     fontSize: 12,
     color: '#8E8EAA',
   },
+  cardIcon: {
+    width: scale(28),
+    height: verticalScale(28),
+  },
   favouriteWrap: {
     position: 'absolute',
-    bottom: 8,
-    right: 10,
+    bottom: verticalScale(8),
+    right: scale(10),
     alignItems: 'center',
     justifyContent: 'center',
   },

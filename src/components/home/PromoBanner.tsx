@@ -1,6 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants/colors';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 interface PromoBannerProps {
   onClaimPress?: () => void;
@@ -30,9 +31,10 @@ const PromoBanner = ({ onClaimPress }: PromoBannerProps) => {
 
 const styles = StyleSheet.create({
   banner: {
-    height: 80,
-    borderRadius: 17,
-    padding: 14,
+    height: verticalScale(80),
+    borderRadius: moderateScale(17),
+    paddingHorizontal: scale(14),
+    paddingVertical: verticalScale(14),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -44,9 +46,9 @@ const styles = StyleSheet.create({
   label: {
     alignSelf: 'flex-start',
     backgroundColor: COLORS.purple,
-    borderRadius: 5,
-    paddingHorizontal: 19,
-    paddingVertical: 3,
+    borderRadius: moderateScale(5),
+    paddingHorizontal: scale(19),
+    paddingVertical: verticalScale(3),
   },
   labelText: {
     fontSize: 9,
@@ -54,7 +56,7 @@ const styles = StyleSheet.create({
     color: COLORS.white,
   },
   title: {
-    marginTop: 1,
+    marginTop: verticalScale(1),
     fontSize: 20,
     fontWeight: '700',
     color: COLORS.textPrimary,
@@ -67,10 +69,10 @@ const styles = StyleSheet.create({
     color: COLORS.textPrimary,
   },
   button: {
-    height: 29,
-    borderRadius: 12,
+    height: verticalScale(29),
+    borderRadius: moderateScale(12),
     backgroundColor: COLORS.purple,
-    paddingHorizontal: 14,
+    paddingHorizontal: scale(14),
     alignItems: 'center',
     justifyContent: 'center',
   },

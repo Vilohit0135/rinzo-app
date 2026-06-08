@@ -1,35 +1,36 @@
-import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from '@react-native-vector-icons/ionicons';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { COLORS } from '../../constants/colors';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 interface ServiceCardProps {
   title: string;
   icon: string;
 }
 
-const ServiceCard = ({ title, icon }: ServiceCardProps) => {
+const ServiceCard = ({ title }: ServiceCardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.iconWrap}>
-        <Ionicons name={icon as any} size={32} color={COLORS.purple} />
+        <Image source={require('../../../assets/images/placeholder-icon.png')} style={styles.iconImage} />
       </View>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    width: 83,
-    height: 85,
+    width: scale(83),
+    height: verticalScale(85),
     backgroundColor: COLORS.white,
-    borderRadius: 20,
-    padding: 15,
+    borderRadius: moderateScale(20),
+    paddingHorizontal: scale(15),
+    paddingVertical: verticalScale(15),
     justifyContent: 'space-between',
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 6,
+      height: verticalScale(6),
     },
     shadowOpacity: 0.07,
     shadowRadius: 14,
@@ -37,14 +38,18 @@ const styles = StyleSheet.create({
   },
   iconWrap: {
     alignSelf: 'center',
-    width: 44,
-    height: 44,
-    borderRadius: 7,
+    width: scale(44),
+    height: verticalScale(44),
+    borderRadius: moderateScale(7),
     alignItems: 'center',
     justifyContent: 'center',
   },
+  iconImage: {
+    width: scale(32),
+    height: verticalScale(32),
+  },
   title: {
-    top: 5,
+    top: verticalScale(5),
     alignSelf: 'center',
     fontSize: 9.5,
     fontWeight: '700',

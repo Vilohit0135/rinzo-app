@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+﻿import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -13,6 +13,7 @@ import PromoBanner from '../../components/home/PromoBanner';
 import OrderCard from '../../components/home/OrderCard';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 import { laundryItems } from '../../data/laundry/laundryData';
 import { useFavouritesStore } from '../../store/favouritesStore';
 
@@ -107,12 +108,14 @@ const HomeScreen = () => {
           >
             {quickActions.map((action) => {
               const route = action.route;
+              const isSchedule = action.title === 'Schedule Pickup';
 
               return (
                 <QuickActionCard
                   key={action.title}
                   title={action.title}
                   icon={action.icon}
+                  iconSource={isSchedule ? require('../../../assets/images/heroicons-schedule.png') : undefined}
                   onPress={route ? () => {
                     if (route === 'OrderTracking') {
                       navigation.navigate('OrderTracking', { from: 'Home' });
@@ -137,7 +140,7 @@ const HomeScreen = () => {
               <LaundryCard
                 key={item.id}
                 {...item}
-                style={{ width: 340 }}
+                style={{ width: scale(340) }}
                 onPress={() => navigation.navigate('LaundryDetail', { id: item.id })}
                 isFavourite={favouriteIds.includes(item.id)}
                 onToggleFavourite={toggleFavourite}
@@ -168,7 +171,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scrollContent: {
-    paddingBottom: 105,
+    paddingBottom: verticalScale(105),
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -190,45 +193,45 @@ const styles = StyleSheet.create({
     color: COLORS.purpleDark,
   },
   servicesSection: {
-    marginTop: 20,
-    paddingHorizontal: 18,
+    marginTop: verticalScale(20),
+    paddingHorizontal: scale(18),
   },
   serviceCardsRow: {
-    marginLeft: 5,
-    marginTop: 18,
-    marginBottom: 5,
-    gap: 12,
-    paddingRight: 18,
+    marginLeft: scale(5),
+    marginTop: verticalScale(18),
+    marginBottom: verticalScale(5),
+    gap: scale(12),
+    paddingRight: scale(18),
   },
   quickActionsSection: {
-    marginTop: 15,
-    paddingHorizontal: 18,
+    marginTop: verticalScale(15),
+    paddingHorizontal: scale(18),
   },
   quickActionsRow: {
-    marginTop: 15,
-    gap: 12,
-    paddingRight: 18,
+    marginTop: verticalScale(15),
+    gap: scale(12),
+    paddingRight: scale(18),
   },
   popularSection: {
-    marginTop: 10,
-    paddingHorizontal: 18,
+    marginTop: verticalScale(10),
+    paddingHorizontal: scale(18),
   },
   laundryCardsRow: {
-    marginTop: 18,
-    gap: 12,
-    paddingRight: 18,
-    marginBottom: 10,
+    marginTop: verticalScale(18),
+    gap: scale(12),
+    paddingRight: scale(18),
+    marginBottom: verticalScale(10),
   },
   promoWrap: {
-    marginTop: 10,
-    paddingHorizontal: 14,
+    marginTop: verticalScale(10),
+    paddingHorizontal: scale(14),
   },
   orderSection: {
-    marginTop: 21,
-    paddingHorizontal: 18,
+    marginTop: verticalScale(21),
+    paddingHorizontal: scale(18),
   },
   orderCardWrap: {
-    marginTop: 10,
+    marginTop: verticalScale(10),
   },
 });
 
