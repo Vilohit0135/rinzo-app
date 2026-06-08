@@ -1,4 +1,5 @@
 ﻿import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -10,7 +11,6 @@ import QuickActionCard from '../../components/home/QuickActionCard';
 import LaundryCard from '../../components/home/LaundryCard';
 import PromoBanner from '../../components/home/PromoBanner';
 import OrderCard from '../../components/home/OrderCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import { laundryItems } from '../../data/laundry/laundryData';
@@ -80,15 +80,14 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
+      <ScrollableScreen
         contentContainerStyle={styles.scrollContent}
       >
         <HeaderSection
           onNotificationPress={() => navigation.navigate('Notifications')}
-          onProfilePress={() => navigation.navigate('PersonalInformation')}
+          onProfilePress={() => (navigation as any).navigate('ProfileTab', { screen: 'PersonalInformation' })}
         />
-        <SearchBar onPress={() => navigation.navigate('Search')} />
+        <SearchBar onPress={() => navigation.navigate('SearchTab' as never)} />
 
         <View style={styles.servicesSection}>
           <SectionHeader title="Services" onViewAll={() => navigation.navigate('AllServices')} />
@@ -142,7 +141,7 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.popularSection}>
-          <SectionHeader title="Popular Laundry Nearby" onViewAll={() => navigation.navigate('Search')} />
+          <SectionHeader title="Popular Laundry Nearby" onViewAll={() => navigation.navigate('SearchTab' as never)} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -172,8 +171,8 @@ const HomeScreen = () => {
             <OrderCard />
           </View>
         </View>
-      </ScrollView>
-      <BottomTabBar onTabPress={(tab) => { if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
+      </ScrollableScreen>
+
     </SafeAreaView>
   );
 };

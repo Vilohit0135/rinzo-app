@@ -1,20 +1,22 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
-  Platform,
+    View,
+    Text,
+    Image,
+    TouchableOpacity,
+    StyleSheet,
+    Platform,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
+import { useTabBar } from '../../utils/TabBarContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
-import BottomTabBar from '../../components/home/BottomTabBar';
+import { scale } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderTracking'>;
 
@@ -34,15 +36,23 @@ const timelineSteps: TimelineStep[] = [
 ];
 
 const OrderTrackingScreen = ({ navigation, route }: Props) => {
+  const { setTabBarVisible } = useTabBar();
+
+  useFocusEffect(
+    useCallback(() => {
+      setTabBarVisible(true);
+    }, [])
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollableScreen contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => {
               const from = route.params?.from;
-              if (from === 'Home') navigation.navigate('Home');
+              if (from === 'Home') navigation.navigate('HomeTab' as never);
               else if (from === 'OrderPickedUp') navigation.navigate('OrderPickedUp');
               else navigation.goBack();
             }}>
@@ -56,15 +66,21 @@ const OrderTrackingScreen = ({ navigation, route }: Props) => {
 
           <View style={styles.statusCard}>
             <LinearGradient
-              colors={['#8259D2', '#8259D2']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+              colors={['#BFA5FD', '#8259D2']}
+              start={{ x: 1, y: 0 }}
+              end={{ x: 0, y: 0 }}
               style={styles.statusGradient}
             >
-              <Text style={styles.orderId}>Order ID : R23232329</Text>
-              <Text style={styles.currentStatus}>Washing in Progress</Text>
-              <Text style={styles.estimatedLabel}>Estimated Delivery</Text>
-              <Text style={styles.estimatedTime}>Today 2:00 - 4:00 PM</Text>
+              <View style={styles.statusContent}>
+                <Text style={styles.orderId}>Order ID : R23232329</Text>
+                <Text style={styles.currentStatus}>Washing in Progress</Text>
+                <Text style={styles.estimatedLabel}>Estimated Delivery</Text>
+                <Text style={styles.estimatedTime}>Today 2:00 - 4:00 PM</Text>
+              </View>
+              <Image
+                source={require('../../../assets/images/order-track.png')}
+                style={styles.orderTrackImage}
+              />
             </LinearGradient>
           </View>
 
@@ -145,19 +161,11 @@ const OrderTrackingScreen = ({ navigation, route }: Props) => {
             </View>
           </View>
 
-          <TouchableOpacity style={styles.helpButton} activeOpacity={0.7} onPress={() => navigation.navigate('HelpAndSupport')}>
+          <TouchableOpacity style={styles.helpButton} activeOpacity={0.7} onPress={() => (navigation as any).navigate('ProfileTab', { screen: 'HelpAndSupport' })}>
             <Text style={styles.helpText}>Need Help</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </ScrollableScreen>
 
-        <BottomTabBar
-          activeTab="Orders"
-          onTabPress={(tab) => {
-            if (tab === 'Home') navigation.navigate('Home');
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Profile') navigation.navigate('Profile');
-          }}
-        />
       </View>
     </SafeAreaView>
   );
@@ -217,6 +225,11 @@ const styles = StyleSheet.create({
   statusGradient: {
     flex: 1,
     padding: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusContent: {
+    flex: 1,
   },
   orderId: {
     fontSize: 11,
@@ -242,6 +255,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
     color: '#FFFFFF',
+  },
+  orderTrackImage: {
+    width: scale(164),
+    height: scale(185),
+    resizeMode: 'contain',
   },
 
   timelineCard: {

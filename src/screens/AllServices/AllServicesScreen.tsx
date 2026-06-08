@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -63,7 +64,7 @@ const AllServicesScreen = ({ navigation }: Props) => {
           <View style={styles.headerSpacer} />
         </View>
 
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollableScreen contentContainerStyle={styles.scrollContent}>
           {allServices.slice(0, 4).map((item) => (
             <ServiceCard
               key={item.id}
@@ -73,7 +74,7 @@ const AllServicesScreen = ({ navigation }: Props) => {
               onIncrement={() => updateQuantity(item.id, 1)}
             />
           ))}
-        </ScrollView>
+        </ScrollableScreen>
 
         <View style={styles.bottomBar}>
           <TouchableOpacity
@@ -288,12 +289,12 @@ const cardStyles = StyleSheet.create({
   price: {
     fontSize: responsiveFontSize(14),
     fontWeight: '700',
-    color: '#8259D2',
+    color: '#331970',
   },
   priceUnit: {
     fontSize: responsiveFontSize(11),
     fontWeight: '600',
-    color: '#9A9A9A',
+    color: '#331970',
   },
   counterPill: {
     flexDirection: 'row',

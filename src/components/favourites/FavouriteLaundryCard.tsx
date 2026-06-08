@@ -46,8 +46,10 @@ const FavouriteLaundryCard = ({ laundryId, isFavourite, onToggleFavourite, image
         </View>
 
         <View style={styles.secondRow}>
-          <Ionicons name="location-outline" size={13} color="#8259D2" />
-          <Text style={styles.distance}>{laundry.distance}</Text>
+          <View style={styles.locationGroup}>
+            <Ionicons name="location-outline" size={13} color="#8259D2" />
+            <Text style={styles.distance}>{laundry.distance}</Text>
+          </View>
           <Text style={styles.price}>{laundry.price}</Text>
         </View>
 
@@ -143,11 +145,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#8D8DAD',
   },
+  locationGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
   price: {
     marginLeft: 12,
     fontSize: 15,
     fontWeight: '700',
-    color: '#6C4DFF',
+    color: '#331970',
   },
   tagsRow: {
     marginTop: 10,

@@ -1,9 +1,11 @@
 ﻿import { useMemo, useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 import LaundryInfoCard from '../../components/cart/LaundryInfoCard';
 import ServicesCard from '../../components/cart/ServicesCard';
 import ClothesSummaryCard from '../../components/cart/ClothesSummaryCard';
@@ -13,7 +15,6 @@ import PriceSummary from '../../components/cart/PriceSummary';
 import CheckoutButton from '../../components/cart/CheckoutButton';
 import CartHeader from '../../components/cart/CartHeader';
 import EmptyCartState from '../../components/cart/EmptyCartState';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { cartData } from '../../data/cart/cartData';
 import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from '../../store/bookingStore';
@@ -97,10 +98,9 @@ const YourCartScreen = () => {
               subtitle="Looks like you haven't add any service yet"
             />
           ) : (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.scroll}
-            >
+<ScrollableScreen
+    contentContainerStyle={styles.scroll}
+>
               <LaundryInfoCard {...cartData.laundryInfo} imageSource={require('../../../assets/images/Laundry/krishna-laundry.png')} />
 
               <View style={styles.sectionServices}>
@@ -137,11 +137,11 @@ const YourCartScreen = () => {
               <View style={styles.checkoutWrap}>
                 <CheckoutButton onPress={() => navigation.navigate('OrderSummary')} />
               </View>
-            </ScrollView>
+            </ScrollableScreen>
           )}
         </View>
       </KeyboardAvoidingView>
-      <BottomTabBar activeTab="Orders" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate( 'Search'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
+
     </SafeAreaView>
   );
 };
@@ -153,37 +153,37 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: scale(16),
   },
   content: {
     flex: 1,
   },
   scroll: {
-    paddingBottom: 140,
+    paddingBottom: verticalScale(140),
   },
   sectionServices: {
-    marginTop: 24,
+    marginTop: verticalScale(24),
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#20203A',
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
   },
   sectionClothes: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
   sectionPickup: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
   sectionCoupon: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
   sectionPricing: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
   checkoutWrap: {
-    marginTop: 20,
+    marginTop: verticalScale(20),
   },
 });
 

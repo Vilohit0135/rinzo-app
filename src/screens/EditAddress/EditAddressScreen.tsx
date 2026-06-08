@@ -6,7 +6,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { updateAddress, deleteAddress } from '../../data/addressStore';
 
 type EditAddressParams = {
@@ -203,14 +202,7 @@ const EditAddressScreen = () => {
           </TouchableOpacity>
         </ScrollView>
 
-        <BottomTabBar
-          activeTab="Profile"
-          onTabPress={(tab) => {
-            if (tab === 'Home') navigation.navigate('Home');
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Orders') navigation.navigate('YourCart');
-          }}
-        />
+
       </View>
     </SafeAreaView>
   );

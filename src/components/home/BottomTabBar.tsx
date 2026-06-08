@@ -1,51 +1,89 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
+import { useTabBar } from '../../utils/TabBarContext';
 
 interface BottomTabBarProps {
-  activeTab?: 'Home' | 'Search' | 'Orders' | 'Profile';
-  onTabPress?: (tab: string) => void;
+  state: any;
+  descriptors: any;
+  navigation: any;
 }
 
-const tabs = [
-  { name: 'Home' as const, icon: 'home-outline' },
-  { name: 'Search' as const, icon: 'search-outline' },
-  { name: 'Orders' as const, icon: 'bag-handle-outline' },
-  { name: 'Profile' as const, icon: 'person-outline' },
-];
+const tabConfig: Record<string, { icon: string; label: string }> = {
+  HomeTab: { icon: 'home-outline', label: 'Home' },
+  SearchTab: { icon: 'search-outline', label: 'Search' },
+  OrdersTab: { icon: 'bag-handle-outline', label: 'Orders' },
+  ProfileTab: { icon: 'person-outline', label: 'Profile' },
+};
 
-const BottomTabBar = ({ activeTab = 'Home', onTabPress }: BottomTabBarProps) => {
+const HIDE_TRANSLATE_Y = 120;
+
+const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
+  const { isTabBarVisible } = useTabBar();
+  const translateY = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(translateY, {
+      toValue: isTabBarVisible ? 0 : HIDE_TRANSLATE_Y,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+  }, [isTabBarVisible, translateY]);
+
   return (
-    <LinearGradient
-      colors={[COLORS.gradientStart, COLORS.gradientEnd]}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={styles.container}
-    >
-      {tabs.map((tab) =>
-        tab.name === activeTab ? (
-          <TouchableOpacity key={tab.name} style={styles.activeTab} activeOpacity={0.8} onPress={() => onTabPress?.(tab.name)}>
-            <Ionicons name={tab.icon as any} size={18} color={COLORS.purple} />
-            <Text style={styles.activeText} allowFontScaling={false} numberOfLines={1}>{tab.name}</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity key={tab.name} style={styles.inactiveTab} activeOpacity={0.8} onPress={() => onTabPress?.(tab.name)}>
-            <Ionicons name={tab.icon as any} size={20} color={COLORS.white} />
-          </TouchableOpacity>
-        )
-      )}
-    </LinearGradient>
+    <Animated.View style={[styles.wrapper, { transform: [{ translateY }] }]}>
+      <LinearGradient
+        colors={[COLORS.gradientStart, COLORS.gradientEnd]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={styles.container}
+      >
+        {state.routes.map((route: any, index: number) => {
+          const isFocused = state.index === index;
+          const config = tabConfig[route.name] || { icon: 'ellipse-outline', label: route.name };
+
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+            if (!isFocused && !event.defaultPrevented) {
+              if (route.name === 'OrdersTab') {
+                navigation.navigate('OrdersTab', { screen: 'YourCart' });
+              } else {
+                navigation.navigate(route.name);
+              }
+            }
+          };
+
+          return isFocused ? (
+            <TouchableOpacity key={route.name} style={styles.activeTab} activeOpacity={0.8} onPress={onPress}>
+              <Ionicons name={config.icon as any} size={18} color={COLORS.purple} />
+              <Text style={styles.activeText} allowFontScaling={false} numberOfLines={1}>{config.label}</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity key={route.name} style={styles.inactiveTab} activeOpacity={0.8} onPress={onPress}>
+              <Ionicons name={config.icon as any} size={20} color={COLORS.white} />
+            </TouchableOpacity>
+          );
+        })}
+      </LinearGradient>
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  wrapper: {
     position: 'absolute',
-    bottom: verticalScale(24),
     left: scale(18),
     right: scale(18),
+    bottom: verticalScale(24),
+  },
+  container: {
     height: verticalScale(66),
     borderRadius: moderateScale(33),
     paddingHorizontal: scale(11),

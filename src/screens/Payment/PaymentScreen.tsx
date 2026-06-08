@@ -7,6 +7,7 @@ import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { LinearGradient } from "expo-linear-gradient";
 import { RootStackParamList } from "../../types/navigation";
 import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from "../../store/bookingStore";
+import { scale } from "../../utils/responsive";
 
 interface PaymentMethod {
   id: string;
@@ -197,14 +198,14 @@ const styles = StyleSheet.create({
   },
 
   paymentList: {
-    marginTop: 10,
+    marginTop: scale(20),
     gap: 10,
     paddingHorizontal: 20,
   },
   paymentCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 14,
-    height: 60,
+    height: scale(70),
     padding: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -263,17 +264,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 100,
+    height: scale(100),
     backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: scale(16),
+    borderTopRightRadius: scale(24),
   },
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingTop: 12,
-    paddingHorizontal: 24,
+    paddingTop: scale(12),
+    paddingHorizontal: scale(24),
   },
   totalPayableLabel: {
     fontSize: 15,
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
   totalPayableAmount: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#111111",
+    color: "#331970",
   },
   payButton: {
     marginTop: 14,

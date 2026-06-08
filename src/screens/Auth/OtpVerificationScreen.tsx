@@ -23,7 +23,7 @@ const OtpVerificationScreen = () => {
   useEffect(() => {
     if (allFilled && !navigatedRef.current) {
       navigatedRef.current = true;
-      navigation.replace('Home');
+      navigation.replace('Main');
     }
   }, [allFilled, navigation]);
 

@@ -1,11 +1,10 @@
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  TextInput,
-  StyleSheet,
-  Platform,
+    View,
+    Text,
+    TouchableOpacity,
+    TextInput,
+    StyleSheet,
+    Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -14,9 +13,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { useBookingStore } from '../../store/bookingStore';
 import { responsiveFontSize } from '../../utils/responsive';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BookPickup'>;
 
@@ -32,7 +31,7 @@ const BookPickupScreen = ({ navigation }: Props) => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
       <View style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollableScreen contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} activeOpacity={0.7}>
               <Ionicons name="chevron-back" size={20} color="#B3B3B3" />
@@ -114,16 +113,8 @@ const BookPickupScreen = ({ navigation }: Props) => {
               <Text style={styles.continueText} numberOfLines={1} allowFontScaling={false}>Continue</Text>
             </LinearGradient>
           </TouchableOpacity>
-        </ScrollView>
+        </ScrollableScreen>
 
-        <BottomTabBar
-          activeTab="Home"
-          onTabPress={(tab) => {
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Orders') navigation.navigate('YourCart');
-            if (tab === 'Profile') navigation.navigate('Profile');
-          }}
-        />
       </View>
     </SafeAreaView>
   );
@@ -224,12 +215,12 @@ const styles = StyleSheet.create({
   servicePrice: {
     fontSize: responsiveFontSize(14),
     fontWeight: '700',
-    color: '#8259D2',
+    color: '#331970',
   },
   servicePriceUnit: {
     fontSize: responsiveFontSize(12),
     fontWeight: '600',
-    color: '#9A9A9A',
+    color: '#331970',
   },
   serviceSubtitle: {
     fontSize: responsiveFontSize(12),

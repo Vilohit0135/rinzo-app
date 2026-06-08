@@ -11,7 +11,6 @@ import GenderSelector from '../../components/profile/GenderSelector';
 import LanguageSelector from '../../components/profile/LanguageSelector';
 import SaveButton from '../../components/profile/SaveButton';
 import DatePickerModal from '../../components/profile/DatePickerModal';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { profileData } from '../../data/profile/profileData';
 
@@ -79,7 +78,7 @@ const PersonalInformationScreen = () => {
           <SaveButton onPress={handleSave} />
         </View>
       </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+
     </SafeAreaView>
   );
 };

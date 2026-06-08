@@ -3,10 +3,10 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   StyleSheet,
   Platform,
 } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from "@react-native-vector-icons/ionicons/static";
@@ -14,7 +14,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { useBookingStore } from '../../store/bookingStore';
 import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 
@@ -37,12 +36,11 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
       <View style={styles.container}>
-        <ScrollView
+        <ScrollableScreen
           contentContainerStyle={[
             styles.scrollContent,
-            { paddingBottom: insets.bottom + 100 },
+            { paddingBottom: insets.bottom + 40 },
           ]}
-          showsVerticalScrollIndicator={false}
         >
           <View style={[styles.header, { paddingTop: verticalScale(14) }]}>
             <TouchableOpacity
@@ -104,7 +102,7 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
 
               <View style={[styles.divider, { marginVertical: verticalScale(8) }]} />
 
-              <TouchableOpacity style={styles.addAddressRow} activeOpacity={0.7} onPress={() => navigation.navigate('AddAddressDetails')}>
+              <TouchableOpacity style={styles.addAddressRow} activeOpacity={0.7} onPress={() => (navigation as any).navigate('ProfileTab', { screen: 'AddAddressDetails' })}>
                 <Ionicons name="add-circle-outline" size={scale(20)} color="#8B5CF6" />
                 <Text style={[styles.addAddressText, { fontSize: responsiveFontSize(14) }]} numberOfLines={1} allowFontScaling={false}>
                   Add New Address
@@ -202,16 +200,9 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
               </Text>
             </LinearGradient>
           </TouchableOpacity>
-        </ScrollView>
+        </ScrollableScreen>
 
-        <BottomTabBar
-          activeTab="Home"
-          onTabPress={(tab) => {
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Orders') navigation.navigate('YourCart');
-            if (tab === 'Profile') navigation.navigate('Profile');
-          }}
-        />
+
       </View>
     </SafeAreaView>
   );

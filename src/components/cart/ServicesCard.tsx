@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     marginLeft: scale(4),
     fontSize: scale(12),
     fontWeight: '600',
-    color: '#5E35B1',
+    color: '#331970',
     marginTop: 4,
   },
   center: {
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   total: {
     fontSize: scale(14),
     fontWeight: '700',
-    color: '#4D2CA3',
+    color: '#331970',
   },
   divider: {
     height: 1,

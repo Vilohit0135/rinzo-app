@@ -1,4 +1,7 @@
+import { useCallback } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { useTabBar } from '../../utils/TabBarContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
@@ -12,9 +15,7 @@ import { COLORS } from '../../constants/colors';
 import { getLaundryById } from '../../data/laundry/laundryData';
 import { useFavouritesStore } from '../../store/favouritesStore';
 
-const heroImageMap: Record<string, any> = {
-  'krishna-laundry': require('../../../assets/images/Detail/krishna-d.png'),
-};
+const heroImage = require('../../../assets/images/Detail/krishna-d.png');
 
 type RootStackParamList = {
   LaundryDetail: { id: string };
@@ -26,6 +27,13 @@ const LaundryDetailScreen = () => {
   const item = getLaundryById(route.params.id);
   const favouriteIds = useFavouritesStore((s) => s.favouriteIds);
   const toggleFavourite = useFavouritesStore((s) => s.toggleFavourite);
+  const { setTabBarVisible } = useTabBar();
+
+  useFocusEffect(
+    useCallback(() => {
+      setTabBarVisible(false);
+    }, [])
+  );
 
   if (!item) {
     return null;
@@ -34,15 +42,15 @@ const LaundryDetailScreen = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}
-      >
+<ScrollView
+    showsVerticalScrollIndicator={false}
+    contentContainerStyle={styles.scroll}
+>
         <LaundryHero
           onBackPress={() => navigation.goBack()}
           isFavourite={favouriteIds.includes(item.id)}
           onToggleFavourite={() => toggleFavourite(item.id)}
-          imageSource={heroImageMap[item.id]}
+          imageSource={heroImage}
         />
 
         <View style={styles.details}>

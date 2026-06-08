@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { useTabBar } from '../../utils/TabBarContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -24,6 +26,14 @@ const wp = (px: number) => Math.round(px * scale);
 const fs = (px: number) => Math.round(px * Math.min(scale, 1.15));
 
 const OrderConfirmationScreen = ({ navigation }: Props) => {
+  const { setTabBarVisible } = useTabBar();
+
+  useFocusEffect(
+    useCallback(() => {
+      setTabBarVisible(false);
+    }, [])
+  );
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
@@ -94,7 +104,7 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             style={[styles.homeButton, { marginTop: hp(14) }]}
             activeOpacity={0.7}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => (navigation as any).navigate('HomeTab', { screen: 'Home' })}
           >
             <Text style={[styles.homeText, { fontSize: fs(14) }]}>
               Back to Home

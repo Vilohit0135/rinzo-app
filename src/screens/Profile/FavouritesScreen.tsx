@@ -1,4 +1,5 @@
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
@@ -6,7 +7,6 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types/navigation';
 import FavouritesHeader from '../../components/favourites/FavouritesHeader';
 import FavouriteLaundryCard from '../../components/favourites/FavouriteLaundryCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { useFavouritesStore } from '../../store/favouritesStore';
 import { getLaundryById } from '../../data/laundry/laundryData';
@@ -26,10 +26,9 @@ const FavouritesScreen = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}
-      >
+<ScrollableScreen
+    contentContainerStyle={styles.scroll}
+>
         <FavouritesHeader onBackPress={() => navigation.goBack()} />
 
         {favouriteIds.length === 0 ? (
@@ -62,8 +61,8 @@ const FavouritesScreen = () => {
             })}
           </View>
         )}
-      </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+      </ScrollableScreen>
+
     </SafeAreaView>
   );
 };

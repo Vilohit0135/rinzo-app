@@ -12,6 +12,7 @@ export type RootStackParamList = {
   OnboardingThree: undefined;
   LocationAccess: undefined;
   Login: undefined;
+  Main: undefined;
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
@@ -36,7 +37,7 @@ export type RootStackParamList = {
     isDefault: boolean;
   };
   LaundryDetail: { id: string };
-  MyOrders: undefined;
+  MyOrders: { fromProfile?: boolean } | undefined;
   OtpVerification: { phone: string };
   Signup: undefined;
   AllServices: undefined;

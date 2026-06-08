@@ -37,7 +37,10 @@ const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags
         </View>
 
         <View style={styles.secondRow}>
-          <Text style={styles.distance} allowFontScaling={false} numberOfLines={1}>{distance}</Text>
+          <View style={styles.locationGroup}>
+            <Ionicons name="location-outline" size={12} color="#8259D2" />
+            <Text style={styles.distance} allowFontScaling={false} numberOfLines={1}>{distance}</Text>
+          </View>
           <Text style={styles.price} allowFontScaling={false} numberOfLines={1}>{price}</Text>
         </View>
 
@@ -132,10 +135,15 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(12),
     color: '#8D8DAD',
   },
+  locationGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
   price: {
     fontSize: responsiveFontSize(14),
     fontWeight: '700',
-    color: '#8259D2',
+    color: '#331970',
   },
   tagsRow: {
     marginTop: 6,

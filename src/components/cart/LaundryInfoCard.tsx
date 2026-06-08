@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#6C4DFF',
+    color: '#331970',
     marginLeft: 12,
   },
 });

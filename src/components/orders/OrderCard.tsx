@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   price: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#8259D2',
+    color: '#331970',
   },
 });
 
