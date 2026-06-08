@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
 import { COLORS } from '../../constants/colors';
-import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface ServiceCardProps {
   title: string;
@@ -13,7 +13,7 @@ const ServiceCard = ({ title }: ServiceCardProps) => {
       <View style={styles.iconWrap}>
         <Image source={require('../../../assets/images/placeholder-icon.png')} style={styles.iconImage} />
       </View>
-      <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">{title}</Text>
+      <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail" allowFontScaling={false}>{title}</Text>
     </View>
   );
 };
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
   title: {
     top: verticalScale(5),
     alignSelf: 'center',
-    fontSize: 9.5,
+    fontSize: responsiveFontSize(8.5),
     fontWeight: '700',
     color: COLORS.textPrimary,
   },

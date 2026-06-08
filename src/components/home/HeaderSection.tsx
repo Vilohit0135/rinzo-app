@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
-import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface HeaderSectionProps {
   onNotificationPress?: () => void;
@@ -41,19 +41,19 @@ const HeaderSection = ({ onNotificationPress, onProfilePress }: HeaderSectionPro
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.greeting}>Hey Mira 👋</Text>
-      <Text style={styles.title}>Find laundry near you</Text>
+      <Text style={styles.greeting} allowFontScaling={false}>Hey Mira 👋</Text>
+      <Text style={styles.title} numberOfLines={2} allowFontScaling={false}>Find laundry near you</Text>
 
       <TouchableOpacity style={styles.locationRow} activeOpacity={0.7} onPress={() => setShowDropdown(true)}>
         <Ionicons name="location-outline" size={17} color={COLORS.purplelocation} />
-        <Text style={styles.locationText}>{selectedCity}</Text>
+        <Text style={styles.locationText} allowFontScaling={false} numberOfLines={1}>{selectedCity}</Text>
         <Ionicons name="chevron-down" size={20} color={COLORS.purple} />
       </TouchableOpacity>
 
       <Modal visible={showDropdown} transparent animationType="fade" onRequestClose={() => setShowDropdown(false)}>
         <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setShowDropdown(false)}>
           <View style={styles.dropdown}>
-            <Text style={styles.dropdownTitle}>Select City</Text>
+            <Text style={styles.dropdownTitle} allowFontScaling={false}>Select City</Text>
             <FlatList
               data={cities}
               keyExtractor={(item) => item}
@@ -71,7 +71,7 @@ const HeaderSection = ({ onNotificationPress, onProfilePress }: HeaderSectionPro
                     size={20}
                     color={item === selectedCity ? COLORS.purple : '#999'}
                   />
-                  <Text style={[styles.cityText, item === selectedCity && styles.cityTextActive]}>
+                  <Text style={[styles.cityText, item === selectedCity && styles.cityTextActive]} allowFontScaling={false} numberOfLines={1}>
                     {item}
                   </Text>
                 </TouchableOpacity>
@@ -101,16 +101,16 @@ const styles = StyleSheet.create({
   },
   greeting: {
     marginTop: verticalScale(15),
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     fontWeight: '500',
     color: COLORS.textMuted,
   },
   title: {
     marginTop: 0,
-    fontSize: 24,
+    fontSize: responsiveFontSize(24),
     fontWeight: '700',
     color: COLORS.textPrimary,
-    lineHeight: 36,
+    lineHeight: responsiveFontSize(36),
   },
   locationRow: {
     marginTop: verticalScale(1),
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     gap: scale(6),
   },
   locationText: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: COLORS.purpledarks1,
   },
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: scale(16),
   },
   dropdownTitle: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
     fontWeight: '700',
     color: '#1E1E2D',
     marginBottom: verticalScale(16),
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3EEFF',
   },
   cityText: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     color: '#333',
   },
   cityTextActive: {

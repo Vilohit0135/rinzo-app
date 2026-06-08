@@ -2,7 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
-import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface BottomTabBarProps {
   activeTab?: 'Home' | 'Search' | 'Orders' | 'Profile';
@@ -28,7 +28,7 @@ const BottomTabBar = ({ activeTab = 'Home', onTabPress }: BottomTabBarProps) => 
         tab.name === activeTab ? (
           <TouchableOpacity key={tab.name} style={styles.activeTab} activeOpacity={0.8} onPress={() => onTabPress?.(tab.name)}>
             <Ionicons name={tab.icon as any} size={18} color={COLORS.purple} />
-            <Text style={styles.activeText}>{tab.name}</Text>
+            <Text style={styles.activeText} allowFontScaling={false} numberOfLines={1}>{tab.name}</Text>
           </TouchableOpacity>
         ) : (
           <TouchableOpacity key={tab.name} style={styles.inactiveTab} activeOpacity={0.8} onPress={() => onTabPress?.(tab.name)}>
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     gap: scale(6),
   },
   activeText: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '700',
     color: COLORS.purple,
   },

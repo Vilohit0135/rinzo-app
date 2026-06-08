@@ -3,7 +3,7 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { COLORS } from '../../constants/colors';
-import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import type { RootStackParamList } from '../../types/navigation';
 
 const OrderCard = () => {
@@ -15,13 +15,13 @@ const OrderCard = () => {
         <Image source={require('../../../assets/images/placeholder-icon.png')} style={styles.orderIcon} />
       </View>
       <View style={styles.details}>
-        <Text style={styles.name}>Krishna Laundry</Text>
-        <Text style={styles.status}>Washing in progress</Text>
-        <Text style={styles.orderId}>Order ID: #KL21345</Text>
-        <Text style={styles.schedule}>Scheduled for Today, 3:00 PM</Text>
+        <Text style={styles.name} allowFontScaling={false} numberOfLines={1}>Krishna Laundry</Text>
+        <Text style={styles.status} allowFontScaling={false} numberOfLines={1}>Washing in progress</Text>
+        <Text style={styles.orderId} allowFontScaling={false} numberOfLines={1}>Order ID: #KL21345</Text>
+        <Text style={styles.schedule} allowFontScaling={false} numberOfLines={1}>Scheduled for Today, 3:00 PM</Text>
       </View>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate('OrderTracking', { from: 'Home' })}>
-        <Text style={styles.buttonText}>Track Order</Text>
+        <Text style={styles.buttonText} allowFontScaling={false} numberOfLines={1}>Track Order</Text>
         <Ionicons name="chevron-forward" size={14} color={COLORS.purple} />
       </TouchableOpacity>
     </View>
@@ -62,25 +62,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   name: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   status: {
     marginTop: verticalScale(5),
-    fontSize: 11,
+    fontSize: responsiveFontSize(11),
     fontWeight: '700',
     color: COLORS.purpleDark,
   },
   orderId: {
     marginTop: verticalScale(5),
-    fontSize: 10,
+    fontSize: responsiveFontSize(10),
     fontWeight: '600',
     color: COLORS.textMuted,
   },
   schedule: {
     marginTop: verticalScale(3),
-    fontSize: 10,
+    fontSize: responsiveFontSize(10),
     fontWeight: '600',
     color: COLORS.textMuted,
   },
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     gap: scale(4),
   },
   buttonText: {
-    fontSize: 11,
+    fontSize: responsiveFontSize(11),
     fontWeight: '700',
     color: COLORS.purple,
   },

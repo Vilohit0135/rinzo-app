@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
-import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface QuickActionCardProps {
   title: string;
@@ -20,7 +20,7 @@ const QuickActionCard = ({ title, icon, iconSource, onPress }: QuickActionCardPr
           <Ionicons name={icon as any} size={24} color={COLORS.purple} />
         )}
       </View>
-      <Text style={styles.title}>{title.replace(' ', '\n')}</Text>
+      <Text style={styles.title} allowFontScaling={false} numberOfLines={2}>{title.replace(' ', '\n')}</Text>
     </TouchableOpacity>
   );
 };
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
   title: {
     marginLeft: scale(10),
-    fontSize: 11,
+    fontSize: responsiveFontSize(11),
     fontWeight: '700',
     color: '#331970',
   },

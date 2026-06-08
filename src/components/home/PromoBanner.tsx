@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants/colors';
-import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface PromoBannerProps {
   onClaimPress?: () => void;
@@ -17,13 +17,13 @@ const PromoBanner = ({ onClaimPress }: PromoBannerProps) => {
     >
       <View style={styles.content}>
         <View style={styles.label}>
-          <Text style={styles.labelText}>PROMO</Text>
+          <Text style={styles.labelText} allowFontScaling={false} numberOfLines={1}>PROMO</Text>
         </View>
-        <Text style={styles.title}>Get 30% Off</Text>
-        <Text style={styles.subtitle}>On your first order</Text>
+        <Text style={styles.title} allowFontScaling={false} numberOfLines={1}>Get 30% Off</Text>
+        <Text style={styles.subtitle} allowFontScaling={false} numberOfLines={1}>On your first order</Text>
       </View>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={onClaimPress}>
-        <Text style={styles.buttonText}>Claim Now →</Text>
+        <Text style={styles.buttonText} allowFontScaling={false} numberOfLines={1}>Claim Now →</Text>
       </TouchableOpacity>
     </LinearGradient>
   );
@@ -51,20 +51,19 @@ const styles = StyleSheet.create({
     paddingVertical: verticalScale(3),
   },
   labelText: {
-    fontSize: 9,
+    fontSize: responsiveFontSize(9),
     fontWeight: '700',
     color: COLORS.white,
   },
   title: {
     marginTop: verticalScale(1),
-    fontSize: 20,
+    fontSize: responsiveFontSize(20),
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   subtitle: {
     marginTop: 0,
-    fontSize: 13,
-    fontFamily: 'Poppins',
+    fontSize: responsiveFontSize(13),
     fontWeight: '600',
     color: COLORS.textPrimary,
   },
@@ -77,7 +76,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '700',
     color: COLORS.white,
   },
