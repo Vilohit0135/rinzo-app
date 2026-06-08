@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { FavouriteButton } from '../favourites/FavouriteButton';
-import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface LaundryCardProps {
   id: string;
@@ -39,30 +39,30 @@ const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, del
       </View>
       <View style={styles.rightContent}>
         <View style={styles.topRow}>
-          <Text style={styles.name} numberOfLines={1}>{name}</Text>
+          <Text style={styles.name} numberOfLines={1} allowFontScaling={false}>{name}</Text>
           <View style={styles.ratingGroup}>
             <Ionicons name="star" size={16} color="#FFC107" />
-            <Text style={styles.rating}>{rating}</Text>
-            <Text style={styles.reviewCount}>({reviewCount})</Text>
+            <Text style={styles.rating} allowFontScaling={false}>{rating}</Text>
+            <Text style={styles.reviewCount} allowFontScaling={false}>({reviewCount})</Text>
           </View>
         </View>
 
         <View style={styles.secondRow}>
-          <Text style={styles.distance}>{distance}</Text>
-          <Text style={styles.price}>{price}</Text>
+          <Text style={styles.distance} allowFontScaling={false} numberOfLines={1}>{distance}</Text>
+          <Text style={styles.price} allowFontScaling={false} numberOfLines={1}>{price}</Text>
         </View>
 
         <View style={styles.tagsRow}>
           {tags.map((tag, index) => (
             <View key={index} style={styles.tag}>
               <Ionicons name={tagIcons[tag] || 'pricetag-outline' as any} size={12} color="#8259D2" />
-              <Text style={styles.tagText}>{tag}</Text>
+              <Text style={styles.tagText} allowFontScaling={false} numberOfLines={1}>{tag}</Text>
             </View>
           ))}
         </View>
 
         <View style={styles.deliveryRow}>
-          <Text style={styles.deliveryText}>🕒 Delivery by {deliveryTime}</Text>
+          <Text style={styles.deliveryText} allowFontScaling={false} numberOfLines={1}>🕒 Delivery by {deliveryTime}</Text>
         </View>
       </View>
 
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
   },
   name: {
     flexShrink: 1,
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#1E1E2D',
   },
@@ -128,12 +128,12 @@ const styles = StyleSheet.create({
     gap: scale(3),
   },
   rating: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '700',
     color: '#1E1E2D',
   },
   reviewCount: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     color: '#9A9AB0',
   },
   secondRow: {
@@ -143,11 +143,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   distance: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     color: '#8E8EAA',
   },
   price: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     marginTop: verticalScale(3),
     fontWeight: '700',
     color: '#6C4DFF',
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
     gap: scale(4),
   },
   tagText: {
-    fontSize: 10,
+    fontSize: responsiveFontSize(10),
     fontWeight: '500',
     color: '#7C4DFF',
   },
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(7),
   },
   deliveryText: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     color: '#8E8EAA',
   },
   cardIcon: {

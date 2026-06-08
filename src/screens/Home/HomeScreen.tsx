@@ -13,7 +13,7 @@ import PromoBanner from '../../components/home/PromoBanner';
 import OrderCard from '../../components/home/OrderCard';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
-import { scale, verticalScale, moderateScale } from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import { laundryItems } from '../../data/laundry/laundryData';
 import { useFavouritesStore } from '../../store/favouritesStore';
 
@@ -56,9 +56,9 @@ const quickActions: QuickAction[] = [
 
 const SectionHeader = ({ title, onViewAll }: { title: string; onViewAll?: () => void }) => (
   <View style={styles.sectionHeader}>
-    <Text style={styles.sectionTitle}>{title}</Text>
+    <Text style={styles.sectionTitle} numberOfLines={1} allowFontScaling={false}>{title}</Text>
     <TouchableOpacity style={styles.viewAll} activeOpacity={0.7} onPress={onViewAll}>
-      <Text style={styles.viewAllText}>View all</Text>
+      <Text style={styles.viewAllText} allowFontScaling={false}>View all</Text>
       <Ionicons name="chevron-forward" size={15} color={COLORS.purpleDark} />
     </TouchableOpacity>
   </View>
@@ -100,7 +100,7 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.quickActionsSection}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
+          <Text style={styles.sectionTitle} numberOfLines={1} allowFontScaling={false}>Quick Actions</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -154,7 +154,7 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.orderSection}>
-          <Text style={styles.sectionTitle}>Your Order</Text>
+          <Text style={styles.sectionTitle} numberOfLines={1} allowFontScaling={false}>Your Order</Text>
           <View style={styles.orderCardWrap}>
             <OrderCard />
           </View>
@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   viewAllText: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: COLORS.purpleDark,
   },

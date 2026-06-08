@@ -10,6 +10,7 @@ import EmptySearchState from '../../components/search/EmptySearchState';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { useFavouritesStore } from '../../store/favouritesStore';
+import { responsiveFontSize } from '../../utils/responsive';
 
 type RootStackParamList = {
   Home: undefined;
@@ -74,6 +75,7 @@ const SearchScreen = () => {
             placeholderTextColor={COLORS.placeholder}
             value={searchQuery}
             onChangeText={setSearchQuery}
+            allowFontScaling={false}
           />
           <Ionicons name="options-outline" size={22} color={COLORS.placeholder} />
         </View>
@@ -88,34 +90,34 @@ const SearchScreen = () => {
             {!searchQuery && (
               <View style={styles.recentSection}>
                 <View style={styles.recentHeader}>
-                  <Text style={styles.recentTitle}>Recent Searches</Text>
+                  <Text style={styles.recentTitle} allowFontScaling={false} numberOfLines={1}>Recent Searches</Text>
                   <TouchableOpacity activeOpacity={0.7}>
-                    <Text style={styles.clearText}>Clear</Text>
+                    <Text style={styles.clearText} allowFontScaling={false} numberOfLines={1}>Clear</Text>
                   </TouchableOpacity>
                 </View>
-                <View style={styles.chipsRow}>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.chipsRow}>
                   {recentSearches.map((item) => (
                     <TouchableOpacity key={item} style={styles.chip} activeOpacity={0.8} onPress={() => setSearchQuery(item)}>
-                      <Text style={styles.chipText}>{item}</Text>
+                      <Text style={styles.chipText} allowFontScaling={false} numberOfLines={1}>{item}</Text>
                     </TouchableOpacity>
                   ))}
-                </View>
+                </ScrollView>
               </View>
             )}
 
             <View style={styles.filterSection}>
-              <View style={styles.filterRow}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
                 {filterButtons.map((button) => (
                   <TouchableOpacity
                     key={button}
-                    style={styles.filterButton}
+                    style={[styles.filterButton, activeFilter === button && styles.filterButtonActive]}
                     activeOpacity={0.8}
                     onPress={() => setActiveFilter(activeFilter === button ? '' : button)}
                   >
-                    <Text style={styles.filterButtonText}>{button}</Text>
+                    <Text style={[styles.filterButtonText, activeFilter === button && styles.filterButtonTextActive]} allowFontScaling={false} numberOfLines={1}>{button}</Text>
                   </TouchableOpacity>
                 ))}
-              </View>
+              </ScrollView>
             </View>
 
             <View style={styles.resultsSection}>
@@ -166,9 +168,10 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     flex: 1,
-    fontSize: 16,
+    fontSize: responsiveFontSize(15),
     color: '#1E1E2D',
     paddingVertical: 0,
+    textAlignVertical: 'center',
   },
   recentSection: {
     marginTop: 28,
@@ -179,19 +182,20 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   recentTitle: {
-    fontSize: 16,
+    marginBottom: 12,
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#22223D',
   },
   clearText: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: COLORS.purpleDark,
   },
   chipsRow: {
-    marginTop: 14,
     flexDirection: 'row',
     gap: 12,
+    paddingRight: 20,
   },
   chip: {
     height: 34,
@@ -202,29 +206,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   chipText: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '600',
     color: COLORS.purpleDark,
   },
   filterSection: {
-    marginTop: 28,
+    marginTop: 22,
   },
   filterRow: {
     flexDirection: 'row',
     gap: 7,
+    paddingRight: 20,
   },
   filterButton: {
+    top: 0,
     height: 30,
     paddingHorizontal: 16,
     borderRadius: 22,
-    backgroundColor: COLORS.purple,
+    backgroundColor:COLORS.purple,
+    borderWidth: 1,
+    borderColor: COLORS.white,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  filterButtonActive: {
+    backgroundColor: COLORS.purple,
+  },
   filterButtonText: {
     color: COLORS.white,
-    fontSize: 14,
+    fontSize: responsiveFontSize(13),
     fontWeight: '400',
+  },
+  filterButtonTextActive: {
+    color: COLORS.white,
   },
   resultsSection: {
     marginTop: 28,
