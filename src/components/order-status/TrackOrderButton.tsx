@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { responsiveFontSize } from '../../utils/responsive';
 
 interface TrackOrderButtonProps {
   onPress: () => void;
@@ -15,7 +16,7 @@ const TrackOrderButton = ({ onPress, style }: TrackOrderButtonProps) => {
         end={{ x: 1, y: 0 }}
         style={styles.gradient}
       >
-        <Text style={styles.text}>Track Order</Text>
+        <Text style={styles.text} allowFontScaling={false}>Track Order</Text>
       </LinearGradient>
     </TouchableOpacity>
   );
@@ -34,7 +35,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#FFFFFF',
   },

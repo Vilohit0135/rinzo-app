@@ -15,6 +15,7 @@ import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { useBookingStore } from '../../store/bookingStore';
+import { responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderSummary'>;
 
@@ -49,21 +50,21 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} activeOpacity={0.7}>
               <Ionicons name="chevron-back" size={20} color="#A7A7A7" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Book Pickup</Text>
+            <Text style={styles.headerTitle} numberOfLines={1} allowFontScaling={false}>Book Pickup</Text>
             <View style={styles.headerSpacer} />
           </View>
 
           <BookingStepper steps={steps} currentStep={3} />
 
-          <Text style={styles.sectionTitle}>Order Summary</Text>
+          <Text style={styles.sectionTitle} numberOfLines={1} allowFontScaling={false}>Order Summary</Text>
 
           <View style={styles.summaryCard}>
             {lineItems.map((item, index) => (
               <React.Fragment key={item.name}>
                 {index > 0 && <View style={styles.summaryDivider} />}
                 <View style={styles.summaryRow}>
-                  <Text style={styles.summaryLabel}>{item.name}</Text>
-                  <Text style={styles.summaryPrice}>{formatCurrency(item.price)}</Text>
+                  <Text style={styles.summaryLabel} numberOfLines={1} allowFontScaling={false}>{item.name}</Text>
+                  <Text style={styles.summaryPrice} allowFontScaling={false}>{formatCurrency(item.price)}</Text>
                 </View>
               </React.Fragment>
             ))}
@@ -71,41 +72,41 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
 
           <View style={styles.addressCard}>
             <View style={styles.addressHeaderRow}>
-              <Text style={styles.addressTitle}>Pickup Address</Text>
+              <Text style={styles.addressTitle} numberOfLines={1} allowFontScaling={false}>Pickup Address</Text>
               <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('PickupDetails')}>
-                <Text style={styles.changeText}>Change</Text>
+                <Text style={styles.changeText} numberOfLines={1} allowFontScaling={false}>Change</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.addressText}>
+            <Text style={styles.addressText} numberOfLines={2} allowFontScaling={false}>
               221b Baker Street Bangalore - 50001
             </Text>
             <View style={styles.addressDivider} />
             <View style={styles.timeHeaderRow}>
-              <Text style={styles.timeLabel}>Pickup Time</Text>
+              <Text style={styles.timeLabel} numberOfLines={1} allowFontScaling={false}>Pickup Time</Text>
               <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('SchedulePickup')}>
-                <Text style={styles.changeText}>Change</Text>
+                <Text style={styles.changeText} numberOfLines={1} allowFontScaling={false}>Change</Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.timeText}>{pickupTime}{pickupDate ? `, ${pickupDate}` : ''}</Text>
+            <Text style={styles.timeText} numberOfLines={1} allowFontScaling={false}>{pickupTime}{pickupDate ? `, ${pickupDate}` : ''}</Text>
           </View>
 
           <View style={styles.pricingCard}>
             <View style={styles.pricingRow}>
-              <Text style={styles.pricingLabel}>Subtotal</Text>
-              <Text style={styles.pricingValue}>{formatCurrency(subtotal)}</Text>
+              <Text style={styles.pricingLabel} allowFontScaling={false}>Subtotal</Text>
+              <Text style={styles.pricingValue} allowFontScaling={false}>{formatCurrency(subtotal)}</Text>
             </View>
             <View style={styles.pricingRow}>
-              <Text style={styles.pricingLabel}>Delivery Charge</Text>
-              <Text style={styles.pricingValue}>{formatCurrency(DELIVERY_CHARGE)}</Text>
+              <Text style={styles.pricingLabel} allowFontScaling={false}>Delivery Charge</Text>
+              <Text style={styles.pricingValue} allowFontScaling={false}>{formatCurrency(DELIVERY_CHARGE)}</Text>
             </View>
             <View style={styles.pricingRow}>
-              <Text style={styles.pricingLabelDiscount}>Discount</Text>
-              <Text style={styles.pricingDiscount}>-{formatCurrency(DISCOUNT)}</Text>
+              <Text style={styles.pricingLabelDiscount} allowFontScaling={false}>Discount</Text>
+              <Text style={styles.pricingDiscount} allowFontScaling={false}>-{formatCurrency(DISCOUNT)}</Text>
             </View>
             <View style={styles.pricingDivider} />
             <View style={styles.pricingRow}>
-              <Text style={styles.pricingTotalLabel}>Total</Text>
-              <Text style={styles.pricingTotalValue}>{formatCurrency(total)}</Text>
+              <Text style={styles.pricingTotalLabel} allowFontScaling={false}>Total</Text>
+              <Text style={styles.pricingTotalValue} allowFontScaling={false}>{formatCurrency(total)}</Text>
             </View>
           </View>
 
@@ -115,7 +116,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
             onPress={() => navigation.navigate('Payment')}
           >
             <LinearGradient colors={['#8259D2', '#8259D2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.proceedGradient}>
-              <Text style={styles.proceedText}>Proceed to Payment</Text>
+              <Text style={styles.proceedText} numberOfLines={1} allowFontScaling={false}>Proceed to Payment</Text>
             </LinearGradient>
           </TouchableOpacity>
         </ScrollView>
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
     fontWeight: '700',
     color: '#111111',
   },
@@ -164,7 +165,7 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 20,
+    fontSize: responsiveFontSize(20),
     fontWeight: '700',
     color: '#1E1E35',
     marginTop: 45,
@@ -188,12 +189,12 @@ const styles = StyleSheet.create({
     height: 40,
   },
   summaryLabel: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#111111',
   },
   summaryPrice: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#8259D2',
   },
@@ -218,17 +219,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   addressTitle: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     fontWeight: '700',
     color: '#111111',
   },
   changeText: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#8259D2',
   },
   addressText: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#555555',
     marginTop: 4,
@@ -245,12 +246,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   timeLabel: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     fontWeight: '700',
     color: '#111111',
   },
   timeText: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#555555',
     marginTop: 3,
@@ -273,22 +274,22 @@ const styles = StyleSheet.create({
     height: 36,
   },
   pricingLabel: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '500',
     color: '#1A1A1A',
   },
   pricingValue: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#1A1A1A',
   },
   pricingLabelDiscount: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '500',
     color: '#41B883',
   },
   pricingDiscount: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#41B883',
   },
@@ -297,12 +298,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
   },
   pricingTotalLabel: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#1A1A1A',
   },
   pricingTotalValue: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#8259D2',
   },
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   proceedText: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#FFFFFF',
   },

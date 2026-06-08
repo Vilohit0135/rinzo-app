@@ -1,4 +1,4 @@
-﻿import { useMemo } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -24,6 +24,7 @@ type RootStackParamList = {
   YourCart: undefined;
   MyOrders: undefined;
   Profile: undefined;
+  OrderSummary: undefined;
 };
 
 const serviceIcons: Record<string, string> = {
@@ -35,9 +36,12 @@ const serviceIcons: Record<string, string> = {
 const YourCartScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'YourCart'>>();
   const storeServices = useBookingStore((s) => s.services);
+  const updateQuantity = useBookingStore((s) => s.updateQuantity);
   const address = useBookingStore((s) => s.address);
   const pickupDate = useBookingStore((s) => s.pickupDate);
   const pickupTime = useBookingStore((s) => s.pickupTime);
+
+  const [clothes, setClothes] = useState(cartData.clothesSummary);
 
   const hasItems = storeServices.some((s) => s.quantity > 0);
 
@@ -46,6 +50,7 @@ const YourCartScreen = () => {
       storeServices
         .filter((s) => s.quantity > 0)
         .map((s) => ({
+          id: s.id,
           name: s.title,
           price: `₹${s.unitPrice}/${s.unit}`,
           quantity: `${s.quantity} ${s.unit === 'Kg' ? 'kg' : 'items'}`,
@@ -54,6 +59,12 @@ const YourCartScreen = () => {
         })),
     [storeServices]
   );
+
+  const handleClothesQuantity = (name: string, qty: number) => {
+    setClothes((prev) =>
+      prev.map((c) => (c.name === name ? { ...c, quantity: Math.max(0, qty) } : c))
+    );
+  };
 
   const subtotal = useMemo(
     () => storeServices.reduce((sum, s) => sum + s.quantity * s.unitPrice, 0),
@@ -87,12 +98,12 @@ const YourCartScreen = () => {
 
               <View style={styles.sectionServices}>
                 <Text style={styles.sectionTitle}>Services</Text>
-                <ServicesCard services={services} />
+                <ServicesCard services={services} onUpdateQuantity={updateQuantity} />
               </View>
 
               <View style={styles.sectionClothes}>
                 <Text style={styles.sectionTitle}>Clothes Summary</Text>
-                <ClothesSummaryCard items={cartData.clothesSummary} />
+                <ClothesSummaryCard items={clothes} onUpdateQuantity={handleClothesQuantity} />
               </View>
 
               <View style={styles.sectionPickup}>
@@ -117,7 +128,7 @@ const YourCartScreen = () => {
               </View>
 
               <View style={styles.checkoutWrap}>
-                <CheckoutButton />
+                <CheckoutButton onPress={() => navigation.navigate('OrderSummary')} />
               </View>
             </ScrollView>
           )}

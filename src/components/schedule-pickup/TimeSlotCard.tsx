@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { responsiveFontSize } from '../../utils/responsive';
 
 interface TimeSlotCardProps {
   label: string;
@@ -14,7 +15,7 @@ const TimeSlotCard = ({ label, isSelected, onPress }: TimeSlotCardProps) => {
       onPress={onPress}
       activeOpacity={0.8}
     >
-      <Text style={[styles.label, isSelected && styles.labelSelected]}>{label}</Text>
+      <Text style={[styles.label, isSelected && styles.labelSelected]} numberOfLines={1} allowFontScaling={false}>{label}</Text>
     </TouchableOpacity>
   );
 };
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     borderColor: '#7C5CE6',
   },
   label: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     fontWeight: '600',
     color: '#171A2C',
   },

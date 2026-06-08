@@ -1,6 +1,7 @@
 import { memo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { responsiveFontSize } from '../../utils/responsive';
 
 interface DateCardProps {
   day: string;
@@ -17,13 +18,13 @@ const DateCard = ({ day, date, isSelected, onPress }: DateCardProps) => {
           colors={['#8257E6', '#6C3BD5']}
           style={styles.card}
         >
-          <Text style={[styles.day, styles.daySelected]}>{day}</Text>
-          <Text style={[styles.dateText, styles.dateTextSelected]}>{date}</Text>
+          <Text style={[styles.day, styles.daySelected]} numberOfLines={1} allowFontScaling={false}>{day}</Text>
+          <Text style={[styles.dateText, styles.dateTextSelected]} numberOfLines={1} allowFontScaling={false}>{date}</Text>
         </LinearGradient>
       ) : (
         <View style={[styles.card, styles.cardUnselected]}>
-          <Text style={styles.day}>{day}</Text>
-          <Text style={styles.dateText}>{date}</Text>
+          <Text style={styles.day} numberOfLines={1} allowFontScaling={false}>{day}</Text>
+          <Text style={styles.dateText} numberOfLines={1} allowFontScaling={false}>{date}</Text>
         </View>
       )}
     </TouchableOpacity>
@@ -44,7 +45,7 @@ const styles = StyleSheet.create({
     borderColor: '#E8E8E8',
   },
   day: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '700',
     color: '#9CA3AF',
   },
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
   dateText: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#171A2C',
     marginTop: 2,

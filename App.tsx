@@ -33,6 +33,7 @@ import EditAddressScreen from './src/screens/EditAddress/EditAddressScreen';
 import MyOrdersScreen from './src/screens/MyOrders/MyOrdersScreen';
 import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
 import SignupScreen from './src/screens/Auth/SignupScreen';
+import AllServicesScreen from './src/screens/AllServices/AllServicesScreen';
 import BookPickupScreen from './src/screens/BookPickup/BookPickupScreen';
 import PickupDetailsScreen from './src/screens/PickupDetails/PickupDetailsScreen';
 import SchedulePickupScreen from './src/screens/orders/SchedulePickupScreen';
@@ -139,6 +140,7 @@ export default function App() {
           <Stack.Screen name="EditAddress" component={EditAddressScreen} />
           <Stack.Screen name="MyOrders" component={MyOrdersScreen} />
           <Stack.Screen name="OtpVerification" component={OtpVerificationScreen} />
+          <Stack.Screen name="AllServices" component={AllServicesScreen} />
           <Stack.Screen name="BookPickup" component={BookPickupScreen} />
           <Stack.Screen name="PickupDetails" component={PickupDetailsScreen} />
           <Stack.Screen name="SchedulePickup" component={SchedulePickupScreen} />

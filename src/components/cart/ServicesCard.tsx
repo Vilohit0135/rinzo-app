@@ -1,7 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 interface ServiceItem {
+  id: string;
   name: string;
   price: string;
   quantity: string;
@@ -11,13 +12,16 @@ interface ServiceItem {
 
 interface ServicesCardProps {
   services: ServiceItem[];
+  onUpdateQuantity: (id: string, quantity: number) => void;
 }
 
-const ServicesCard = ({ services }: ServicesCardProps) => {
+const ServicesCard = ({ services, onUpdateQuantity }: ServicesCardProps) => {
   return (
     <View style={styles.card}>
       {services.map((service, index) => {
         const isLast = index === services.length - 1;
+        const qty = service.quantity;
+        const qtyNum = parseInt(qty, 10) || 0;
         return (
           <View key={service.name}>
             <View style={styles.row}>
@@ -31,10 +35,27 @@ const ServicesCard = ({ services }: ServicesCardProps) => {
                 </View>
               </View>
               <View style={styles.center}>
-                <Text style={styles.quantity}>{service.quantity}</Text>
-              </View>
-              <View style={styles.chevronWrap}>
-                <Ionicons name="chevron-down" size={18} color="#333333" />
+                <View style={styles.counterPill}>
+                  <TouchableOpacity
+                    onPress={() => onUpdateQuantity(service.id, qtyNum - 1)}
+                    activeOpacity={0.7}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <View style={[styles.counterBtn, qtyNum === 0 && styles.counterBtnDisabled]}>
+                      <Ionicons name="remove" size={12} color="#FFFFFF" />
+                    </View>
+                  </TouchableOpacity>
+                  <Text style={styles.counterValue}>{service.quantity}</Text>
+                  <TouchableOpacity
+                    onPress={() => onUpdateQuantity(service.id, qtyNum + 1)}
+                    activeOpacity={0.7}
+                    hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                  >
+                    <View style={styles.counterBtn}>
+                      <Ionicons name="add" size={12} color="#FFFFFF" />
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
               <View style={styles.priceWrap}>
                 <Text style={styles.total}>₹{service.total}</Text>
@@ -93,19 +114,37 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   center: {
-    width: '20%',
+    width: '30%',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  quantity: {
-    fontSize: 14,
+  counterPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#BDBDBD',
+    borderRadius: 14,
+    width: 72,
+    height: 22,
+    gap: 4,
+  },
+  counterBtn: {
+    width: 15,
+    height: 15,
+    borderRadius: 12,
+    backgroundColor: '#AFAFAF',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  counterBtnDisabled: {
+    backgroundColor: '#D0D0D0',
+  },
+  counterValue: {
+    fontSize: 12,
     fontWeight: '700',
-    color: '#1E1E2D',
-  },
-  chevronWrap: {
-    width: '10%',
-    alignItems: 'center',
-    justifyContent: 'center',
+    color: '#000000',
   },
   priceWrap: {
     width: '18%',
