@@ -10,6 +10,7 @@ import DateSelector from '../../components/schedule-pickup/DateSelector';
 import TimeSlotList from '../../components/schedule-pickup/TimeSlotList';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { useBookingStore } from '../../store/bookingStore';
+import { responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SchedulePickup'>;
 
@@ -40,13 +41,13 @@ const SchedulePickupScreen = ({ navigation }: Props) => {
       <View style={styles.container}>
         <ScheduleHeader onBack={() => navigation.goBack()} />
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-          <Text style={styles.sectionTitle}>Choose Date</Text>
+          <Text style={styles.sectionTitle} allowFontScaling={false} numberOfLines={1}>Choose Date</Text>
           <DateSelector
             dates={pickupDates}
             selectedDate={selectedDate}
             onSelectDate={setSelectedDate}
           />
-          <Text style={[styles.sectionTitle, styles.sectionTitleSpacing]}>Choose Time Slot</Text>
+          <Text style={[styles.sectionTitle, styles.sectionTitleSpacing]} allowFontScaling={false} numberOfLines={1}>Choose Time Slot</Text>
           <TimeSlotList
             slots={pickupTimeSlots}
             selectedSlot={selectedTimeSlot}
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
     fontWeight: '700',
     color: '#171A2C',
     marginTop: 16,

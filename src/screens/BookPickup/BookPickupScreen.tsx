@@ -16,6 +16,7 @@ import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { useBookingStore } from '../../store/bookingStore';
+import { responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BookPickup'>;
 
@@ -36,13 +37,13 @@ const BookPickupScreen = ({ navigation }: Props) => {
             <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} activeOpacity={0.7}>
               <Ionicons name="chevron-back" size={20} color="#B3B3B3" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Book Pickup</Text>
+            <Text style={styles.headerTitle} numberOfLines={1} allowFontScaling={false}>Book Pickup</Text>
             <View style={styles.headerSpacer} />
           </View>
 
           <BookingStepper steps={steps} currentStep={0} />
 
-          <Text style={styles.sectionTitle}>Select Services</Text>
+          <Text style={styles.sectionTitle} numberOfLines={1} allowFontScaling={false}>Select Services</Text>
 
           <View style={styles.servicesList}>
             {services.map((item) => {
@@ -50,13 +51,13 @@ const BookPickupScreen = ({ navigation }: Props) => {
                 <View key={item.id} style={styles.serviceCard}>
                   <View style={styles.serviceContent}>
                     <View style={styles.serviceTopRow}>
-                      <Text style={styles.serviceTitle}>{item.title}</Text>
+                      <Text style={styles.serviceTitle} numberOfLines={1} allowFontScaling={false}>{item.title}</Text>
                       <View style={styles.priceRow}>
-                        <Text style={styles.servicePrice}>₹{item.unitPrice}</Text>
-                        <Text style={styles.servicePriceUnit}>/{item.unit}</Text>
+                        <Text style={styles.servicePrice} allowFontScaling={false}>₹{item.unitPrice}</Text>
+                        <Text style={styles.servicePriceUnit} allowFontScaling={false}>/{item.unit}</Text>
                       </View>
                     </View>
-                    <Text style={styles.serviceSubtitle}>{item.subtitle}</Text>
+                    <Text style={styles.serviceSubtitle} numberOfLines={1} allowFontScaling={false}>{item.subtitle}</Text>
                     <View style={styles.serviceSpacer} />
                     <View style={styles.serviceCounterRow}>
                       <View style={styles.counterPill}>
@@ -69,7 +70,7 @@ const BookPickupScreen = ({ navigation }: Props) => {
                             <Ionicons name="remove" size={14} color="#FFFFFF" />
                           </View>
                         </TouchableOpacity>
-                        <Text style={styles.counterValue}>
+                        <Text style={styles.counterValue} allowFontScaling={false}>
                           {item.quantity}{item.unit}
                         </Text>
                         <TouchableOpacity
@@ -90,7 +91,7 @@ const BookPickupScreen = ({ navigation }: Props) => {
           </View>
 
           <Text style={styles.sectionTitleInstructions}>
-            Special Instructions<Text style={styles.optionalText}> ( Optional )</Text>
+            Special Instructions<Text style={styles.optionalText} allowFontScaling={false}> ( Optional )</Text>
           </Text>
 
           <TextInput
@@ -101,6 +102,7 @@ const BookPickupScreen = ({ navigation }: Props) => {
             placeholder="E.g Separate white clothes"
             placeholderTextColor="#B8B8B8"
             textAlignVertical="top"
+            allowFontScaling={false}
           />
 
           <TouchableOpacity
@@ -109,7 +111,7 @@ const BookPickupScreen = ({ navigation }: Props) => {
             onPress={() => navigation.navigate('PickupDetails')}
           >
             <LinearGradient colors={['#8259D2', '#8259D2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.continueGradient}>
-              <Text style={styles.continueText}>Continue</Text>
+              <Text style={styles.continueText} numberOfLines={1} allowFontScaling={false}>Continue</Text>
             </LinearGradient>
           </TouchableOpacity>
         </ScrollView>
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     flex: 1,
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
     fontWeight: '700',
     color: '#1D1D1F',
   },
@@ -158,7 +160,7 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#22223B',
     marginTop: 28,
@@ -166,7 +168,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   sectionTitleInstructions: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#22223B',
     marginTop: 20,
@@ -176,7 +178,7 @@ const styles = StyleSheet.create({
   optionalText: {
     fontWeight: '500',
     color: '#000000',
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
   },
 
   servicesList: {
@@ -215,22 +217,22 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   serviceTitle: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#1D1D1F',
   },
   servicePrice: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#8259D2',
   },
   servicePriceUnit: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '600',
     color: '#9A9A9A',
   },
   serviceSubtitle: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '500',
     color: '#AFAFAF',
     marginTop: 2,
@@ -267,7 +269,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D0D0D0',
   },
   counterValue: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '700',
     color: '#000000',
   },
@@ -280,7 +282,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#E8E5F4',
     padding: 12,
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#1D1D1F',
     height: 100,
@@ -299,7 +301,7 @@ const styles = StyleSheet.create({
 
   continueButton: { marginHorizontal: 24, marginTop: 37, marginBottom: 80, height: 43 },
   continueGradient: { flex: 1, borderRadius: 24, justifyContent: 'center', alignItems: 'center' },
-  continueText: { fontSize: 16, fontWeight: '700', color: '#FFFFFF' },
+  continueText: { fontSize: responsiveFontSize(16), fontWeight: '700', color: '#FFFFFF' },
 });
 
 export default BookPickupScreen;

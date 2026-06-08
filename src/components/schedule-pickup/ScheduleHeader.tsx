@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { responsiveFontSize } from '../../utils/responsive';
 
 interface ScheduleHeaderProps {
   onBack: () => void;
@@ -12,7 +13,7 @@ const ScheduleHeader = ({ onBack, title = 'Schedule Pickup' }: ScheduleHeaderPro
       <TouchableOpacity style={styles.backButton} onPress={onBack} activeOpacity={0.7}>
         <Ionicons name="chevron-back" size={18} color="#8E8E8E" />
       </TouchableOpacity>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={styles.title} numberOfLines={1} allowFontScaling={false}>{title}</Text>
       <View style={styles.spacer} />
     </View>
   );
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
     fontWeight: '700',
     color: '#171A2C',
   },

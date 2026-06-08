@@ -39,6 +39,7 @@ export type RootStackParamList = {
   MyOrders: undefined;
   OtpVerification: { phone: string };
   Signup: undefined;
+  AllServices: undefined;
   BookPickup: undefined;
   PickupDetails: undefined;
   SchedulePickup: undefined;

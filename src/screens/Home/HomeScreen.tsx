@@ -1,4 +1,4 @@
-﻿import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+﻿import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -6,7 +6,6 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import HeaderSection from '../../components/home/HeaderSection';
 import SearchBar from '../../components/home/SearchBar';
-import ServiceCard from '../../components/home/ServiceCard';
 import QuickActionCard from '../../components/home/QuickActionCard';
 import LaundryCard from '../../components/home/LaundryCard';
 import PromoBanner from '../../components/home/PromoBanner';
@@ -15,6 +14,7 @@ import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import { laundryItems } from '../../data/laundry/laundryData';
+import { allServices } from '../../data/services/servicesData';
 import { useFavouritesStore } from '../../store/favouritesStore';
 
 type RootStackParamList = {
@@ -27,6 +27,7 @@ type RootStackParamList = {
   Profile: undefined;
   PersonalInformation: undefined;
   LaundryDetail: { id: string };
+  AllServices: undefined;
   BookPickup: undefined;
   OrderTracking: { from?: string } | undefined;
 };
@@ -40,13 +41,6 @@ type QuickAction = {
   icon: IconName;
   route?: QuickActionRoute;
 };
-
-const services: Array<{ title: string; icon: IconName }> = [
-  { title: 'Wash & Fold', icon: 'shirt-outline' },
-  { title: 'Iron Only', icon: 'sparkles-outline' },
-  { title: 'Dry Clean', icon: 'water-outline' },
-  { title: 'Wash & Fold', icon: 'basket-outline' },
-];
 
 const quickActions: QuickAction[] = [
   { title: 'Schedule Pickup', icon: 'calendar-outline', route: 'BookPickup' },
@@ -83,18 +77,22 @@ const HomeScreen = () => {
         <SearchBar onPress={() => navigation.navigate('Search')} />
 
         <View style={styles.servicesSection}>
-          <SectionHeader title="Services" />
+          <SectionHeader title="Services" onViewAll={() => navigation.navigate('AllServices')} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.serviceCardsRow}
           >
-            {services.map((service) => (
-              <ServiceCard
-                key={`${service.title}-${service.icon}`}
-                title={service.title}
-                icon={service.icon}
-              />
+            {allServices.slice(0, 6).map((service) => (
+              <View key={service.id} style={styles.homeServiceCard}>
+                <View style={styles.homeServiceIconWrap}>
+                  <Image
+                    source={require('../../../assets/images/placeholder-icon.png')}
+                    style={styles.homeServiceIcon}
+                  />
+                </View>
+                <Text style={styles.homeServiceTitle} numberOfLines={2} ellipsizeMode="tail" allowFontScaling={false}>{service.title}</Text>
+              </View>
             ))}
           </ScrollView>
         </View>
@@ -202,6 +200,41 @@ const styles = StyleSheet.create({
     marginBottom: verticalScale(5),
     gap: scale(12),
     paddingRight: scale(18),
+  },
+  homeServiceCard: {
+    width: scale(83),
+    height: verticalScale(100),
+    backgroundColor: COLORS.white,
+    borderRadius: moderateScale(20),
+    paddingHorizontal: scale(14),
+    paddingVertical: verticalScale(15),
+    justifyContent: 'space-between',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: verticalScale(6) },
+    shadowOpacity: 0.07,
+    shadowRadius: 14,
+    elevation: 1,
+  },
+  homeServiceIconWrap: {
+    alignSelf: 'center',
+    width: scale(44),
+    height: verticalScale(44),
+    borderRadius: moderateScale(7),
+    backgroundColor: COLORS.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  homeServiceIcon: {
+    width: scale(32),
+    height: verticalScale(32),
+  },
+  homeServiceTitle: {
+    alignSelf: 'center',
+    fontSize: responsiveFontSize(8.5),
+    fontWeight: '700',
+    color: COLORS.textPrimary,
+    textAlign: 'center',
+    marginTop: verticalScale(8),
   },
   quickActionsSection: {
     marginTop: verticalScale(15),

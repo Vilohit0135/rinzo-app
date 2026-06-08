@@ -8,20 +8,31 @@ interface ClothesItem {
 
 interface ClothesSummaryCardProps {
   items: ClothesItem[];
+  onUpdateQuantity: (name: string, newQuantity: number) => void;
 }
 
-const ClothesSummaryCard = ({ items }: ClothesSummaryCardProps) => {
+const ClothesSummaryCard = ({ items, onUpdateQuantity }: ClothesSummaryCardProps) => {
   return (
     <View style={styles.card}>
       {items.map((item) => (
         <View key={item.name} style={styles.row}>
           <Text style={styles.name}>{item.name}</Text>
           <View style={styles.controls}>
-            <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.button}
+              activeOpacity={0.7}
+              onPress={() => onUpdateQuantity(item.name, item.quantity - 1)}
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+            >
               <Ionicons name="remove" size={14} color="#FFFFFF" />
             </TouchableOpacity>
             <Text style={styles.quantity}>{item.quantity}</Text>
-            <TouchableOpacity style={styles.button} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.button}
+              activeOpacity={0.7}
+              onPress={() => onUpdateQuantity(item.name, item.quantity + 1)}
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+            >
               <Ionicons name="add" size={14} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
