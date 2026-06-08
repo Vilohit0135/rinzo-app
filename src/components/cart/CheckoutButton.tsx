@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface CheckoutButtonProps {
   onPress: () => void;
@@ -22,13 +23,13 @@ const CheckoutButton = ({ onPress }: CheckoutButtonProps) => {
 
 const styles = StyleSheet.create({
   button: {
-    height: 50,
-    borderRadius: 25,
+    height: verticalScale(50),
+    borderRadius: moderateScale(25),
     alignItems: 'center',
     justifyContent: 'center',
   },
   text: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '600',
     color: '#FFFFFF',
   },

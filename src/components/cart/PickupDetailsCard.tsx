@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface PickupDetailsCardProps {
   address: string;
@@ -28,34 +29,34 @@ const PickupDetailsCard = ({ address, pickupTime }: PickupDetailsCardProps) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    borderRadius: moderateScale(18),
+    paddingHorizontal: scale(12),
+    paddingVertical: verticalScale(6),
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: verticalScale(10),
   },
   address: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#1E1E2D',
     flex: 1,
-    marginRight: 8,
+    marginRight: scale(8),
   },
   divider: {
-    height: 1,
+    height: verticalScale(1),
     backgroundColor: '#ECECEC',
   },
   label: {
-    fontSize: 11,
+    fontSize: responsiveFontSize(11),
     color: '#8D8DAD',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
   time: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#1E1E2D',
   },

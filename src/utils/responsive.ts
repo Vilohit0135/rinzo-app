@@ -8,4 +8,4 @@ export const verticalScale = scale;
 export const moderateScale = scale;
 
 export const responsiveFontSize = (size: number) =>
-  PixelRatio.roundToNearestPixel(size);
+  PixelRatio.roundToNearestPixel(size * (width / BASE_WIDTH));

@@ -1,4 +1,5 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface EmptyCartStateProps {
   title: string;
@@ -30,27 +31,27 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   image: {
-    width: 280,
-    height: 280,
-    marginBottom: 24,
+    width: scale(280),
+    height: verticalScale(280),
+    marginBottom: verticalScale(24),
   },
   textWrap: {
     alignItems: 'center',
   },
   title: {
-    fontSize: 30,
+    fontSize: responsiveFontSize(30),
     fontWeight: '700',
     color: '#111111',
     textAlign: 'center',
   },
   subtitle: {
-    marginTop: 12,
-    fontSize: 18,
+    marginTop: verticalScale(12),
+    fontSize: responsiveFontSize(18),
     fontWeight: '400',
     color: '#A5A5A5',
-    lineHeight: 24,
+    lineHeight: responsiveFontSize(24),
     textAlign: 'center',
-    maxWidth: 300,
+    maxWidth: scale(300),
   },
 });
 
