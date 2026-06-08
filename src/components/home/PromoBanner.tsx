@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants/colors';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
@@ -15,6 +15,9 @@ const PromoBanner = ({ onClaimPress }: PromoBannerProps) => {
       end={{ x: 1, y: 1 }}
       style={styles.banner}
     >
+      <View style={styles.bgImageWrap}>
+        <Image source={require('../../../assets/images/promo.png')} style={styles.bgImage} />
+      </View>
       <View style={styles.content}>
         <View style={styles.label}>
           <Text style={styles.labelText} allowFontScaling={false} numberOfLines={1}>PROMO</Text>
@@ -39,6 +42,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     overflow: 'hidden',
+  },
+  bgImageWrap: {
+    position: 'absolute',
+    left: scale(90),
+    right: 0,
+    top: verticalScale(50),
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bgImage: {
+    width: scale(140),
+    height: verticalScale(140),
+    resizeMode: 'contain',
+    opacity: 1,
   },
   content: {
     flex: 1,

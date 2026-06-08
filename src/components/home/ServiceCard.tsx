@@ -21,7 +21,7 @@ const ServiceCard = ({ title }: ServiceCardProps) => {
 const styles = StyleSheet.create({
   card: {
     width: scale(83),
-    height: verticalScale(85),
+    height: verticalScale(98),
     backgroundColor: COLORS.white,
     borderRadius: moderateScale(20),
     paddingHorizontal: scale(15),
@@ -38,20 +38,20 @@ const styles = StyleSheet.create({
   },
   iconWrap: {
     alignSelf: 'center',
-    width: scale(44),
-    height: verticalScale(44),
+    width: scale(54),
+    height: verticalScale(54),
     borderRadius: moderateScale(7),
     alignItems: 'center',
     justifyContent: 'center',
   },
   iconImage: {
-    width: scale(32),
-    height: verticalScale(32),
+    width: scale(42),
+    height: verticalScale(42),
   },
   title: {
     top: verticalScale(5),
     alignSelf: 'center',
-    fontSize: responsiveFontSize(8.5),
+    fontSize: responsiveFontSize(10.5),
     fontWeight: '700',
     color: COLORS.textPrimary,
   },

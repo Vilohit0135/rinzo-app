@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { getLaundryById } from '../../data/laundry/laundryData';
 import { FavouriteButton } from './FavouriteButton';
@@ -7,6 +7,7 @@ interface FavouriteLaundryCardProps {
   laundryId: string;
   isFavourite: boolean;
   onToggleFavourite: (id: string) => void;
+  imageSource?: any;
 }
 
 const tagIcons: Record<string, string> = {
@@ -19,7 +20,7 @@ const tagIcons: Record<string, string> = {
   'Budget': 'wallet-outline',
 };
 
-const FavouriteLaundryCard = ({ laundryId, isFavourite, onToggleFavourite }: FavouriteLaundryCardProps) => {
+const FavouriteLaundryCard = ({ laundryId, isFavourite, onToggleFavourite, imageSource }: FavouriteLaundryCardProps) => {
   const laundry = getLaundryById(laundryId);
 
   if (!laundry) {
@@ -28,7 +29,11 @@ const FavouriteLaundryCard = ({ laundryId, isFavourite, onToggleFavourite }: Fav
 
   return (
     <View style={styles.card}>
-      <View style={styles.thumbnail} />
+      {imageSource ? (
+        <Image source={imageSource} style={styles.thumbnailImage} />
+      ) : (
+        <View style={styles.thumbnail} />
+      )}
 
       <View style={styles.content}>
         <View style={styles.topRow}>
@@ -91,6 +96,13 @@ const styles = StyleSheet.create({
     height: 99,
     borderRadius: 14,
     backgroundColor: '#F1ECFF',
+    alignSelf: 'center',
+  },
+  thumbnailImage: {
+    width: 79,
+    height: 99,
+    borderRadius: 14,
+    resizeMode: 'cover',
     alignSelf: 'center',
   },
   content: {

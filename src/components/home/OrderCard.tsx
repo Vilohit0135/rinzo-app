@@ -12,7 +12,7 @@ const OrderCard = () => {
   return (
     <View style={styles.card}>
       <View style={styles.iconWrap}>
-        <Image source={require('../../../assets/images/placeholder-icon.png')} style={styles.orderIcon} />
+        <Image source={require('../../../assets/images/Laundry/krishna-laundry.png')} style={styles.orderIcon} />
       </View>
       <View style={styles.details}>
         <Text style={styles.name} allowFontScaling={false} numberOfLines={1}>Krishna Laundry</Text>
@@ -46,14 +46,13 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   orderIcon: {
-    width: scale(24),
-    height: verticalScale(24),
+    width: scale(66),
+    height: verticalScale(66),
   },
   iconWrap: {
     width: scale(56),
     height: verticalScale(56),
     borderRadius: moderateScale(10),
-    backgroundColor: COLORS.purpleLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: scale(10),

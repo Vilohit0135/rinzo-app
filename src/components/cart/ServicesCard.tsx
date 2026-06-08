@@ -1,5 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { scale} from '../../utils/responsive';
 
 interface ServiceItem {
   id: string;
@@ -13,9 +14,10 @@ interface ServiceItem {
 interface ServicesCardProps {
   services: ServiceItem[];
   onUpdateQuantity: (id: string, quantity: number) => void;
+  serviceImages?: Record<string, any>;
 }
 
-const ServicesCard = ({ services, onUpdateQuantity }: ServicesCardProps) => {
+const ServicesCard = ({ services, onUpdateQuantity, serviceImages }: ServicesCardProps) => {
   return (
     <View style={styles.card}>
       {services.map((service, index) => {
@@ -26,9 +28,13 @@ const ServicesCard = ({ services, onUpdateQuantity }: ServicesCardProps) => {
           <View key={service.name}>
             <View style={styles.row}>
               <View style={styles.left}>
-                <View style={styles.iconContainer}>
-                  <Ionicons name={service.icon as any} size={16} color="#8259D2" />
-                </View>
+                {serviceImages && serviceImages[service.name] ? (
+                  <Image source={serviceImages[service.name]} style={styles.serviceImage} />
+                ) : (
+                  <View style={styles.iconContainer}>
+                    <Ionicons name={service.icon as any} size={16} color="#8259D2" />
+                  </View>
+                )}
                 <View style={styles.textStack}>
                   <Text style={styles.serviceName}>{service.name}</Text>
                   <Text style={styles.unitPrice}>{service.price}</Text>
@@ -91,24 +97,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconContainer: {
-    width: 32,
-    height: 32,
+    width: 42,
+    height: 42,
     borderRadius: 8,
     backgroundColor: '#F3E8FF',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
   },
+  serviceImage: {
+    width: scale(42),
+    height: scale(42),
+    borderRadius: 8,
+    resizeMode: 'cover',
+    marginRight: 8,
+  },
   textStack: {
     flex: 1,
   },
   serviceName: {
-    fontSize: 14,
+    marginLeft: scale(4),
+    fontSize: scale(14),
     fontWeight: '700',
     color: '#1E1E2D',
   },
   unitPrice: {
-    fontSize: 12,
+    marginLeft: scale(4),
+    fontSize: scale(12),
     fontWeight: '600',
     color: '#5E35B1',
     marginTop: 4,
@@ -126,13 +141,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#BDBDBD',
     borderRadius: 14,
-    width: 72,
-    height: 22,
+    width: scale(85),
+    height: scale(22),
     gap: 4,
   },
   counterBtn: {
-    width: 15,
-    height: 15,
+    width:scale(15),
+    height: scale(15),
     borderRadius: 12,
     backgroundColor: '#AFAFAF',
     justifyContent: 'center',
@@ -142,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D0D0D0',
   },
   counterValue: {
-    fontSize: 12,
+    fontSize: scale(12),
     fontWeight: '700',
     color: '#000000',
   },
@@ -152,7 +167,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   total: {
-    fontSize: 14,
+    fontSize: scale(14),
     fontWeight: '700',
     color: '#4D2CA3',
   },

@@ -34,7 +34,7 @@ export const allServices: ServiceItem[] = [
   },
   {
     id: '4',
-    title: 'Wash & Iron',
+    title: 'Iron & Fold',
     unitPrice: 65,
     unit: 'Kg',
     subtitle: 'Wash, Dry & Iron Everything',

@@ -21,6 +21,13 @@ type RootStackParamList = {
   LaundryDetail: { id: string };
 };
 
+const laundryImageMap: Record<string, any> = {
+  'Krishna Laundry': require('../../../assets/images/Laundry/krishna-laundry.png'),
+  'Royal Wash': require('../../../assets/images/Laundry/royal-wash.jpg'),
+  'Eco Laundry Hub': require('../../../assets/images/Laundry/krishna-laundry.png'),
+  'Sparkle Dry Clean': require('../../../assets/images/Laundry/royal-wash.jpg'),
+};
+
 const recentSearches = ['Dry Clean', 'Krishna Laundry', 'Iron Service'];
 
 const filterButtons = ['Nearby', 'Top Rated', 'Pickup', 'Open Now'];
@@ -125,6 +132,7 @@ const SearchScreen = () => {
                 <SearchResultCard
                   key={item.id}
                   {...item}
+                  imageSource={laundryImageMap[item.name]}
                   isFavourite={favouriteIds.includes(item.id)}
                   onToggleFavourite={toggleFavourite}
                   onPress={() => navigation.navigate('LaundryDetail', { id: item.id })}

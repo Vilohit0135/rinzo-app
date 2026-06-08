@@ -13,6 +13,7 @@ interface LaundryCardProps {
   tags: string[];
   deliveryTime: string;
   icon?: string;
+  imageSource?: any;
   style?: ViewStyle;
   onPress?: () => void;
   isFavourite: boolean;
@@ -29,12 +30,12 @@ const tagIcons: Record<string, string> = {
   'Budget': 'wallet-outline',
 };
 
-const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, icon, style, onPress, isFavourite, onToggleFavourite }: LaundryCardProps) => {
+const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, icon, imageSource, style, onPress, isFavourite, onToggleFavourite }: LaundryCardProps) => {
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={[styles.card, style]}>
       <View style={styles.leftIconSection}>
         <View style={styles.iconContainer}>
-          <Image source={require('../../../assets/images/placeholder-icon.png')} style={styles.cardIcon} />
+          <Image source={imageSource || require('../../../assets/images/placeholder-icon.png')} style={styles.cardIcon} />
         </View>
       </View>
       <View style={styles.rightContent}>
@@ -100,10 +101,9 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     marginLeft: scale(-10),
-    width: scale(78),
+    width: scale(108),
     height: verticalScale(82),
     borderRadius: moderateScale(14),
-    backgroundColor: '#F3E8FF',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -179,8 +179,9 @@ const styles = StyleSheet.create({
     color: '#8E8EAA',
   },
   cardIcon: {
-    width: scale(28),
-    height: verticalScale(28),
+    width: scale(88),
+    height: verticalScale(88),
+    borderRadius: moderateScale(13),
   },
   favouriteWrap: {
     position: 'absolute',
