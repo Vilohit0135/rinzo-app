@@ -1,8 +1,9 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { COLORS } from '../../constants/colors';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 import type { RootStackParamList } from '../../types/navigation';
 
 const OrderCard = () => {
@@ -11,7 +12,7 @@ const OrderCard = () => {
   return (
     <View style={styles.card}>
       <View style={styles.iconWrap}>
-        <Ionicons name="basket-outline" size={20} color={COLORS.purple} />
+        <Image source={require('../../../assets/images/placeholder-icon.png')} style={styles.orderIcon} />
       </View>
       <View style={styles.details}>
         <Text style={styles.name}>Krishna Laundry</Text>
@@ -29,29 +30,33 @@ const OrderCard = () => {
 
 const styles = StyleSheet.create({
   card: {
-    height: 89,
+    height: verticalScale(89),
     backgroundColor: COLORS.white,
-    borderRadius: 18,
-    paddingHorizontal: 14,
+    borderRadius: moderateScale(18),
+    paddingHorizontal: scale(14),
     flexDirection: 'row',
     alignItems: 'center',
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 6,
+      height: verticalScale(6),
     },
     shadowOpacity: 0.08,
     shadowRadius: 14,
     elevation: 1,
   },
+  orderIcon: {
+    width: scale(24),
+    height: verticalScale(24),
+  },
   iconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 10,
+    width: scale(56),
+    height: verticalScale(56),
+    borderRadius: moderateScale(10),
     backgroundColor: COLORS.purpleLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 10,
+    marginRight: scale(10),
   },
   details: {
     flex: 1,
@@ -62,32 +67,32 @@ const styles = StyleSheet.create({
     color: COLORS.textPrimary,
   },
   status: {
-    marginTop: 5,
+    marginTop: verticalScale(5),
     fontSize: 11,
     fontWeight: '700',
     color: COLORS.purpleDark,
   },
   orderId: {
-    marginTop: 5,
+    marginTop: verticalScale(5),
     fontSize: 10,
     fontWeight: '600',
     color: COLORS.textMuted,
   },
   schedule: {
-    marginTop: 3,
+    marginTop: verticalScale(3),
     fontSize: 10,
     fontWeight: '600',
     color: COLORS.textMuted,
   },
   button: {
-    height: 33,
-    borderRadius: 11,
-    borderWidth: 1.4,
+    height: verticalScale(33),
+    borderRadius: moderateScale(11),
+    borderWidth: moderateScale(1.4),
     borderColor: COLORS.borderPurple,
-    paddingHorizontal: 12,
+    paddingHorizontal: scale(12),
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: scale(4),
   },
   buttonText: {
     fontSize: 11,

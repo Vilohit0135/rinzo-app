@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { FlatList, Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 interface HeaderSectionProps {
   onNotificationPress?: () => void;
@@ -85,8 +86,8 @@ const HeaderSection = ({ onNotificationPress, onProfilePress }: HeaderSectionPro
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 18,
-    paddingTop: 15,
+    paddingHorizontal: scale(18),
+    paddingTop: verticalScale(15),
   },
   topRow: {
     flexDirection: 'row',
@@ -94,12 +95,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   profileImage: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: scale(40),
+    height: verticalScale(40),
+    borderRadius: moderateScale(20),
   },
   greeting: {
-    marginTop: 15,
+    marginTop: verticalScale(15),
     fontSize: 15,
     fontWeight: '500',
     color: COLORS.textMuted,
@@ -112,10 +113,10 @@ const styles = StyleSheet.create({
     lineHeight: 36,
   },
   locationRow: {
-    marginTop: 1,
+    marginTop: verticalScale(1),
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: scale(6),
   },
   locationText: {
     fontSize: 14,
@@ -130,26 +131,26 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     width: '80%',
-    maxHeight: 420,
+    maxHeight: verticalScale(420),
     backgroundColor: '#fff',
-    borderRadius: 20,
-    paddingVertical: 20,
-    paddingHorizontal: 16,
+    borderRadius: moderateScale(20),
+    paddingVertical: verticalScale(20),
+    paddingHorizontal: scale(16),
   },
   dropdownTitle: {
     fontSize: 18,
     fontWeight: '700',
     color: '#1E1E2D',
-    marginBottom: 16,
+    marginBottom: verticalScale(16),
     textAlign: 'center',
   },
   cityOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 8,
-    borderRadius: 12,
+    gap: scale(12),
+    paddingVertical: verticalScale(14),
+    paddingHorizontal: scale(8),
+    borderRadius: moderateScale(12),
   },
   cityOptionActive: {
     backgroundColor: '#F3EEFF',

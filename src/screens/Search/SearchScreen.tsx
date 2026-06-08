@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+﻿import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -25,10 +25,10 @@ const recentSearches = ['Dry Clean', 'Krishna Laundry', 'Iron Service'];
 const filterButtons = ['Nearby', 'Top Rated', 'Pickup', 'Open Now'];
 
 const searchResults = [
-  { id: 'krishna-laundry', name: 'Krishna Laundry', rating: 4.8, reviewCount: 231, distance: '1.2 km away', price: '? 50/kg', tags: ['Pickup', 'Fast Service'], deliveryTime: '2:00 PM' },
-  { id: 'sparkle-dry-clean', name: 'Sparkle Dry Clean', rating: 4.6, reviewCount: 189, distance: '2.5 km away', price: '? 80/kg', tags: ['Dry Clean', 'Free Pickup'], deliveryTime: '4:00 PM' },
-  { id: 'royal-wash', name: 'Royal Wash', rating: 4.9, reviewCount: 345, distance: '0.8 km away', price: '? 60/kg', tags: ['Express', 'Eco Friendly'], deliveryTime: '1:00 PM' },
-  { id: 'eco-laundry-hub', name: 'Eco Laundry Hub', rating: 4.7, reviewCount: 156, distance: '3.1 km away', price: '? 45/kg', tags: ['Budget', 'Pickup'], deliveryTime: '5:00 PM' },
+  { id: 'krishna-laundry', name: 'Krishna Laundry', rating: 4.8, reviewCount: 231, distance: '1.2 km away', price: '₹ 50/kg', tags: ['Pickup', 'Fast Service'], deliveryTime: '2:00 PM' },
+  { id: 'sparkle-dry-clean', name: 'Sparkle Dry Clean', rating: 4.6, reviewCount: 189, distance: '2.5 km away', price: '₹ 80/kg', tags: ['Dry Clean', 'Free Pickup'], deliveryTime: '4:00 PM' },
+  { id: 'royal-wash', name: 'Royal Wash', rating: 4.9, reviewCount: 345, distance: '0.8 km away', price: '₹ 60/kg', tags: ['Express', 'Eco Friendly'], deliveryTime: '1:00 PM' },
+  { id: 'eco-laundry-hub', name: 'Eco Laundry Hub', rating: 4.7, reviewCount: 156, distance: '3.1 km away', price: '₹ 45/kg', tags: ['Budget', 'Pickup'], deliveryTime: '5:00 PM' },
 ];
 
 const SearchScreen = () => {

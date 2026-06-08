@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
+import { scale, verticalScale, moderateScale } from '../../utils/responsive';
 
 interface BottomTabBarProps {
   activeTab?: 'Home' | 'Search' | 'Orders' | 'Profile';
@@ -42,33 +43,33 @@ const BottomTabBar = ({ activeTab = 'Home', onTabPress }: BottomTabBarProps) => 
 const styles = StyleSheet.create({
   container: {
     position: 'absolute',
-    bottom: 24,
-    left: 18,
-    right: 18,
-    height: 66,
-    borderRadius: 33,
-    paddingHorizontal: 11,
+    bottom: verticalScale(24),
+    left: scale(18),
+    right: scale(18),
+    height: verticalScale(66),
+    borderRadius: moderateScale(33),
+    paddingHorizontal: scale(11),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
-      height: 8,
+      height: verticalScale(8),
     },
     shadowOpacity: 0.14,
     shadowRadius: 17,
     elevation: 6,
   },
   activeTab: {
-    width: 105,
-    height: 45,
-    borderRadius: 23,
+    width: scale(105),
+    height: verticalScale(45),
+    borderRadius: moderateScale(23),
     backgroundColor: COLORS.white,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 6,
+    gap: scale(6),
   },
   activeText: {
     fontSize: 12,
@@ -76,8 +77,8 @@ const styles = StyleSheet.create({
     color: COLORS.purple,
   },
   inactiveTab: {
-    width: 36,
-    height: 45,
+    width: scale(36),
+    height: verticalScale(45),
     alignItems: 'center',
     justifyContent: 'center',
   },
