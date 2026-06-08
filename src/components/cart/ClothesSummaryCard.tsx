@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface ClothesItem {
   name: string;
@@ -45,38 +46,38 @@ const ClothesSummaryCard = ({ items, onUpdateQuantity }: ClothesSummaryCardProps
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    paddingHorizontal: 12,
+    borderRadius: moderateScale(18),
+    paddingHorizontal: scale(12),
   },
   row: {
-    height: 44,
+    height: verticalScale(44),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
   name: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#1E1E2D',
   },
   controls: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: scale(8),
   },
   button: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
+    width: scale(26),
+    height: verticalScale(26),
+    borderRadius: moderateScale(13),
     backgroundColor: '#D7D7D7',
     alignItems: 'center',
     justifyContent: 'center',
   },
   quantity: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#1E1E2D',
-    minWidth: 18,
+    minWidth: scale(18),
     textAlign: 'center',
   },
 });

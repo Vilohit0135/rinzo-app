@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { scale} from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface ServiceItem {
   id: string;
@@ -78,15 +78,15 @@ const ServicesCard = ({ services, onUpdateQuantity, serviceImages }: ServicesCar
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    paddingTop: 8,
-    paddingBottom: 8,
-    paddingHorizontal: 12,
+    borderRadius: moderateScale(20),
+    paddingTop: verticalScale(8),
+    paddingBottom: verticalScale(8),
+    paddingHorizontal: scale(12),
     borderWidth: 1,
     borderColor: '#EFEAFB',
   },
   row: {
-    height: 72,
+    height: verticalScale(72),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -97,36 +97,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   iconContainer: {
-    width: 42,
-    height: 42,
-    borderRadius: 8,
+    width: scale(42),
+    height: verticalScale(42),
+    borderRadius: moderateScale(8),
     backgroundColor: '#F3E8FF',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 8,
+    marginRight: scale(8),
   },
   serviceImage: {
     width: scale(42),
     height: scale(42),
-    borderRadius: 8,
+    borderRadius: moderateScale(8),
     resizeMode: 'cover',
-    marginRight: 8,
+    marginRight: scale(8),
   },
   textStack: {
     flex: 1,
   },
   serviceName: {
     marginLeft: scale(4),
-    fontSize: scale(14),
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#1E1E2D',
   },
   unitPrice: {
     marginLeft: scale(4),
-    fontSize: scale(12),
+    fontSize: responsiveFontSize(12),
     fontWeight: '600',
     color: '#331970',
-    marginTop: 4,
+    marginTop: verticalScale(4),
   },
   center: {
     width: '30%',
@@ -140,15 +140,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#BDBDBD',
-    borderRadius: 14,
+    borderRadius: moderateScale(14),
     width: scale(85),
     height: scale(22),
-    gap: 4,
+    gap: scale(4),
   },
   counterBtn: {
-    width:scale(15),
+    width: scale(15),
     height: scale(15),
-    borderRadius: 12,
+    borderRadius: moderateScale(12),
     backgroundColor: '#AFAFAF',
     justifyContent: 'center',
     alignItems: 'center',
@@ -157,7 +157,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D0D0D0',
   },
   counterValue: {
-    fontSize: scale(12),
+    fontSize: responsiveFontSize(12),
     fontWeight: '700',
     color: '#000000',
   },
@@ -167,12 +167,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   total: {
-    fontSize: scale(14),
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#331970',
   },
   divider: {
-    height: 1,
+    height: verticalScale(1),
     backgroundColor: '#F1F1F1',
   },
 });

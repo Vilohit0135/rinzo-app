@@ -1,5 +1,6 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface CartHeaderProps {
   onBackPress: () => void;
@@ -18,7 +19,7 @@ const CartHeader = ({ onBackPress }: CartHeaderProps) => {
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 16,
+    marginTop: verticalScale(16),
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -27,15 +28,15 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     zIndex: 1,
-    width: 52,
-    height: 52,
-    borderRadius: 26,
+    width: scale(52),
+    height: verticalScale(52),
+    borderRadius: moderateScale(26),
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
   },
   title: {
-    fontSize: 28,
+    fontSize: responsiveFontSize(28),
     fontWeight: '500',
     color: '#111111',
   },

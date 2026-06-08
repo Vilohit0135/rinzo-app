@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 const CouponSection = () => {
   return (
@@ -19,21 +20,21 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: scale(8),
   },
   input: {
-    height: 44,
+    height: verticalScale(44),
     width: '72%',
-    borderRadius: 12,
+    borderRadius: moderateScale(12),
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#ECECEC',
-    paddingHorizontal: 14,
-    fontSize: 14,
+    paddingHorizontal: scale(14),
+    fontSize: responsiveFontSize(14),
     color: '#1E1E2D',
   },
   applyText: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     fontWeight: '700',
     color: '#4D2CA3',
   },
