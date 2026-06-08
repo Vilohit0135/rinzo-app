@@ -10,7 +10,7 @@ const CartHeader = ({ onBackPress }: CartHeaderProps) => {
   return (
     <View style={styles.header}>
       <TouchableOpacity style={styles.backButton} onPress={onBackPress} activeOpacity={0.7}>
-        <Ionicons name="chevron-back" size={24} color="#8C8C8C" />
+        <Ionicons name="chevron-back" size={20} color="#8C8C8C" />
       </TouchableOpacity>
       <Text style={styles.title}>Your cart</Text>
     </View>
@@ -28,10 +28,9 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     zIndex: 1,
-    width: scale(52),
-    height: verticalScale(52),
+    width: scale(42),
+    height: verticalScale(42),
     borderRadius: moderateScale(26),
-    backgroundColor: '#F5F5F5',
     alignItems: 'center',
     justifyContent: 'center',
   },
