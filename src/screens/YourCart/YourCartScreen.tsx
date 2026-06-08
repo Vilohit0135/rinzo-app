@@ -27,6 +27,13 @@ type RootStackParamList = {
   OrderSummary: undefined;
 };
 
+const serviceImageMap: Record<string, any> = {
+  'Wash & Fold': require('../../../assets/images/Home/wash-fold.png'),
+  'Wash and Fold': require('../../../assets/images/Home/wash-fold.png'),
+  'Iron Only': require('../../../assets/images/Home/iron-only.png'),
+  'Dry Clean': require('../../../assets/images/Home/dry-only.png'),
+};
+
 const serviceIcons: Record<string, string> = {
   '1': 'shirt-outline',
   '2': 'sparkles-outline',
@@ -94,11 +101,11 @@ const YourCartScreen = () => {
               showsVerticalScrollIndicator={false}
               contentContainerStyle={styles.scroll}
             >
-              <LaundryInfoCard {...cartData.laundryInfo} />
+              <LaundryInfoCard {...cartData.laundryInfo} imageSource={require('../../../assets/images/Laundry/krishna-laundry.png')} />
 
               <View style={styles.sectionServices}>
                 <Text style={styles.sectionTitle}>Services</Text>
-                <ServicesCard services={services} onUpdateQuantity={updateQuantity} />
+                <ServicesCard services={services} onUpdateQuantity={updateQuantity} serviceImages={serviceImageMap} />
               </View>
 
               <View style={styles.sectionClothes}>

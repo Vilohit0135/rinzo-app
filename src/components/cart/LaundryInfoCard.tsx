@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 interface LaundryInfoCardProps {
@@ -7,12 +7,17 @@ interface LaundryInfoCardProps {
   reviews: number;
   distance: string;
   price: string;
+  imageSource?: any;
 }
 
-const LaundryInfoCard = ({ name, rating, reviews, distance, price }: LaundryInfoCardProps) => {
+const LaundryInfoCard = ({ name, rating, reviews, distance, price, imageSource }: LaundryInfoCardProps) => {
   return (
     <View style={styles.card}>
-      <View style={styles.thumbnail} />
+      {imageSource ? (
+        <Image source={imageSource} style={styles.thumbnailImage} />
+      ) : (
+        <View style={styles.thumbnail} />
+      )}
       <View style={styles.content}>
         <View style={styles.row1}>
           <Text style={styles.name} numberOfLines={1}>{name}</Text>
@@ -51,6 +56,12 @@ const styles = StyleSheet.create({
     height: 62,
     borderRadius: 12,
     backgroundColor: '#F1ECFF',
+  },
+  thumbnailImage: {
+    width: 62,
+    height: 62,
+    borderRadius: 12,
+    resizeMode: 'cover',
   },
   content: {
     flex: 1,

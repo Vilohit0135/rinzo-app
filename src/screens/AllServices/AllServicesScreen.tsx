@@ -6,11 +6,18 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
-import { responsiveFontSize } from '../../utils/responsive';
+import { responsiveFontSize, scale } from '../../utils/responsive';
 import { allServices, type ServiceItem } from '../../data/services/servicesData';
 import { useBookingStore } from '../../store/bookingStore';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AllServices'>;
+
+const serviceImageMap: Record<string, any> = {
+  'Wash & Fold': require('../../../assets/images/Home/wash-fold.png'),
+  'Iron Only': require('../../../assets/images/Home/iron-only.png'),
+  'Dry Clean': require('../../../assets/images/Home/dry-only.png'),
+  'Iron & Fold': require('../../../assets/images/Home/fold.png'),
+};
 
 const AllServicesScreen = ({ navigation }: Props) => {
   const [quantities, setQuantities] = useState<Record<string, number>>(() =>
@@ -57,7 +64,7 @@ const AllServicesScreen = ({ navigation }: Props) => {
         </View>
 
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {allServices.map((item) => (
+          {allServices.slice(0, 4).map((item) => (
             <ServiceCard
               key={item.id}
               item={item}
@@ -102,7 +109,7 @@ const ServiceCard = ({
 }) => (
   <View style={cardStyles.card}>
     <View style={cardStyles.iconWrap}>
-      <Image source={require('../../../assets/images/placeholder-icon.png')} style={cardStyles.iconImage} />
+      <Image source={serviceImageMap[item.title] || require('../../../assets/images/Home/wash-fold.png')} style={cardStyles.iconImage} />
     </View>
     <View style={cardStyles.middle}>
       <Text style={cardStyles.title} numberOfLines={1} allowFontScaling={false}>{item.title}</Text>
@@ -221,8 +228,8 @@ const cardStyles = StyleSheet.create({
     }),
   },
   iconWrap: {
-    width: 46,
-    height: 46,
+    width: 66,
+    height: 66,
     borderRadius: 14,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
@@ -231,8 +238,8 @@ const cardStyles = StyleSheet.create({
     alignItems: 'center',
   },
   iconImage: {
-    width: 28,
-    height: 28,
+    width: scale(40),
+    height:scale(40),
   },
   middle: {
     flex: 1,

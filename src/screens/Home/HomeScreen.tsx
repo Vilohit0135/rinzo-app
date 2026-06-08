@@ -42,6 +42,20 @@ type QuickAction = {
   route?: QuickActionRoute;
 };
 
+const serviceImageMap: Record<string, any> = {
+  'Wash & Fold': require('../../../assets/images/Home/wash-fold.png'),
+  'Iron Only': require('../../../assets/images/Home/iron-only.png'),
+  'Dry Clean': require('../../../assets/images/Home/dry-only.png'),
+  'Iron & Fold': require('../../../assets/images/Home/fold.png'),
+};
+
+const laundryImageMap: Record<string, any> = {
+  'Krishna Laundry': require('../../../assets/images/Laundry/krishna-laundry.png'),
+  'Royal Wash': require('../../../assets/images/Laundry/royal-wash.jpg'),
+  'Eco Laundry Hub': require('../../../assets/images/Laundry/krishna-laundry.png'),
+  'Sparkle Dry Clean': require('../../../assets/images/Laundry/royal-wash.jpg'),
+};
+
 const quickActions: QuickAction[] = [
   { title: 'Schedule Pickup', icon: 'calendar-outline', route: 'BookPickup' },
   { title: 'Track Order', icon: 'navigate-outline', route: 'OrderTracking' as const },
@@ -83,11 +97,11 @@ const HomeScreen = () => {
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.serviceCardsRow}
           >
-            {allServices.slice(0, 6).map((service) => (
+            {allServices.slice(0, 4).map((service) => (
               <View key={service.id} style={styles.homeServiceCard}>
                 <View style={styles.homeServiceIconWrap}>
                   <Image
-                    source={require('../../../assets/images/placeholder-icon.png')}
+                    source={serviceImageMap[service.title] || require('../../../assets/images/Home/wash-fold.png')}
                     style={styles.homeServiceIcon}
                   />
                 </View>
@@ -138,6 +152,7 @@ const HomeScreen = () => {
               <LaundryCard
                 key={item.id}
                 {...item}
+                imageSource={laundryImageMap[item.name]}
                 style={{ width: scale(340) }}
                 onPress={() => navigation.navigate('LaundryDetail', { id: item.id })}
                 isFavourite={favouriteIds.includes(item.id)}
@@ -203,7 +218,7 @@ const styles = StyleSheet.create({
   },
   homeServiceCard: {
     width: scale(83),
-    height: verticalScale(100),
+    height: verticalScale(110),
     backgroundColor: COLORS.white,
     borderRadius: moderateScale(20),
     paddingHorizontal: scale(14),
@@ -217,24 +232,24 @@ const styles = StyleSheet.create({
   },
   homeServiceIconWrap: {
     alignSelf: 'center',
-    width: scale(44),
-    height: verticalScale(44),
+    width: scale(54),
+    height: verticalScale(54),
     borderRadius: moderateScale(7),
     backgroundColor: COLORS.white,
     justifyContent: 'center',
     alignItems: 'center',
   },
   homeServiceIcon: {
-    width: scale(32),
-    height: verticalScale(32),
+    width: scale(46),
+    height: verticalScale(46),
   },
   homeServiceTitle: {
     alignSelf: 'center',
-    fontSize: responsiveFontSize(8.5),
+    fontSize: responsiveFontSize(11.5),
     fontWeight: '700',
     color: COLORS.textPrimary,
     textAlign: 'center',
-    marginTop: verticalScale(8),
+    marginTop: verticalScale(4),
   },
   quickActionsSection: {
     marginTop: verticalScale(15),

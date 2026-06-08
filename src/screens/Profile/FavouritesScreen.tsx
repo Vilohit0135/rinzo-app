@@ -9,6 +9,14 @@ import FavouriteLaundryCard from '../../components/favourites/FavouriteLaundryCa
 import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { useFavouritesStore } from '../../store/favouritesStore';
+import { getLaundryById } from '../../data/laundry/laundryData';
+
+const laundryImageMap: Record<string, any> = {
+  'Krishna Laundry': require('../../../assets/images/Laundry/krishna-laundry.png'),
+  'Royal Wash': require('../../../assets/images/Laundry/royal-wash.jpg'),
+  'Eco Laundry Hub': require('../../../assets/images/Laundry/krishna-laundry.png'),
+  'Sparkle Dry Clean': require('../../../assets/images/Laundry/royal-wash.jpg'),
+};
 
 const FavouritesScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Favourites'>>();
@@ -40,14 +48,18 @@ const FavouritesScreen = () => {
           </View>
         ) : (
           <View style={styles.listSection}>
-            {favouriteIds.map((id) => (
-              <FavouriteLaundryCard
-                key={id}
-                laundryId={id}
-                isFavourite={true}
-                onToggleFavourite={toggleFavourite}
-              />
-            ))}
+            {favouriteIds.map((id) => {
+              const laundry = getLaundryById(id);
+              return (
+                <FavouriteLaundryCard
+                  key={id}
+                  laundryId={id}
+                  imageSource={laundry ? laundryImageMap[laundry.name] : undefined}
+                  isFavourite={true}
+                  onToggleFavourite={toggleFavourite}
+                />
+              );
+            })}
           </View>
         )}
       </ScrollView>

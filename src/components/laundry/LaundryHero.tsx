@@ -5,13 +5,15 @@ interface LaundryHeroProps {
   onBackPress?: () => void;
   isFavourite?: boolean;
   onToggleFavourite?: () => void;
+  imageSource?: any;
 }
 
-const LaundryHero = ({ onBackPress, isFavourite, onToggleFavourite }: LaundryHeroProps) => {
+const LaundryHero = ({ onBackPress, isFavourite, onToggleFavourite, imageSource }: LaundryHeroProps) => {
   return (
     <ImageBackground
       style={styles.hero}
       resizeMode="cover"
+      source={imageSource}
     >
       <View style={styles.topBar}>
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.8} onPress={onBackPress}>

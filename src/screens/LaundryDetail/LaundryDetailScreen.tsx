@@ -12,6 +12,10 @@ import { COLORS } from '../../constants/colors';
 import { getLaundryById } from '../../data/laundry/laundryData';
 import { useFavouritesStore } from '../../store/favouritesStore';
 
+const heroImageMap: Record<string, any> = {
+  'krishna-laundry': require('../../../assets/images/Detail/krishna-d.png'),
+};
+
 type RootStackParamList = {
   LaundryDetail: { id: string };
 };
@@ -38,6 +42,7 @@ const LaundryDetailScreen = () => {
           onBackPress={() => navigation.goBack()}
           isFavourite={favouriteIds.includes(item.id)}
           onToggleFavourite={() => toggleFavourite(item.id)}
+          imageSource={heroImageMap[item.id]}
         />
 
         <View style={styles.details}>
