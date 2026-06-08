@@ -14,7 +14,6 @@ import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import BottomTabBar from "../../components/home/BottomTabBar";
 import { addAddress } from "../../data/addressStore";
 import CityIcon from "../../assets/icons/city.png";
 import LocationIcon from "../../assets/icons/location.png";
@@ -275,14 +274,7 @@ const AddAddressScreen = () => {
           </TouchableOpacity>
         </ScrollView>
 
-        <BottomTabBar
-          activeTab="Profile"
-          onTabPress={(tab) => {
-            if (tab === "Home") navigation.navigate("Home");
-            if (tab === "Search") navigation.navigate("Search");
-            if (tab === "Orders") navigation.navigate("YourCart");
-          }}
-        />
+
       </View>
     </SafeAreaView>
   );

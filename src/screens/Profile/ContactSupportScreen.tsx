@@ -1,13 +1,13 @@
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import ContactSupportHeader from '../../components/support/ContactSupportHeader';
 import SupportHeroCard from '../../components/support/SupportHeroCard';
 import SupportOptionCard from '../../components/support/SupportOptionCard';
 import RecentConversationCard from '../../components/support/RecentConversationCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { supportOptions, recentConversation } from '../../data/support/contactSupportData';
 
@@ -25,10 +25,7 @@ const ContactSupportScreen = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}
-      >
+      <ScrollableScreen contentContainerStyle={styles.scroll}>
         <ContactSupportHeader onBackPress={() => navigation.goBack()} />
 
         <View style={styles.heroSection}>
@@ -54,8 +51,8 @@ const ContactSupportScreen = () => {
         <View style={styles.recentSection}>
           <RecentConversationCard conversation={recentConversation} />
         </View>
-      </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+      </ScrollableScreen>
+
     </SafeAreaView>
   );
 };

@@ -1,4 +1,5 @@
 ﻿import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -7,7 +8,6 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import SearchResultCard from '../../components/search/SearchResultCard';
 import EmptySearchState from '../../components/search/EmptySearchState';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { useFavouritesStore } from '../../store/favouritesStore';
 import { responsiveFontSize } from '../../utils/responsive';
@@ -90,8 +90,7 @@ const SearchScreen = () => {
         {searchQuery && filteredResults.length === 0 ? (
           <EmptySearchState query={searchQuery} />
         ) : (
-          <ScrollView
-            showsVerticalScrollIndicator={false}
+          <ScrollableScreen
             contentContainerStyle={styles.scrollContent}
           >
             {!searchQuery && (
@@ -139,10 +138,11 @@ const SearchScreen = () => {
                 />
               ))}
             </View>
-          </ScrollView>
+          </ScrollableScreen>
         )}
+
       </KeyboardAvoidingView>
-      <BottomTabBar activeTab="Search" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Orders') navigation.navigate('YourCart'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
+
     </SafeAreaView>
   );
 };

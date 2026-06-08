@@ -65,12 +65,12 @@ const styles = StyleSheet.create({
   value: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1E1E2D',
+    color: '#331970',
   },
   discountValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#2BAA66',
+    color: '#331970',
   },
   totalLabel: {
     fontSize: 15,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   totalValue: {
     fontSize: 15,
     fontWeight: '700',
-    color: '#1E1E2D',
+    color: '#331970',
   },
 });
 

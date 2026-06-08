@@ -49,7 +49,10 @@ const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, del
         </View>
 
         <View style={styles.secondRow}>
-          <Text style={styles.distance} allowFontScaling={false} numberOfLines={1}>{distance}</Text>
+          <View style={styles.locationGroup}>
+            <Ionicons name="location-outline" size={12} color="#8259D2" />
+            <Text style={styles.distance} allowFontScaling={false} numberOfLines={1}>{distance}</Text>
+          </View>
           <Text style={styles.price} allowFontScaling={false} numberOfLines={1}>{price}</Text>
         </View>
 
@@ -146,11 +149,16 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(12),
     color: '#8E8EAA',
   },
+  locationGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: scale(4),
+  },
   price: {
     fontSize: responsiveFontSize(14),
     marginTop: verticalScale(3),
     fontWeight: '700',
-    color: '#6C4DFF',
+    color: '#331970',
   },
   tagsRow: {
     marginTop: verticalScale(5),

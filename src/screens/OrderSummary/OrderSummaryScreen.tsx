@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-  StyleSheet,
+    View,
+    Text,
+    TouchableOpacity,
+    ScrollView,
+    StyleSheet,
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { useTabBar } from '../../utils/TabBarContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from "@react-native-vector-icons/ionicons/static";
@@ -13,7 +15,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { useBookingStore } from '../../store/bookingStore';
 import { responsiveFontSize } from '../../utils/responsive';
 
@@ -27,6 +28,14 @@ const DISCOUNT = 20;
 const formatCurrency = (amount: number) => `₹${amount}`;
 
 const OrderSummaryScreen = ({ navigation }: Props) => {
+  const { setTabBarVisible } = useTabBar();
+
+  useFocusEffect(
+    useCallback(() => {
+      setTabBarVisible(false);
+    }, [])
+  );
+
   const services = useBookingStore((s) => s.services);
   const pickupDate = useBookingStore((s) => s.pickupDate);
   const pickupTime = useBookingStore((s) => s.pickupTime);
@@ -121,14 +130,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
           </TouchableOpacity>
         </ScrollView>
 
-        <BottomTabBar
-          activeTab="Orders"
-          onTabPress={(tab) => {
-            if (tab === 'Home') navigation.navigate('Home');
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Profile') navigation.navigate('Profile');
-          }}
-        />
+
       </View>
     </SafeAreaView>
   );
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
   summaryPrice: {
     fontSize: responsiveFontSize(14),
     fontWeight: '700',
-    color: '#8259D2',
+    color: '#331970',
   },
   summaryDivider: {
     height: 1,
@@ -281,7 +283,7 @@ const styles = StyleSheet.create({
   pricingValue: {
     fontSize: responsiveFontSize(14),
     fontWeight: '600',
-    color: '#1A1A1A',
+    color: '#331970',
   },
   pricingLabelDiscount: {
     fontSize: responsiveFontSize(14),
@@ -291,7 +293,7 @@ const styles = StyleSheet.create({
   pricingDiscount: {
     fontSize: responsiveFontSize(14),
     fontWeight: '600',
-    color: '#41B883',
+    color: '#331970',
   },
   pricingDivider: {
     height: 1,
@@ -305,7 +307,7 @@ const styles = StyleSheet.create({
   pricingTotalValue: {
     fontSize: responsiveFontSize(16),
     fontWeight: '700',
-    color: '#8259D2',
+    color: '#331970',
   },
 
   proceedButton: {

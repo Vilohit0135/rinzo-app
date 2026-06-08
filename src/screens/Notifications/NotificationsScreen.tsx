@@ -5,7 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import NotificationHeader from '../../components/notifications/NotificationHeader';
 import NotificationCard from '../../components/notifications/NotificationCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { notificationsData } from '../../data/notifications/notificationsData';
 
@@ -30,7 +29,7 @@ const NotificationsScreen = () => {
         contentContainerStyle={styles.list}
         showsVerticalScrollIndicator={false}
       />
-      <BottomTabBar activeTab="Home" onTabPress={(tab) => { if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
+
     </SafeAreaView>
   );
 };

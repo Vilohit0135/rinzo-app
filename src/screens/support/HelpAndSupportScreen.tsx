@@ -3,9 +3,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import SupportHeader from '../../components/support/SupportHeader';
 import SupportMenuCard from '../../components/support/SupportMenuCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { helpSupportData } from '../../data/support/helpSupportData';
 
@@ -31,17 +31,14 @@ const HelpAndSupportScreen = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}
-      >
+      <ScrollableScreen contentContainerStyle={styles.scroll}>
         <SupportHeader onBackPress={() => navigation.goBack()} />
 
         <Text style={styles.sectionTitle}>How can we help you ?</Text>
 
         <SupportMenuCard data={helpSupportData} onItemPress={handleItemPress} />
-      </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+      </ScrollableScreen>
+
     </SafeAreaView>
   );
 };

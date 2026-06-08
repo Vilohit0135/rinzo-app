@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -8,7 +9,6 @@ import { pickupDates, pickupTimeSlots } from '../../data/schedulePickup/schedule
 import ScheduleHeader from '../../components/schedule-pickup/ScheduleHeader';
 import DateSelector from '../../components/schedule-pickup/DateSelector';
 import TimeSlotList from '../../components/schedule-pickup/TimeSlotList';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { useBookingStore } from '../../store/bookingStore';
 import { responsiveFontSize } from '../../utils/responsive';
 
@@ -40,7 +40,7 @@ const SchedulePickupScreen = ({ navigation }: Props) => {
       <StatusBar style="dark" />
       <View style={styles.container}>
         <ScheduleHeader onBack={() => navigation.goBack()} />
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollableScreen style={styles.content}>
           <Text style={styles.sectionTitle} allowFontScaling={false} numberOfLines={1}>Choose Date</Text>
           <DateSelector
             dates={pickupDates}
@@ -53,15 +53,8 @@ const SchedulePickupScreen = ({ navigation }: Props) => {
             selectedSlot={selectedTimeSlot}
             onSelectSlot={handleSelectSlot}
           />
-        </ScrollView>
-        <BottomTabBar
-          activeTab="Home"
-          onTabPress={(tab) => {
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Orders') navigation.navigate('YourCart');
-            if (tab === 'Profile') navigation.navigate('Profile');
-          }}
-        />
+        </ScrollableScreen>
+
       </View>
     </SafeAreaView>
   );

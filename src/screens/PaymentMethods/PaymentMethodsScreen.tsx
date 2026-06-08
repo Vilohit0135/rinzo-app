@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { useTabBar } from '../../utils/TabBarContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { responsiveFontSize } from '../../utils/responsive';
 
 type RootStackParamList = {
@@ -33,6 +34,14 @@ const wallets = [
 
 const PaymentMethodsScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'PaymentMethods'>>();
+  const { setTabBarVisible } = useTabBar();
+
+  useFocusEffect(
+    useCallback(() => {
+      setTabBarVisible(false);
+    }, [])
+  );
+
   const [selectedCard, setSelectedCard] = useState<number>(0);
   const [selectedUpi, setSelectedUpi] = useState('axis');
 
@@ -51,14 +60,14 @@ const PaymentMethodsScreen = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.canGoBack() ? navigation.goBack() : (navigation as any).navigate('ProfileTab', { screen: 'Profile' })} activeOpacity={0.7}>
               <Ionicons name="chevron-back" size={22} color="#BDBDBD" />
             </TouchableOpacity>
             <Text style={styles.headerTitle} allowFontScaling={false}>Payment methods</Text>
           </View>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
           {/* Section 1: Saved Cards */}
           <Text style={styles.sectionTitle} allowFontScaling={false}>Saved Cards</Text>
 
@@ -141,14 +150,7 @@ const PaymentMethodsScreen = () => {
           </TouchableOpacity>
         </ScrollView>
 
-        <BottomTabBar
-          activeTab="Profile"
-          onTabPress={(tab) => {
-            if (tab === 'Home') navigation.navigate('Home');
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Orders') navigation.navigate('YourCart');
-          }}
-        />
+
       </View>
     </SafeAreaView>
   );

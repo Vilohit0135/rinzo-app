@@ -1,13 +1,13 @@
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import HelpHeader from '../../components/help/HelpHeader';
 import HelpSearchBar from '../../components/help/HelpSearchBar';
 import HelpTopicCard from '../../components/help/HelpTopicCard';
 import SupportCard from '../../components/help/SupportCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { helpTopics } from '../../data/help/helpCenterData';
 
@@ -25,10 +25,7 @@ const HelpCenterScreen = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}
-      >
+      <ScrollableScreen contentContainerStyle={styles.scroll}>
         <HelpHeader onBackPress={() => navigation.goBack()} />
 
         <View style={styles.searchSection}>
@@ -52,8 +49,8 @@ const HelpCenterScreen = () => {
         <View style={styles.supportSection}>
           <SupportCard onChatPress={() => navigation.navigate('HelpAndSupport')} />
         </View>
-      </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+      </ScrollableScreen>
+
     </SafeAreaView>
   );
 };

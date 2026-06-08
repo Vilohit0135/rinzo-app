@@ -6,7 +6,6 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import OffersHeader from '../../components/offers/OffersHeader';
 import FeaturedOfferBanner from '../../components/offers/FeaturedOfferBanner';
 import OfferCard from '../../components/offers/OfferCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { offersData } from '../../data/offers/offersData';
 
@@ -36,7 +35,7 @@ const OffersScreen = () => {
           ))}
         </View>
       </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+
     </SafeAreaView>
   );
 };

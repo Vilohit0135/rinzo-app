@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AddressCard from '../../components/address/AddressCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { getAddresses, subscribe } from '../../data/addressStore';
 
 type RootStackParamList = {
@@ -55,7 +55,7 @@ const SavedAddressScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        <ScrollableScreen contentContainerStyle={styles.scrollContent}>
           {addresses.map((item, index) => (
             <AddressCard
               key={index}
@@ -83,16 +83,9 @@ const SavedAddressScreen = () => {
             <Ionicons name="add" size={24} color="#4B238D" />
             <Text style={styles.bottomCtaText}>Add New Address</Text>
           </TouchableOpacity>
-        </ScrollView>
+        </ScrollableScreen>
 
-        <BottomTabBar
-          activeTab="Profile"
-          onTabPress={(tab) => {
-            if (tab === 'Home') navigation.navigate('Home');
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Orders') navigation.navigate('YourCart');
-          }}
-        />
+
       </View>
     </SafeAreaView>
   );

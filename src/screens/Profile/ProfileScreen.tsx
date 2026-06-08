@@ -1,13 +1,13 @@
-﻿import { ScrollView, StyleSheet } from 'react-native';
+﻿import { StyleSheet } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ProfileCard from '../../components/profile/ProfileCard';
 import StatsCard from '../../components/profile/StatsCard';
 import MenuSection from '../../components/profile/MenuSection';
 import LogoutButton from '../../components/profile/LogoutButton';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { profileData } from '../../data/profile/profileData';
 import { useAuthStore } from '../../store/authStore';
@@ -36,16 +36,20 @@ const ProfileScreen = () => {
 
   const handleLogout = async () => {
     await signOut();
-    navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      })
+    );
   };
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}
-      >
+<ScrollableScreen
+    contentContainerStyle={styles.scroll}
+>
         <ProfileCard {...profileData.userProfile} onPress={() => navigation.navigate('PersonalInformation')} />
 
         <StatsCard {...profileData.stats} />
@@ -66,7 +70,7 @@ const ProfileScreen = () => {
           heading={profileData.activityMenu.heading}
           items={profileData.activityMenu.items.map((item) =>
             item.title === 'Order History'
-              ? { ...item, onPress: () => navigation.navigate('MyOrders') }
+              ? { ...item, onPress: () => (navigation as any).navigate('OrdersTab', { screen: 'MyOrders', params: { fromProfile: true } }) }
               : item.title === 'Favourites'
               ? { ...item, onPress: () => navigation.navigate('Favourites') }
               : item.title === 'Review and Ratings'
@@ -90,8 +94,8 @@ const ProfileScreen = () => {
         />
 
         <LogoutButton onPress={handleLogout} />
-      </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+      </ScrollableScreen>
+
     </SafeAreaView>
   );
 };
