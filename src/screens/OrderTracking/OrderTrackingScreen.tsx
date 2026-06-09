@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -7,10 +7,8 @@ import {
     StyleSheet,
     Platform,
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import ScrollableScreen from '../../components/common/ScrollableScreen';
-import { useTabBar } from '../../utils/TabBarContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -36,14 +34,6 @@ const timelineSteps: TimelineStep[] = [
 ];
 
 const OrderTrackingScreen = ({ navigation }: Props) => {
-  const { setTabBarVisible } = useTabBar();
-
-  useFocusEffect(
-    useCallback(() => {
-      setTabBarVisible(true);
-    }, [])
-  );
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
