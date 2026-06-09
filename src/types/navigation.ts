@@ -50,6 +50,7 @@ export type RootStackParamList = {
   OrderPickedUp: undefined;
   OrderTracking: { from?: string } | undefined;
   ComingSoon: { title?: string; icon?: string; subtitle?: string } | undefined;
+  LocationSelection: undefined;
 };
 
 export type ScreenProps<T extends keyof RootStackParamList> =

@@ -15,6 +15,8 @@ import LaundryDetailScreen from '../screens/LaundryDetail/LaundryDetailScreen';
 import NotificationsScreen from '../screens/Notifications/NotificationsScreen';
 import OffersScreen from '../screens/Offers/OffersScreen';
 import ComingSoonScreen from '../screens/ComingSoonScreen';
+import LocationSelectionScreen from '../screens/LocationSelection/LocationSelectionScreen';
+import AddAddressScreen from '../screens/AddAddress/AddAddressScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -35,6 +37,8 @@ const HomeStack = () => {
       <Stack.Screen name="Notifications" component={NotificationsScreen} />
       <Stack.Screen name="Offers" component={OffersScreen} />
       <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
+      <Stack.Screen name="LocationSelection" component={LocationSelectionScreen} />
+      <Stack.Screen name="AddAddress" component={AddAddressScreen} />
     </Stack.Navigator>
   );
 };

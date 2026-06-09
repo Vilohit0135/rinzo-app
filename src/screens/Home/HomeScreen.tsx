@@ -30,6 +30,7 @@ type RootStackParamList = {
   AllServices: { serviceId: string } | undefined;
   BookPickup: undefined;
   OrderTracking: { from?: string } | undefined;
+  LocationSelection: undefined;
 };
 
 type IconName = string;
@@ -86,6 +87,7 @@ const HomeScreen = () => {
         <HeaderSection
           onNotificationPress={() => navigation.navigate('Notifications')}
           onProfilePress={() => (navigation as any).navigate('ProfileTab', { screen: 'PersonalInformation' })}
+          onLocationPress={() => navigation.navigate('LocationSelection')}
         />
         <SearchBar onPress={() => navigation.navigate('SearchTab' as never)} />
 

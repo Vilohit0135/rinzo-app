@@ -79,6 +79,8 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
             if (!event.defaultPrevented) {
               if (route.name === 'OrdersTab') {
                 navigation.navigate('OrdersTab', { screen: 'YourCart' });
+              } else if (route.name === 'ProfileTab') {
+                navigation.navigate('ProfileTab', { screen: 'Profile' });
               } else if (!isFocused) {
                 navigation.navigate(route.name);
               }
