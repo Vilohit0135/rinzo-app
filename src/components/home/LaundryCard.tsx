@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     gap: scale(4),
   },
   tagText: {
-    fontSize: responsiveFontSize(10),
+    fontSize: responsiveFontSize(8),
     fontWeight: '500',
     color: '#7C4DFF',
   },

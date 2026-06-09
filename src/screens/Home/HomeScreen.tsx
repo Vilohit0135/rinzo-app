@@ -152,7 +152,7 @@ const HomeScreen = () => {
                 key={item.id}
                 {...item}
                 imageSource={laundryImageMap[item.name]}
-                style={{ width: scale(340) }}
+                style={{ width: scale(300) }}
                 onPress={() => navigation.navigate('LaundryDetail', { id: item.id })}
                 isFavourite={favouriteIds.includes(item.id)}
                 onToggleFavourite={toggleFavourite}
