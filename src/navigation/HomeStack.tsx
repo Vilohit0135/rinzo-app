@@ -19,7 +19,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const HomeStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="AllServices" component={AllServicesScreen} />
       <Stack.Screen name="BookPickup" component={BookPickupScreen} />

@@ -14,7 +14,7 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
 import { useBookingStore } from '../../store/bookingStore';
-import { responsiveFontSize } from '../../utils/responsive';
+import { scale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'BookPickup'>;
@@ -66,7 +66,7 @@ const BookPickupScreen = ({ navigation }: Props) => {
                           hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                         >
                           <View style={[styles.counterBtn, item.quantity === 0 && styles.counterBtnDisabled]}>
-                            <Ionicons name="remove" size={14} color="#FFFFFF" />
+                            <Ionicons name="remove" size={12} color="#FFFFFF" />
                           </View>
                         </TouchableOpacity>
                         <Text style={styles.counterValue} allowFontScaling={false}>
@@ -78,7 +78,7 @@ const BookPickupScreen = ({ navigation }: Props) => {
                           hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
                         >
                           <View style={styles.counterBtn}>
-                            <Ionicons name="add" size={14} color="#FFFFFF" />
+                            <Ionicons name="add" size={12} color="#FFFFFF" />
                           </View>
                         </TouchableOpacity>
                       </View>
@@ -243,16 +243,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#BDBDBD',
-    borderRadius: 16,
-    width: 77,
-    height: 22,
-    gap: 4,
+    borderRadius: moderateScale(14),
+    width: scale(75),
+    height: scale(22),
+    gap: scale(4),
   },
   counterBtn: {
-    width: 16,
-    height: 16,
-    borderRadius: 13,
-    backgroundColor: '#AFAFAF',
+    width: scale(15),
+    height: scale(15),
+    borderRadius: moderateScale(12),
+    backgroundColor: '#504f4f',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#D0D0D0',
   },
   counterValue: {
-    fontSize: responsiveFontSize(12),
+    fontSize: responsiveFontSize(11),
     fontWeight: '700',
     color: '#000000',
   },

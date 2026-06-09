@@ -16,7 +16,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const SearchStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <Stack.Screen name="Search" component={SearchScreen} />
       <Stack.Screen name="LaundryDetail" component={LaundryDetailScreen} />
       <Stack.Screen name="BookPickup" component={BookPickupScreen} />

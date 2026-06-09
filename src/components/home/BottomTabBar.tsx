@@ -77,10 +77,10 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
               target: route.key,
               canPreventDefault: true,
             });
-            if (!isFocused && !event.defaultPrevented) {
+            if (!event.defaultPrevented) {
               if (route.name === 'OrdersTab') {
                 navigation.navigate('OrdersTab', { screen: 'YourCart' });
-              } else {
+              } else if (!isFocused) {
                 navigation.navigate(route.name);
               }
             }
