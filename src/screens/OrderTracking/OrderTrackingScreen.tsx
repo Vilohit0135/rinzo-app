@@ -132,15 +132,15 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
               <Text style={styles.deliveryName}>Rahul Verma</Text>
               <Text style={styles.deliverySubtitle}>Delivery Partner</Text>
               <View style={styles.statusRow}>
-                <Text style={styles.statusDot}>🟢</Text>
+                <Ionicons name="ellipse" size={10} color="#2F9461" />
                 <Text style={styles.statusText}>Online</Text>
               </View>
             </View>
             <View style={styles.deliveryActions}>
-              <TouchableOpacity style={styles.contactBtn} activeOpacity={0.7}>
+              <TouchableOpacity style={styles.contactBtn} activeOpacity={0.7} onPress={() => navigation.navigate('ComingSoon', { title: 'Call', icon: 'call-outline' })}>
                 <Ionicons name="call-outline" size={20} color="#8259D2" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.contactBtn} activeOpacity={0.7}>
+              <TouchableOpacity style={styles.contactBtn} activeOpacity={0.7} onPress={() => navigation.navigate('ComingSoon', { title: 'Chat', icon: 'chatbubble-outline' })}>
                 <Ionicons name="chatbubble-outline" size={20} color="#8259D2" />
               </TouchableOpacity>
             </View>
@@ -376,9 +376,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 2,
     gap: 4,
-  },
-  statusDot: {
-    fontSize: 9,
   },
   statusText: {
     fontSize: 11,

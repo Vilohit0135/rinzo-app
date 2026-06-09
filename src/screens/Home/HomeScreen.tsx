@@ -27,7 +27,7 @@ type RootStackParamList = {
   Profile: undefined;
   PersonalInformation: undefined;
   LaundryDetail: { id: string };
-  AllServices: undefined;
+  AllServices: { serviceId: string } | undefined;
   BookPickup: undefined;
   OrderTracking: { from?: string } | undefined;
 };
@@ -97,7 +97,12 @@ const HomeScreen = () => {
             contentContainerStyle={styles.serviceCardsRow}
           >
             {allServices.slice(0, 4).map((service) => (
-              <View key={service.id} style={styles.homeServiceCard}>
+              <TouchableOpacity
+                key={service.id}
+                style={styles.homeServiceCard}
+                activeOpacity={0.7}
+                onPress={() => navigation.navigate('AllServices', { serviceId: service.id })}
+              >
                 <View style={styles.homeServiceIconWrap}>
                   <Image
                     source={serviceImageMap[service.title] || require('../../../assets/images/Home/wash-fold.png')}
@@ -105,7 +110,7 @@ const HomeScreen = () => {
                   />
                 </View>
                 <Text style={styles.homeServiceTitle} numberOfLines={2} ellipsizeMode="tail" allowFontScaling={false}>{service.title}</Text>
-              </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         </View>

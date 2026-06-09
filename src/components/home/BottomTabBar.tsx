@@ -20,16 +20,15 @@ const tabConfig: Record<string, { icon: string; label: string }> = {
 };
 
 const TAB_COUNT = 4;
-const TAB_GAP = scale(1);
 
 const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   const { isTabBarVisible } = useTabBar();
   const [containerWidth, setContainerWidth] = useState(0);
   const sliderAnim = useRef(new Animated.Value(0)).current;
 
-  const padding = scale(11);
+  const padding = scale(15);
   const tabWidth = containerWidth > 0 ? (containerWidth - padding * 2) / TAB_COUNT : 0;
-  const pillWidth = tabWidth > 0 ? tabWidth - TAB_GAP * 2 : 0;
+  const pillWidth = tabWidth;
 
   useEffect(() => {
     if (containerWidth > 0) {
@@ -60,7 +59,7 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
               styles.slidingPill,
               {
                 width: pillWidth,
-                left: padding + TAB_GAP,
+                left: padding,
                 transform: [{ translateX: sliderAnim }],
               },
             ]}
@@ -90,7 +89,7 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
             <TouchableOpacity key={route.name} style={styles.tab} activeOpacity={0.8} onPress={onPress}>
               <Ionicons
                 name={config.icon as any}
-                size={isFocused ? 20 : 22}
+                size={isFocused ? 18 : 20}
                 color={isFocused ? COLORS.purple : COLORS.white}
               />
               {isFocused && (
@@ -109,8 +108,8 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
 const styles = StyleSheet.create({
   wrapper: {
     position: 'absolute',
-    left: scale(18),
-    right: scale(18),
+    left: scale(12),
+    right: scale(12),
     bottom: verticalScale(24),
   },
   container: {
@@ -138,14 +137,14 @@ const styles = StyleSheet.create({
   },
   slidingPill: {
     position: 'absolute',
-    top: verticalScale(8),
-    height: verticalScale(49),
-    borderRadius: moderateScale(23),
+    top: verticalScale(11),
+    height: verticalScale(44),
+    borderRadius: moderateScale(22),
     backgroundColor: COLORS.white,
   },
   tab: {
     flex: 1,
-    height: verticalScale(49),
+    height: verticalScale(44),
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
