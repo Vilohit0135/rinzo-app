@@ -1,4 +1,5 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
@@ -18,8 +19,27 @@ const tabConfig: Record<string, { icon: string; label: string }> = {
   ProfileTab: { icon: 'person-outline', label: 'Profile' },
 };
 
+const TAB_COUNT = 4;
+const TAB_GAP = scale(1);
+
 const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   const { isTabBarVisible } = useTabBar();
+  const [containerWidth, setContainerWidth] = useState(0);
+  const sliderAnim = useRef(new Animated.Value(0)).current;
+
+  const padding = scale(11);
+  const tabWidth = containerWidth > 0 ? (containerWidth - padding * 2) / TAB_COUNT : 0;
+  const pillWidth = tabWidth > 0 ? tabWidth - TAB_GAP * 2 : 0;
+
+  useEffect(() => {
+    if (containerWidth > 0) {
+      Animated.timing(sliderAnim, {
+        toValue: tabWidth * state.index,
+        duration: 250,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [state.index, containerWidth, tabWidth, sliderAnim]);
 
   if (!isTabBarVisible) return null;
 
@@ -30,7 +50,23 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.container}
+        onLayout={(e) => setContainerWidth(e.nativeEvent.layout.width)}
       >
+        <View style={styles.trackLine} pointerEvents="none" />
+
+        {containerWidth > 0 && (
+          <Animated.View
+            style={[
+              styles.slidingPill,
+              {
+                width: pillWidth,
+                left: padding + TAB_GAP,
+                transform: [{ translateX: sliderAnim }],
+              },
+            ]}
+          />
+        )}
+
         {state.routes.map((route: any, index: number) => {
           const isFocused = state.index === index;
           const config = tabConfig[route.name] || { icon: 'ellipse-outline', label: route.name };
@@ -50,14 +86,18 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
             }
           };
 
-          return isFocused ? (
-            <TouchableOpacity key={route.name} style={styles.activeTab} activeOpacity={0.8} onPress={onPress}>
-              <Ionicons name={config.icon as any} size={18} color={COLORS.purple} />
-              <Text style={styles.activeText} allowFontScaling={false} numberOfLines={1}>{config.label}</Text>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity key={route.name} style={styles.inactiveTab} activeOpacity={0.8} onPress={onPress}>
-              <Ionicons name={config.icon as any} size={20} color={COLORS.white} />
+          return (
+            <TouchableOpacity key={route.name} style={styles.tab} activeOpacity={0.8} onPress={onPress}>
+              <Ionicons
+                name={config.icon as any}
+                size={isFocused ? 20 : 22}
+                color={isFocused ? COLORS.purple : COLORS.white}
+              />
+              {isFocused && (
+                <Text style={styles.activeText} allowFontScaling={false} numberOfLines={1}>
+                  {config.label}
+                </Text>
+              )}
             </TouchableOpacity>
           );
         })}
@@ -76,10 +116,9 @@ const styles = StyleSheet.create({
   container: {
     height: verticalScale(66),
     borderRadius: moderateScale(33),
-    paddingHorizontal: scale(11),
+    paddingHorizontal: scale(15),
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
@@ -89,26 +128,34 @@ const styles = StyleSheet.create({
     shadowRadius: 17,
     elevation: 6,
   },
-  activeTab: {
-    width: scale(105),
-    height: verticalScale(45),
+  trackLine: {
+    position: 'absolute',
+    top: verticalScale(10),
+    left: scale(16),
+    right: scale(16),
+    height: verticalScale(2),
+    borderRadius: moderateScale(1),
+  },
+  slidingPill: {
+    position: 'absolute',
+    top: verticalScale(8),
+    height: verticalScale(49),
     borderRadius: moderateScale(23),
     backgroundColor: COLORS.white,
-    flexDirection: 'row',
+  },
+  tab: {
+    flex: 1,
+    height: verticalScale(49),
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
     gap: scale(6),
+    zIndex: 1,
   },
   activeText: {
     fontSize: responsiveFontSize(12),
     fontWeight: '700',
     color: COLORS.purple,
-  },
-  inactiveTab: {
-    width: scale(36),
-    height: verticalScale(45),
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 
