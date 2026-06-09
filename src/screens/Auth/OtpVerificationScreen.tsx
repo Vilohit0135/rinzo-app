@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, CommonActions, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../../types/navigation';
 import OtpHeader from '../../components/auth/OtpHeader';
@@ -23,7 +23,12 @@ const OtpVerificationScreen = () => {
   useEffect(() => {
     if (allFilled && !navigatedRef.current) {
       navigatedRef.current = true;
-      navigation.replace('Main');
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: 'Main' }],
+        })
+      );
     }
   }, [allFilled, navigation]);
 
