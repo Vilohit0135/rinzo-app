@@ -21,7 +21,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const ProfileStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Favourites" component={FavouritesScreen} />
       <Stack.Screen name="MyReviews" component={MyReviewsScreen} />
