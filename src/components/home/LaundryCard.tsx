@@ -66,7 +66,8 @@ const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, del
         </View>
 
         <View style={styles.deliveryRow}>
-          <Text style={styles.deliveryText} allowFontScaling={false} numberOfLines={1}>🕒 Delivery by {deliveryTime}</Text>
+          <Ionicons name="time-outline" size={14} color="#8E8EAA" />
+          <Text style={styles.deliveryText} allowFontScaling={false} numberOfLines={1}> Delivery by {deliveryTime}</Text>
         </View>
       </View>
 
@@ -180,6 +181,9 @@ const styles = StyleSheet.create({
     color: '#7C4DFF',
   },
   deliveryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     marginTop: verticalScale(7),
   },
   deliveryText: {

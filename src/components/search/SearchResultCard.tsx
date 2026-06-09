@@ -53,7 +53,8 @@ const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags
         </View>
 
         <View style={styles.deliveryRow}>
-          <Text style={styles.deliveryText} allowFontScaling={false} numberOfLines={1}>🕒 Delivery by {deliveryTime}</Text>
+          <Ionicons name="time-outline" size={14} color="#8D8DAD" />
+          <Text style={styles.deliveryText} allowFontScaling={false} numberOfLines={1}> Delivery by {deliveryTime}</Text>
         </View>
       </View>
 
@@ -164,6 +165,9 @@ const styles = StyleSheet.create({
     color: '#8259D2',
   },
   deliveryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     marginTop: 8,
   },
   deliveryText: {

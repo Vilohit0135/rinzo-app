@@ -8,6 +8,7 @@ import PaymentScreen from '../screens/Payment/PaymentScreen';
 import OrderConfirmationScreen from '../screens/OrderConfirmation/OrderConfirmationScreen';
 import OrderPickedUpScreen from '../screens/orders/OrderPickedUpScreen';
 import OrderTrackingScreen from '../screens/OrderTracking/OrderTrackingScreen';
+import ComingSoonScreen from '../screens/ComingSoonScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -21,6 +22,7 @@ const OrdersStack = () => {
       <Stack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
       <Stack.Screen name="OrderPickedUp" component={OrderPickedUpScreen} />
       <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} />
+      <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
     </Stack.Navigator>
   );
 };

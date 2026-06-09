@@ -1,15 +1,13 @@
 import { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
+import { Image, LayoutAnimation, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { LinearGradient } from 'expo-linear-gradient';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import { responsiveFontSize, scale } from '../../utils/responsive';
 import { allServices, type ServiceItem } from '../../data/services/servicesData';
-import { useBookingStore } from '../../store/bookingStore';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AllServices'>;
 
@@ -20,37 +18,13 @@ const serviceImageMap: Record<string, any> = {
   'Iron & Fold': require('../../../assets/images/Home/fold.png'),
 };
 
-const AllServicesScreen = ({ navigation }: Props) => {
-  const [quantities, setQuantities] = useState<Record<string, number>>(() =>
-    Object.fromEntries(allServices.map((s) => [s.id, 0]))
-  );
-  const setStoreServices = useBookingStore((s) => s.setServices);
+const AllServicesScreen = ({ navigation, route }: Props) => {
+  const [expandedId, setExpandedId] = useState<string | null>(route.params?.serviceId ?? null);
 
-  const updateQuantity = (id: string, delta: number) => {
-    setQuantities((prev) => ({
-      ...prev,
-      [id]: Math.max(0, prev[id] + delta),
-    }));
+  const toggleExpand = (id: string) => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setExpandedId(expandedId === id ? null : id);
   };
-
-  const handleAddToBooking = () => {
-    const selected = allServices
-      .filter((s) => quantities[s.id] > 0)
-      .map((s) => ({
-        id: s.id,
-        title: s.title,
-        unitPrice: s.unitPrice,
-        unit: s.unit,
-        quantity: quantities[s.id],
-        subtitle: s.subtitle,
-      }));
-    if (selected.length > 0) {
-      setStoreServices(selected);
-    }
-    navigation.navigate('BookPickup');
-  };
-
-  const hasSelection = Object.values(quantities).some((q) => q > 0);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -69,29 +43,11 @@ const AllServicesScreen = ({ navigation }: Props) => {
             <ServiceCard
               key={item.id}
               item={item}
-              quantity={quantities[item.id]}
-              onDecrement={() => updateQuantity(item.id, -1)}
-              onIncrement={() => updateQuantity(item.id, 1)}
+              isExpanded={expandedId === item.id}
+              onToggleExpand={() => toggleExpand(item.id)}
             />
           ))}
         </ScrollableScreen>
-
-        <View style={styles.bottomBar}>
-          <TouchableOpacity
-            style={[styles.addButton, !hasSelection && styles.addButtonDisabled]}
-            activeOpacity={0.8}
-            onPress={handleAddToBooking}
-          >
-            <LinearGradient
-              colors={['#8259D2', '#8259D2']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[styles.addGradient, !hasSelection && styles.addGradientDisabled]}
-            >
-              <Text style={styles.addText} numberOfLines={1} allowFontScaling={false}>Add to Booking</Text>
-            </LinearGradient>
-          </TouchableOpacity>
-        </View>
       </View>
     </SafeAreaView>
   );
@@ -99,48 +55,57 @@ const AllServicesScreen = ({ navigation }: Props) => {
 
 const ServiceCard = ({
   item,
-  quantity,
-  onDecrement,
-  onIncrement,
+  isExpanded,
+  onToggleExpand,
 }: {
   item: ServiceItem;
-  quantity: number;
-  onDecrement: () => void;
-  onIncrement: () => void;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
 }) => (
-  <View style={cardStyles.card}>
-    <View style={cardStyles.iconWrap}>
-      <Image source={serviceImageMap[item.title] || require('../../../assets/images/Home/wash-fold.png')} style={cardStyles.iconImage} />
-    </View>
-    <View style={cardStyles.middle}>
-      <Text style={cardStyles.title} numberOfLines={1} allowFontScaling={false}>{item.title}</Text>
-      <Text style={cardStyles.subtitle} numberOfLines={1} allowFontScaling={false}>{item.subtitle}</Text>
-      <View style={cardStyles.metaRow}>
-        <View style={cardStyles.durationPill}>
-          <Ionicons name="time-outline" size={11} color="#9A9A9A" />
-          <Text style={cardStyles.durationText} allowFontScaling={false}>{item.duration}</Text>
+  <View style={cardStyles.cardOuter}>
+    <View style={cardStyles.card}>
+      <View style={cardStyles.iconWrap}>
+        <Image source={serviceImageMap[item.title] || require('../../../assets/images/Home/wash-fold.png')} style={cardStyles.iconImage} />
+      </View>
+      <View style={cardStyles.middle}>
+        <Text style={cardStyles.title} numberOfLines={1} allowFontScaling={false}>{item.title}</Text>
+        <Text style={cardStyles.subtitle} numberOfLines={1} allowFontScaling={false}>{item.subtitle}</Text>
+        <View style={cardStyles.metaRow}>
+          <View style={cardStyles.durationPill}>
+            <Ionicons name="time-outline" size={11} color="#9A9A9A" />
+            <Text style={cardStyles.durationText} allowFontScaling={false}>{item.duration}</Text>
+          </View>
         </View>
       </View>
-    </View>
-    <View style={cardStyles.right}>
-      <View style={cardStyles.priceRow}>
-        <Text style={cardStyles.price} allowFontScaling={false}>₹{item.unitPrice}</Text>
-        <Text style={cardStyles.priceUnit} allowFontScaling={false}>/{item.unit}</Text>
-      </View>
-      <View style={cardStyles.counterPill}>
-        <TouchableOpacity onPress={onDecrement} activeOpacity={0.7} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-          <View style={[cardStyles.counterBtn, quantity === 0 && cardStyles.counterBtnDisabled]}>
-            <Ionicons name="remove" size={12} color="#FFFFFF" />
-          </View>
-        </TouchableOpacity>
-        <Text style={cardStyles.counterValue} allowFontScaling={false}>{quantity}{item.unit}</Text>
-        <TouchableOpacity onPress={onIncrement} activeOpacity={0.7} hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}>
-          <View style={cardStyles.counterBtn}>
-            <Ionicons name="add" size={12} color="#FFFFFF" />
-          </View>
+      <View style={cardStyles.right}>
+        <View style={cardStyles.priceRow}>
+          <Text style={cardStyles.price} allowFontScaling={false}>₹{item.unitPrice}</Text>
+          <Text style={cardStyles.priceUnit} allowFontScaling={false}>/{item.unit}</Text>
+        </View>
+        <TouchableOpacity onPress={onToggleExpand} activeOpacity={0.7} hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+          <Ionicons name={isExpanded ? 'chevron-up-outline' : 'chevron-down-outline'} size={20} color="#B3B3B3" />
         </TouchableOpacity>
       </View>
     </View>
+    {isExpanded && (
+      <View style={cardStyles.expandedSection}>
+        <View style={cardStyles.infoRow}>
+          <Ionicons name="time-outline" size={14} color="#8259D2" />
+          <Text style={cardStyles.infoLabel} allowFontScaling={false}>Duration: </Text>
+          <Text style={cardStyles.infoValue} allowFontScaling={false}>{item.duration}</Text>
+        </View>
+        <View style={cardStyles.infoRow}>
+          <Ionicons name="document-text-outline" size={14} color="#8259D2" />
+          <Text style={cardStyles.infoLabel} allowFontScaling={false}>Description: </Text>
+          <Text style={cardStyles.infoValue} allowFontScaling={false}>{item.subtitle}</Text>
+        </View>
+        <View style={cardStyles.infoRow}>
+          <Ionicons name="cash-outline" size={14} color="#8259D2" />
+          <Text style={cardStyles.infoLabel} allowFontScaling={false}>Price: </Text>
+          <Text style={cardStyles.infoValue} allowFontScaling={false}>₹{item.unitPrice}/{item.unit}</Text>
+        </View>
+      </View>
+    )}
   </View>
 );
 
@@ -180,42 +145,12 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
     gap: 10,
   },
-
-  bottomBar: {
-    paddingHorizontal: 24,
-    paddingTop: 8,
-    paddingBottom: 28,
-    backgroundColor: '#F7F6FB',
-  },
-  addButton: {
-    height: 46,
-  },
-  addButtonDisabled: {
-    opacity: 0.5,
-  },
-  addGradient: {
-    flex: 1,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addGradientDisabled: {},
-  addText: {
-    fontSize: responsiveFontSize(16),
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
 });
 
 const cardStyles = StyleSheet.create({
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  cardOuter: {
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
-    paddingHorizontal: 14,
-    paddingVertical: 14,
-    minHeight: 82,
     ...Platform.select({
       ios: {
         shadowColor: '#000',
@@ -227,6 +162,13 @@ const cardStyles = StyleSheet.create({
         elevation: 1,
       },
     }),
+  },
+  card: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    minHeight: 82,
   },
   iconWrap: {
     width: 66,
@@ -296,33 +238,29 @@ const cardStyles = StyleSheet.create({
     fontWeight: '600',
     color: '#331970',
   },
-  counterPill: {
+  expandedSection: {
+    paddingTop: 12,
+    paddingHorizontal: 14,
+    paddingBottom: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F0F0F0',
+  },
+  infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#BDBDBD',
-    borderRadius: 14,
-    width: 72,
-    height: 22,
-    gap: 4,
+    gap: 6,
+    marginBottom: 6,
   },
-  counterBtn: {
-    width: 15,
-    height: 15,
-    borderRadius: 12,
-    backgroundColor: '#AFAFAF',
-    justifyContent: 'center',
-    alignItems: 'center',
+  infoLabel: {
+    fontSize: responsiveFontSize(12),
+    fontWeight: '600',
+    color: '#555555',
   },
-  counterBtnDisabled: {
-    backgroundColor: '#D0D0D0',
-  },
-  counterValue: {
-    fontSize: responsiveFontSize(11),
-    fontWeight: '700',
-    color: '#000000',
+  infoValue: {
+    fontSize: responsiveFontSize(12),
+    fontWeight: '500',
+    color: '#1D1D1F',
+    flex: 1,
   },
 });
 
