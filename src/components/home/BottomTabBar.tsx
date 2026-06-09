@@ -1,5 +1,4 @@
-import { useEffect, useRef } from 'react';
-import { Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
@@ -19,22 +18,13 @@ const tabConfig: Record<string, { icon: string; label: string }> = {
   ProfileTab: { icon: 'person-outline', label: 'Profile' },
 };
 
-const HIDE_TRANSLATE_Y = 120;
-
 const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   const { isTabBarVisible } = useTabBar();
-  const translateY = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    Animated.timing(translateY, {
-      toValue: isTabBarVisible ? 0 : HIDE_TRANSLATE_Y,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  }, [isTabBarVisible, translateY]);
+  if (!isTabBarVisible) return null;
 
   return (
-    <Animated.View style={[styles.wrapper, { transform: [{ translateY }] }]}>
+    <View style={styles.wrapper}>
       <LinearGradient
         colors={[COLORS.gradientStart, COLORS.gradientEnd]}
         start={{ x: 0, y: 0 }}
@@ -72,7 +62,7 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
           );
         })}
       </LinearGradient>
-    </Animated.View>
+    </View>
   );
 };
 
