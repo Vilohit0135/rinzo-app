@@ -1,14 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import type { SupportOption } from '../../data/support/contactSupportData';
 
 interface SupportOptionCardProps {
   option: SupportOption;
+  onPress?: () => void;
 }
 
-const SupportOptionCard = ({ option }: SupportOptionCardProps) => {
+const SupportOptionCard = ({ option, onPress }: SupportOptionCardProps) => {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={onPress}>
       <View style={styles.iconContainer}>
         <Ionicons name={option.icon as any} size={24} color="#8259D2" />
       </View>
@@ -17,7 +18,7 @@ const SupportOptionCard = ({ option }: SupportOptionCardProps) => {
         <Text style={styles.subtitle} numberOfLines={1}>{option.subtitle}</Text>
       </View>
       <Ionicons name="chevron-forward" size={18} color="#8259D2" />
-    </View>
+    </TouchableOpacity>
   );
 };
 
