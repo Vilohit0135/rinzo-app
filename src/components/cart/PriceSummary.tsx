@@ -30,7 +30,7 @@ const PriceSummary = ({ pricing }: PriceSummaryProps) => {
       </View>
       {pricing.discounts.map((d, i) => (
         <View key={i} style={styles.row}>
-          <Text style={styles.label}>{d.label}</Text>
+          <Text style={styles.discountLabel}>{d.label}</Text>
           <Text style={styles.discountValue}>{d.value}</Text>
         </View>
       ))}
@@ -68,10 +68,14 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#331970',
   },
+  discountLabel: {
+    fontSize: responsiveFontSize(14),
+    color: '#2F9461',
+  },
   discountValue: {
     fontSize: responsiveFontSize(14),
     fontWeight: '600',
-    color: '#331970',
+    color: '#2F9461',
   },
   totalLabel: {
     fontSize: responsiveFontSize(15),

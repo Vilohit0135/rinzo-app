@@ -61,7 +61,7 @@ const YourCartScreen = () => {
           id: s.id,
           name: s.title,
           price: `₹${s.unitPrice}/${s.unit}`,
-          quantity: `${s.quantity} ${s.unit === 'Kg' ? 'kg' : 'items'}`,
+          quantity: `${s.quantity} ${s.unit === 'Kg' ? 'kg' : 'itm'}`,
           total: s.quantity * s.unitPrice,
           icon: serviceIcons[s.id] || 'shirt-outline',
         })),

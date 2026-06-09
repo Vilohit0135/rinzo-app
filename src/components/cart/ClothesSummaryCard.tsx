@@ -18,23 +18,25 @@ const ClothesSummaryCard = ({ items, onUpdateQuantity }: ClothesSummaryCardProps
       {items.map((item) => (
         <View key={item.name} style={styles.row}>
           <Text style={styles.name}>{item.name}</Text>
-          <View style={styles.controls}>
+          <View style={styles.counterPill}>
             <TouchableOpacity
-              style={styles.button}
-              activeOpacity={0.7}
               onPress={() => onUpdateQuantity(item.name, item.quantity - 1)}
-              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-            >
-              <Ionicons name="remove" size={14} color="#FFFFFF" />
-            </TouchableOpacity>
-            <Text style={styles.quantity}>{item.quantity}</Text>
-            <TouchableOpacity
-              style={styles.button}
               activeOpacity={0.7}
-              onPress={() => onUpdateQuantity(item.name, item.quantity + 1)}
               hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
             >
-              <Ionicons name="add" size={14} color="#FFFFFF" />
+              <View style={[styles.counterBtn, item.quantity === 0 && styles.counterBtnDisabled]}>
+                <Ionicons name="remove" size={12} color="#FFFFFF" />
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.counterValue}>{item.quantity}</Text>
+            <TouchableOpacity
+              onPress={() => onUpdateQuantity(item.name, item.quantity + 1)}
+              activeOpacity={0.7}
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+            >
+              <View style={styles.counterBtn}>
+                <Ionicons name="add" size={12} color="#FFFFFF" />
+              </View>
             </TouchableOpacity>
           </View>
         </View>
@@ -60,24 +62,33 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#1E1E2D',
   },
-  controls: {
+  counterPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: scale(8),
-  },
-  button: {
-    width: scale(26),
-    height: verticalScale(26),
-    borderRadius: moderateScale(13),
-    backgroundColor: '#D7D7D7',
-    alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#BDBDBD',
+    borderRadius: moderateScale(14),
+    width: scale(75),
+    height: scale(22),
+    gap: scale(9),
   },
-  quantity: {
-    fontSize: responsiveFontSize(14),
-    fontWeight: '600',
-    color: '#1E1E2D',
-    minWidth: scale(18),
+  counterBtn: {
+    width: scale(15),
+    height: scale(15),
+    borderRadius: moderateScale(12),
+    backgroundColor: '#504f4f',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  counterBtnDisabled: {
+    backgroundColor: '#D0D0D0',
+  },
+  counterValue: {
+    fontSize: responsiveFontSize(11),
+    fontWeight: '700',
+    color: '#000000',
     textAlign: 'center',
   },
 });
