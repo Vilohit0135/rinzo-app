@@ -35,7 +35,7 @@ const timelineSteps: TimelineStep[] = [
   { id: 5, title: 'Delivered', time: '', status: 'pending' },
 ];
 
-const OrderTrackingScreen = ({ navigation, route }: Props) => {
+const OrderTrackingScreen = ({ navigation }: Props) => {
   const { setTabBarVisible } = useTabBar();
 
   useFocusEffect(
@@ -50,12 +50,7 @@ const OrderTrackingScreen = ({ navigation, route }: Props) => {
       <View style={styles.container}>
         <ScrollableScreen contentContainerStyle={styles.scrollContent}>
           <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => {
-              const from = route.params?.from;
-              if (from === 'Home') navigation.navigate('HomeTab' as never);
-              else if (from === 'OrderPickedUp') navigation.navigate('OrderPickedUp');
-              else navigation.goBack();
-            }}>
+            <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => navigation.goBack()}>
               <Ionicons name="chevron-back" size={20} color="#A7A7A7" />
             </TouchableOpacity>
             <View style={styles.headerTitleWrap}>
