@@ -17,6 +17,7 @@ type RootStackParamList = {
   YourCart: undefined;
   Profile: undefined;
   HelpAndSupport: undefined;
+  ComingSoon: { title?: string } | undefined;
 };
 
 const HelpCenterScreen = () => {
@@ -41,13 +42,17 @@ const HelpCenterScreen = () => {
             scrollEnabled={false}
             nestedScrollEnabled
             renderItem={({ item, index }) => (
-              <HelpTopicCard topic={item} isLast={index === helpTopics.length - 1} />
+              <HelpTopicCard
+                topic={item}
+                isLast={index === helpTopics.length - 1}
+                onPress={() => navigation.navigate('ComingSoon', { title: item.title })}
+              />
             )}
           />
         </View>
 
         <View style={styles.supportSection}>
-          <SupportCard onChatPress={() => navigation.navigate('HelpAndSupport')} />
+          <SupportCard onChatPress={() => navigation.navigate('ComingSoon', { title: 'Chat with us' })} />
         </View>
       </ScrollableScreen>
 

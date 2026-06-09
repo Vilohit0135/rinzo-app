@@ -17,6 +17,7 @@ type RootStackParamList = {
   YourCart: undefined;
   Profile: undefined;
   HelpAndSupport: undefined;
+  ComingSoon: { title?: string } | undefined;
 };
 
 const ContactSupportScreen = () => {
@@ -29,7 +30,7 @@ const ContactSupportScreen = () => {
         <ContactSupportHeader onBackPress={() => navigation.goBack()} />
 
         <View style={styles.heroSection}>
-          <SupportHeroCard onChatPress={() => navigation.navigate('HelpAndSupport')} />
+          <SupportHeroCard onChatPress={() => navigation.navigate('ComingSoon', { title: 'Chat with us' })} />
         </View>
 
         <Text style={styles.sectionTitle}>Choose a way to contact</Text>
@@ -41,7 +42,10 @@ const ContactSupportScreen = () => {
             scrollEnabled={false}
             nestedScrollEnabled
             renderItem={({ item }) => (
-              <SupportOptionCard option={item} />
+              <SupportOptionCard
+                option={item}
+                onPress={() => navigation.navigate('ComingSoon', { title: item.title })}
+              />
             )}
           />
         </View>

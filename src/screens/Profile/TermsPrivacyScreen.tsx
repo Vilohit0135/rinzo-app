@@ -15,6 +15,7 @@ type RootStackParamList = {
   Search: undefined;
   YourCart: undefined;
   Profile: undefined;
+  ComingSoon: { title?: string } | undefined;
 };
 
 const TermsPrivacyScreen = () => {
@@ -33,7 +34,10 @@ const TermsPrivacyScreen = () => {
             scrollEnabled={false}
             nestedScrollEnabled
             renderItem={({ item }) => (
-              <LegalMenuCard item={item} />
+              <LegalMenuCard
+                item={item}
+                onPress={() => navigation.navigate('ComingSoon', { title: item.title })}
+              />
             )}
           />
         </View>
