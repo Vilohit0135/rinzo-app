@@ -1,16 +1,18 @@
 ﻿import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import SearchResultCard from '../../components/search/SearchResultCard';
+import SearchFilterModal from '../../components/search/SearchFilterModal';
+import type { FilterState } from '../../components/search/SearchFilterModal';
 import EmptySearchState from '../../components/search/EmptySearchState';
 import { COLORS } from '../../constants/colors';
 import { useFavouritesStore } from '../../store/favouritesStore';
-import { responsiveFontSize } from '../../utils/responsive';
+import { scale, responsiveFontSize } from '../../utils/responsive';
 
 type RootStackParamList = {
   Home: undefined;
@@ -33,38 +35,101 @@ const recentSearches = ['Dry Clean', 'Krishna Laundry', 'Iron Service'];
 const filterButtons = ['Nearby', 'Top Rated', 'Pickup', 'Open Now'];
 
 const searchResults = [
-  { id: 'krishna-laundry', name: 'Krishna Laundry', rating: 4.8, reviewCount: 231, distance: '1.2 km away', price: '₹ 50/kg', tags: ['Pickup', 'Fast Service'], deliveryTime: '2:00 PM' },
-  { id: 'sparkle-dry-clean', name: 'Sparkle Dry Clean', rating: 4.6, reviewCount: 189, distance: '2.5 km away', price: '₹ 80/kg', tags: ['Dry Clean', 'Free Pickup'], deliveryTime: '4:00 PM' },
-  { id: 'royal-wash', name: 'Royal Wash', rating: 4.9, reviewCount: 345, distance: '0.8 km away', price: '₹ 60/kg', tags: ['Express', 'Eco Friendly'], deliveryTime: '1:00 PM' },
-  { id: 'eco-laundry-hub', name: 'Eco Laundry Hub', rating: 4.7, reviewCount: 156, distance: '3.1 km away', price: '₹ 45/kg', tags: ['Budget', 'Pickup'], deliveryTime: '5:00 PM' },
+  { id: 'krishna-laundry', name: 'Krishna Laundry', rating: 4.8, reviewCount: 231, distance: '1.2 km away', price: '₹ 50/kg', tags: ['Pickup', 'Fast Service'], deliveryTime: '2:00 PM', serviceTypes: ['Wash & Iron', 'Iron Only'] },
+  { id: 'sparkle-dry-clean', name: 'Sparkle Dry Clean', rating: 4.6, reviewCount: 189, distance: '2.5 km away', price: '₹ 80/kg', tags: ['Dry Clean', 'Free Pickup'], deliveryTime: '4:00 PM', serviceTypes: ['Dry Clean', 'Steam Press'] },
+  { id: 'royal-wash', name: 'Royal Wash', rating: 4.9, reviewCount: 345, distance: '0.8 km away', price: '₹ 60/kg', tags: ['Express', 'Eco Friendly'], deliveryTime: '1:00 PM', serviceTypes: ['Wash & Iron', 'Dry Clean'] },
+  { id: 'eco-laundry-hub', name: 'Eco Laundry Hub', rating: 4.7, reviewCount: 156, distance: '3.1 km away', price: '₹ 45/kg', tags: ['Budget', 'Pickup'], deliveryTime: '5:00 PM', serviceTypes: ['Wash & Iron', 'Steam Press'] },
 ];
 
 const SearchScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Search'>>();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('');
+  const [showFilter, setShowFilter] = useState(false);
   const favouriteIds = useFavouritesStore((s) => s.favouriteIds);
   const toggleFavourite = useFavouritesStore((s) => s.toggleFavourite);
+
+  const [activeFilters, setActiveFilters] = useState<FilterState>({
+    sortBy: 'relevance',
+    serviceTypes: [],
+    ratings: [],
+    availability: [],
+  });
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (activeFilters.sortBy !== 'relevance') count++;
+    count += activeFilters.serviceTypes.length;
+    count += activeFilters.ratings.length;
+    count += activeFilters.availability.length;
+    return count;
+  }, [activeFilters]);
 
   const getFilteredResults = () => {
     let results = searchResults.filter((item) =>
       item.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    if (activeFilter === 'Pickup') {
+
+    if (activeFilters.sortBy === 'rating') {
+      results = [...results].sort((a, b) => b.rating - a.rating);
+    } else if (activeFilters.sortBy === 'distance') {
+      results = [...results].sort((a, b) => {
+        const da = parseFloat(a.distance.split(' ')[0]);
+        const db = parseFloat(b.distance.split(' ')[0]);
+        return da - db;
+      });
+    } else if (activeFilters.sortBy === 'priceLowHigh') {
+      results = [...results].sort((a, b) => {
+        const pa = parseInt(a.price.replace(/[^0-9]/g, ''));
+        const pb = parseInt(b.price.replace(/[^0-9]/g, ''));
+        return pa - pb;
+      });
+    } else if (activeFilters.sortBy === 'priceHighLow') {
+      results = [...results].sort((a, b) => {
+        const pa = parseInt(a.price.replace(/[^0-9]/g, ''));
+        const pb = parseInt(b.price.replace(/[^0-9]/g, ''));
+        return pb - pa;
+      });
+    } else if (activeFilter === 'Pickup') {
       results = results.filter((item) =>
         item.tags.some((t) => t.toLowerCase().includes('pickup'))
       );
-    }
-    if (activeFilter === 'Top Rated') {
+    } else if (activeFilter === 'Top Rated') {
       results = [...results].sort((a, b) => b.rating - a.rating);
-    }
-    if (activeFilter === 'Nearby') {
+    } else if (activeFilter === 'Nearby') {
       results = [...results].sort((a, b) => {
         const da = parseFloat(a.distance.split(' ')[0]);
         const db = parseFloat(b.distance.split(' ')[0]);
         return da - db;
       });
     }
+
+    if (activeFilters.serviceTypes.length > 0) {
+      results = results.filter((item) =>
+        item.serviceTypes &&
+        item.serviceTypes.some((t: string) => activeFilters.serviceTypes.includes(t))
+      );
+    }
+
+    if (activeFilters.ratings.length > 0) {
+      const minRatings = activeFilters.ratings.map((r: string) =>
+        parseFloat(r.replace('+', ''))
+      );
+      results = results.filter((item) =>
+        minRatings.some((min: number) => item.rating >= min)
+      );
+    }
+
+    if (activeFilters.availability.length > 0) {
+      results = results.filter((item) =>
+        activeFilters.availability.some((a: string) =>
+          item.tags.some((t: string) =>
+            t.toLowerCase().includes(a.toLowerCase())
+          )
+        )
+      );
+    }
+
     return results;
   };
 
@@ -84,7 +149,16 @@ const SearchScreen = () => {
             onChangeText={setSearchQuery}
             allowFontScaling={false}
           />
-          <Ionicons name="options-outline" size={22} color={COLORS.placeholder} />
+          <TouchableOpacity activeOpacity={0.7} onPress={() => setShowFilter(true)}>
+            <View>
+              <Ionicons name="options-outline" size={28} color={COLORS.placeholder} />
+              {activeFilterCount > 0 && (
+                <View style={styles.filterBadge}>
+                  <Text style={styles.filterBadgeText} allowFontScaling={false}>{activeFilterCount}</Text>
+                </View>
+              )}
+            </View>
+          </TouchableOpacity>
         </View>
 
         {searchQuery && filteredResults.length === 0 ? (
@@ -142,6 +216,14 @@ const SearchScreen = () => {
         )}
 
       </KeyboardAvoidingView>
+
+      <SearchFilterModal
+        visible={showFilter}
+        onClose={() => setShowFilter(false)}
+        onApply={setActiveFilters}
+        initialFilters={activeFilters}
+        resultCount={filteredResults.length}
+      />
 
     </SafeAreaView>
   );
@@ -250,6 +332,23 @@ const styles = StyleSheet.create({
   },
   resultsSection: {
     marginTop: 28,
+  },
+  filterBadge: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    minWidth: scale(16),
+    height: scale(16),
+    borderRadius: scale(8),
+    backgroundColor: COLORS.purple,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: scale(3),
+  },
+  filterBadgeText: {
+    fontSize: responsiveFontSize(10),
+    fontWeight: '700',
+    color: COLORS.white,
   },
 });
 
