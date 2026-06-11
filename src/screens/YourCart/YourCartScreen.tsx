@@ -57,10 +57,10 @@ const YourCartScreen = () => {
       (l) => l.name === cartData.laundryInfo.name
     );
     const laundryId = targetLaundry ? targetLaundry.id : 'krishna-laundry';
-    navigation.navigate('HomeTab', {
+    (navigation as any).navigate('HomeTab', {
       screen: 'LaundryDetail',
       params: { id: laundryId },
-    } as any);
+    });
   };
 
   const hasItems = storeServices.some((s) => s.quantity > 0);
