@@ -1,3 +1,5 @@
+import * as Location from 'expo-location';
+
 export interface PlaceResult {
   id: string;
   name: string;
@@ -26,7 +28,18 @@ export const getCurrentLocation = async (): Promise<{ latitude: number; longitud
 };
 
 export const reverseGeocode = async (lat: number, lng: number): Promise<string> => {
-  return `${lat.toFixed(4)}, ${lng.toFixed(4)} - Bengaluru, Karnataka`;
+  try {
+    const results = await Location.reverseGeocodeAsync({ latitude: lat, longitude: lng });
+    if (results && results.length > 0) {
+      const r = results[0];
+      const parts = [r.name, r.street, r.district, r.city, r.region, r.postalCode]
+        .filter((p): p is string => !!p);
+      return parts.length > 0 ? parts.join(', ') : `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    }
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  } catch {
+    return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  }
 };
 
 export const searchPlaces = async (query: string): Promise<PlaceResult[]> => {
