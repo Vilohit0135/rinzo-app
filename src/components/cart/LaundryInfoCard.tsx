@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
@@ -9,11 +9,17 @@ interface LaundryInfoCardProps {
   distance: string;
   price: string;
   imageSource?: any;
+  onPress?: () => void;
 }
 
-const LaundryInfoCard = ({ name, rating, reviews, distance, price, imageSource }: LaundryInfoCardProps) => {
+const LaundryInfoCard = ({ name, rating, reviews, distance, price, imageSource, onPress }: LaundryInfoCardProps) => {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={onPress ? 0.7 : 1}
+      onPress={onPress}
+      disabled={!onPress}
+    >
       {imageSource ? (
         <Image source={imageSource} style={styles.thumbnailImage} />
       ) : (
@@ -36,7 +42,7 @@ const LaundryInfoCard = ({ name, rating, reviews, distance, price, imageSource }
           <Text style={styles.price}>{price}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
