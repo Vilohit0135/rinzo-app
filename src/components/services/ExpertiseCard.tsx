@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 
@@ -7,11 +7,12 @@ interface ExpertiseCardProps {
   description: string;
   priceLabel: string;
   imageSource: any;
+  onPress?: () => void;
 }
 
-const ExpertiseCard = ({ title, description, priceLabel, imageSource }: ExpertiseCardProps) => {
+const ExpertiseCard = ({ title, description, priceLabel, imageSource, onPress }: ExpertiseCardProps) => {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.85}>
       <Image source={imageSource} style={styles.backgroundImage} resizeMode="cover" />
       <LinearGradient
         colors={['rgba(0,0,0,0.55)', 'rgba(0,0,0,0.15)', 'rgba(0,0,0,0.05)']}
@@ -26,7 +27,7 @@ const ExpertiseCard = ({ title, description, priceLabel, imageSource }: Expertis
           <Text style={styles.priceText} allowFontScaling={false}>{priceLabel}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

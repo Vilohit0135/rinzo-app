@@ -3,6 +3,7 @@ import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive
 import ExpertiseCard from './ExpertiseCard';
 
 interface ServiceExpertise {
+  id: string;
   title: string;
   description: string;
   priceLabel: string;
@@ -11,9 +12,10 @@ interface ServiceExpertise {
 
 interface ExpertiseSectionProps {
   services: ServiceExpertise[];
+  onCardPress?: (id: string, title: string) => void;
 }
 
-const ExpertiseSection = ({ services }: ExpertiseSectionProps) => {
+const ExpertiseSection = ({ services, onCardPress }: ExpertiseSectionProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
@@ -28,6 +30,7 @@ const ExpertiseSection = ({ services }: ExpertiseSectionProps) => {
             description={service.description}
             priceLabel={service.priceLabel}
             imageSource={service.imageSource}
+            onPress={() => onCardPress?.(service.id, service.title)}
           />
         ))}
       </View>
