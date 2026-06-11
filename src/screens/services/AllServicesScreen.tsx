@@ -23,9 +23,9 @@ const DEFAULT_FILTERS: FilterState = {
 };
 
 const serviceImageMap: Record<string, any> = {
-  'Wash & Fold': require('../../../assets/images/service/process.png'),
-  'Iron Only': require('../../../assets/images/service/process.png'),
-  'Specialized Care': require('../../../assets/images/service/process.png'),
+  'Wash & Fold': require('../../../assets/images/service/wash.png'),
+  'Iron Only': require('../../../assets/images/service/iron.png'),
+  'Specialized Care': require('../../../assets/images/service/specialized.png'),
 };
 
 const serviceDescriptions: Record<string, string> = {
