@@ -4,17 +4,18 @@ import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import AddressCard from '../../components/address/AddressCard';
 import { getAddresses, subscribe } from '../../data/addressStore';
+import { useBookingStore } from '../../store/bookingStore';
 
 type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
   Profile: undefined;
-  SavedAddress: undefined;
+  SavedAddress: { selectMode?: boolean } | undefined;
   AddAddress: undefined;
   AddAddressDetails: undefined;
   EditAddress: {
@@ -30,8 +31,13 @@ type RootStackParamList = {
 
 const SavedAddressScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'SavedAddress'>>();
+  const route = useRoute<NativeStackScreenProps<RootStackParamList, 'SavedAddress'>['route']>();
+  const selectMode = route.params?.selectMode ?? false;
   const [addresses, setAddresses] = useState(getAddresses);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const setAddress = useBookingStore((s) => s.setAddress);
+  const setAddressLabel = useBookingStore((s) => s.setAddressLabel);
+  const setAddressContact = useBookingStore((s) => s.setAddressContact);
 
   useEffect(() => {
     const unsub = subscribe(() => setAddresses(getAddresses()));
@@ -79,10 +85,29 @@ const SavedAddressScreen = () => {
               }
             />
           ))}
-          <TouchableOpacity style={styles.bottomCta} onPress={() => navigation.navigate('AddAddressDetails')} activeOpacity={0.8}>
-            <Ionicons name="add" size={24} color="#4B238D" />
-            <Text style={styles.bottomCtaText}>Add New Address</Text>
-          </TouchableOpacity>
+          {selectMode ? (
+            selectedIndex !== null && (
+              <TouchableOpacity
+                style={styles.selectButton}
+                activeOpacity={0.8}
+                onPress={() => {
+                  const addr = addresses[selectedIndex];
+                  const fullAddress = `${addr.address1}, ${addr.address2}`;
+                  setAddress(fullAddress);
+                  setAddressLabel(addr.title.replace(' ( Default )', ''));
+                  setAddressContact(addr.contact);
+                  navigation.goBack();
+                }}
+              >
+                <Text style={styles.selectButtonText}>Use This Address</Text>
+              </TouchableOpacity>
+            )
+          ) : (
+            <TouchableOpacity style={styles.bottomCta} onPress={() => navigation.navigate('AddAddressDetails')} activeOpacity={0.8}>
+              <Ionicons name="add" size={24} color="#4B238D" />
+              <Text style={styles.bottomCtaText}>Add New Address</Text>
+            </TouchableOpacity>
+          )}
         </ScrollableScreen>
 
 
@@ -158,6 +183,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#4B238D',
+  },
+  selectButton: {
+    height: 50,
+    marginHorizontal: 20,
+    marginTop: 20,
+    marginBottom: 40,
+    borderRadius: 25,
+    backgroundColor: '#8259D2',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  selectButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
 });
 

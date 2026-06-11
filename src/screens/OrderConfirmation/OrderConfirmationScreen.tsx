@@ -5,7 +5,6 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTabBar } from '../../utils/TabBarContext';
@@ -14,25 +13,26 @@ import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
+import { useBookingStore } from '../../store/bookingStore';
+import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderConfirmation'>;
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const scale = Math.min(SCREEN_WIDTH / 390, 1.3);
-const vertScale = Math.min(SCREEN_HEIGHT / 844, 1.3);
-
-const hp = (px: number) => Math.round(px * vertScale);
-const wp = (px: number) => Math.round(px * scale);
-const fs = (px: number) => Math.round(px * Math.min(scale, 1.15));
-
 const OrderConfirmationScreen = ({ navigation }: Props) => {
   const { setTabBarVisible } = useTabBar();
+  const pickupDate = useBookingStore((s) => s.pickupDate);
+  const pickupTime = useBookingStore((s) => s.pickupTime);
+  const orderId = useBookingStore((s) => s.orderId);
 
   useFocusEffect(
     useCallback(() => {
       setTabBarVisible(false);
     }, [])
   );
+
+  const pickupDisplay = pickupDate && pickupTime
+    ? `${pickupTime}, ${pickupDate}`
+    : 'Tomorrow, 2:00–4:00 PM';
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -44,48 +44,38 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
             style={styles.gif}
             resizeMode="contain"
           />
-          <Text style={[styles.title, { fontSize: fs(22) }]}>
+          <Text style={styles.title} allowFontScaling={false}>
             Order Confirmation
           </Text>
 
-          <Text style={[styles.subtitle, { marginTop: hp(8), fontSize: fs(13) }]}>
+          <Text style={styles.subtitle} allowFontScaling={false}>
             Your order has been placed successfully
           </Text>
 
-          <View
-            style={[
-              styles.detailCard,
-              {
-                marginTop: hp(20),
-                height: hp(100),
-                borderRadius: wp(16),
-                padding: wp(14),
-              },
-            ]}
-          >
+          <View style={styles.detailCard}>
             <View style={styles.row}>
-              <Text style={[styles.rowLabel, { fontSize: fs(13) }]}>Order ID</Text>
-              <Text style={[styles.rowValue, { fontSize: fs(13) }]}>
-                R1212178173819
+              <Text style={styles.rowLabel} allowFontScaling={false}>Order ID</Text>
+              <Text style={styles.rowValue} allowFontScaling={false}>
+                {orderId || 'R1212178173819'}
               </Text>
             </View>
 
-            <View style={[styles.divider, { marginVertical: hp(10) }]} />
+            <View style={styles.divider} />
 
             <View>
-              <Text style={[styles.rowLabel, { fontSize: fs(13) }]}>Pickup Time</Text>
-              <Text style={[styles.timeValue, { fontSize: fs(13), marginTop: hp(4) }]}>
-                Tomorrow , 2:00–4:00 PM
+              <Text style={styles.rowLabel} allowFontScaling={false}>Pickup Time</Text>
+              <Text style={styles.timeValue} allowFontScaling={false}>
+                {pickupDisplay}
               </Text>
             </View>
           </View>
 
-          <Text style={[styles.trackingMsg, { marginTop: hp(16), fontSize: fs(13) }]}>
+          <Text style={styles.trackingMsg} allowFontScaling={false}>
             You can track your order in real time
           </Text>
 
           <TouchableOpacity
-            style={[styles.trackButton, { marginTop: hp(16), height: hp(40) }]}
+            style={styles.trackButton}
             activeOpacity={0.8}
             onPress={() => navigation.navigate('OrderPickedUp')}
           >
@@ -93,20 +83,20 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
               colors={['#8259D2', '#8259D2']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
-              style={[styles.trackGradient, { borderRadius: hp(23) }]}
+              style={styles.trackGradient}
             >
-              <Text style={[styles.trackText, { fontSize: fs(16) }]}>
+              <Text style={styles.trackText} allowFontScaling={false}>
                 Track Order
               </Text>
             </LinearGradient>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.homeButton, { marginTop: hp(14) }]}
+            style={styles.homeButton}
             activeOpacity={0.7}
             onPress={() => (navigation as any).navigate('HomeTab', { screen: 'Home' })}
           >
-            <Text style={[styles.homeText, { fontSize: fs(14) }]}>
+            <Text style={styles.homeText} allowFontScaling={false}>
               Back to Home
             </Text>
           </TouchableOpacity>
@@ -121,39 +111,45 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   content: {
     flex: 1,
-    top: hp(20),
+    top: verticalScale(20),
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: scale(24),
   },
 
   gif: {
-    width: 320,
-    height: 320,
-    marginBottom: 28,
+    width: scale(320),
+    height: verticalScale(320),
+    marginBottom: verticalScale(28),
   },
   title: {
+    fontSize: responsiveFontSize(22),
     fontWeight: '700',
     color: '#1D1D1F',
     textAlign: 'center',
   },
   subtitle: {
+    marginTop: verticalScale(8),
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#9E9E9E',
     textAlign: 'center',
   },
 
   detailCard: {
+    marginTop: verticalScale(20),
     width: '100%',
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#ECE8F6',
+    borderRadius: scale(16),
+    padding: scale(14),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 1,
-    marginBottom: hp(17),
+    marginBottom: verticalScale(17),
   },
   row: {
     flexDirection: 'row',
@@ -161,47 +157,59 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   rowLabel: {
+    fontSize: responsiveFontSize(13),
     fontWeight: '600',
     color: '#1D1D1F',
   },
   rowValue: {
+    fontSize: responsiveFontSize(13),
     fontWeight: '700',
     color: '#1D1D1F',
   },
   divider: {
     height: 1,
     backgroundColor: '#E8E8E8',
+    marginVertical: verticalScale(10),
   },
   timeValue: {
+    marginTop: verticalScale(4),
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#9E9E9E',
   },
 
   trackingMsg: {
-    top: hp(4),
-    marginBottom: hp(10),
+    marginTop: verticalScale(16),
+    marginBottom: verticalScale(10),
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#9E9E9E',
     textAlign: 'center',
   },
 
   trackButton: {
+    marginTop: verticalScale(16),
     width: '100%',
+    height: verticalScale(40),
   },
   trackGradient: {
     flex: 1,
+    borderRadius: verticalScale(23),
     justifyContent: 'center',
     alignItems: 'center',
   },
   trackText: {
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#FFFFFF',
   },
 
   homeButton: {
+    marginTop: verticalScale(14),
     backgroundColor: 'transparent',
   },
   homeText: {
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#3D2A85',
     textAlign: 'center',

@@ -9,13 +9,31 @@ export interface PickupTimeSlot {
   label: string;
 }
 
-export const pickupDates: PickupDate[] = [
-  { id: '1', day: 'Today', date: '16th May' },
-  { id: '2', day: 'Sat', date: '17th May' },
-  { id: '3', day: 'Sun', date: '18th May' },
-  { id: '4', day: 'Mon', date: '19th May' },
-  { id: '5', day: 'Tue', date: '20th May' },
-];
+const ordinalSuffix = (n: number): string => {
+  if (n > 10 && n < 14) return `${n}th`;
+  switch (n % 10) {
+    case 1: return `${n}st`;
+    case 2: return `${n}nd`;
+    case 3: return `${n}rd`;
+    default: return `${n}th`;
+  }
+};
+
+const shortMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const shortDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+export const generatePickupDates = (): PickupDate[] => {
+  const today = new Date();
+  const dates: PickupDate[] = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    const day = i === 0 ? 'Today' : shortDays[d.getDay()];
+    const date = `${ordinalSuffix(d.getDate())} ${shortMonths[d.getMonth()]}`;
+    dates.push({ id: String(i), day, date });
+  }
+  return dates;
+};
 
 export const pickupTimeSlots: PickupTimeSlot[] = [
   { id: '1', label: '9AM - 11AM' },

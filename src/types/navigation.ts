@@ -24,7 +24,7 @@ export type RootStackParamList = {
   TermsPrivacy: undefined;
   PersonalInformation: undefined;
   PaymentMethods: undefined;
-  SavedAddress: undefined;
+  SavedAddress: { selectMode?: boolean } | undefined;
   AddAddress: undefined;
   AddAddressDetails: undefined;
   EditAddress: {
