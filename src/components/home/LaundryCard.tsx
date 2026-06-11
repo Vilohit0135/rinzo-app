@@ -1,6 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { FavouriteButton } from '../favourites/FavouriteButton';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface LaundryCardProps {
@@ -16,8 +15,6 @@ interface LaundryCardProps {
   imageSource?: any;
   style?: ViewStyle;
   onPress?: () => void;
-  isFavourite: boolean;
-  onToggleFavourite: (id: string) => void;
 }
 
 const tagIcons: Record<string, string> = {
@@ -30,7 +27,7 @@ const tagIcons: Record<string, string> = {
   'Budget': 'wallet-outline',
 };
 
-const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, icon, imageSource, style, onPress, isFavourite, onToggleFavourite }: LaundryCardProps) => {
+const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, icon, imageSource, style, onPress }: LaundryCardProps) => {
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={[styles.card, style]}>
       <View style={styles.leftIconSection}>
@@ -69,14 +66,6 @@ const LaundryCard = ({ id, name, rating, reviewCount, distance, price, tags, del
           <Ionicons name="time-outline" size={14} color="#8E8EAA" />
           <Text style={styles.deliveryText} allowFontScaling={false} numberOfLines={1}> Delivery by {deliveryTime}</Text>
         </View>
-      </View>
-
-      <View style={styles.favouriteWrap}>
-        <FavouriteButton
-          isFavourite={isFavourite}
-          onPress={() => onToggleFavourite(id)}
-          size={22}
-        />
       </View>
     </TouchableOpacity>
   );
@@ -194,13 +183,6 @@ const styles = StyleSheet.create({
     width: scale(88),
     height: verticalScale(88),
     borderRadius: moderateScale(13),
-  },
-  favouriteWrap: {
-    position: 'absolute',
-    bottom: verticalScale(8),
-    right: scale(10),
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,7 +16,6 @@ import { COLORS } from '../../constants/colors';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import { laundryItems } from '../../data/laundry/laundryData';
 import { allServices } from '../../data/services/servicesData';
-import { useFavouritesStore } from '../../store/favouritesStore';
 import LocationBottomSheet from '../../components/home/LocationBottomSheet';
 
 type RootStackParamList = {
@@ -77,8 +76,6 @@ const SectionHeader = ({ title, onViewAll }: { title: string; onViewAll?: () => 
 
 const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
-  const favouriteIds = useFavouritesStore((s) => s.favouriteIds);
-  const toggleFavourite = useFavouritesStore((s) => s.toggleFavourite);
   const [isLocationSheetVisible, setLocationSheetVisible] = useState(false);
 
   return (
@@ -164,8 +161,6 @@ const HomeScreen = () => {
                 imageSource={laundryImageMap[item.name]}
                 style={{ width: scale(300) }}
                 onPress={() => navigation.navigate('LaundryDetail', { id: item.id })}
-                isFavourite={favouriteIds.includes(item.id)}
-                onToggleFavourite={toggleFavourite}
               />
             ))}
           </ScrollView>

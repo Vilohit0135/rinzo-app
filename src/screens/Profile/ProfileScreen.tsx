@@ -1,4 +1,4 @@
-﻿import { StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -17,7 +17,6 @@ type RootStackParamList = {
   Search: undefined;
   YourCart: undefined;
   MyOrders: undefined;
-  Favourites: undefined;
   MyReviews: undefined;
   HelpAndSupport: undefined;
   HelpCenter: undefined;
@@ -47,9 +46,7 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-<ScrollableScreen
-    contentContainerStyle={styles.scroll}
->
+      <ScrollableScreen contentContainerStyle={styles.scroll}>
         <ProfileCard {...profileData.userProfile} onPress={() => navigation.navigate('PersonalInformation')} />
 
         <StatsCard {...profileData.stats} />
@@ -71,8 +68,6 @@ const ProfileScreen = () => {
           items={profileData.activityMenu.items.map((item) =>
             item.title === 'Order History'
               ? { ...item, onPress: () => (navigation as any).navigate('OrdersTab', { screen: 'MyOrders', params: { fromProfile: true } }) }
-              : item.title === 'Favourites'
-              ? { ...item, onPress: () => navigation.navigate('Favourites') }
               : item.title === 'Review and Ratings'
               ? { ...item, onPress: () => navigation.navigate('MyReviews') }
               : item
@@ -95,7 +90,6 @@ const ProfileScreen = () => {
 
         <LogoutButton onPress={handleLogout} />
       </ScrollableScreen>
-
     </SafeAreaView>
   );
 };

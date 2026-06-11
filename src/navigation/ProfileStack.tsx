@@ -2,7 +2,6 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/navigation';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
-import FavouritesScreen from '../screens/Profile/FavouritesScreen';
 import MyReviewsScreen from '../screens/Profile/MyReviewsScreen';
 import PersonalInformationScreen from '../screens/Profile/PersonalInformationScreen';
 import HelpCenterScreen from '../screens/Profile/HelpCenterScreen';
@@ -23,7 +22,6 @@ const ProfileStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="Favourites" component={FavouritesScreen} />
       <Stack.Screen name="MyReviews" component={MyReviewsScreen} />
       <Stack.Screen name="PersonalInformation" component={PersonalInformationScreen} />
       <Stack.Screen name="HelpCenter" component={HelpCenterScreen} />
