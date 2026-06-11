@@ -105,6 +105,7 @@ const AllServicesScreen = ({ navigation }: Props) => {
     const result = [];
     if (washFold) {
       result.push({
+        id: washFold.id,
         title: washFold.title,
         description: serviceDescriptions[washFold.title] || washFold.subtitle,
         priceLabel: formatPriceLabel(washFold.unitPrice, washFold.unit),
@@ -113,6 +114,7 @@ const AllServicesScreen = ({ navigation }: Props) => {
     }
     if (ironOnly) {
       result.push({
+        id: ironOnly.id,
         title: ironOnly.title,
         description: serviceDescriptions[ironOnly.title] || ironOnly.subtitle,
         priceLabel: formatPriceLabel(ironOnly.unitPrice, ironOnly.unit),
@@ -120,6 +122,7 @@ const AllServicesScreen = ({ navigation }: Props) => {
       });
     }
     result.push({
+      id: '3',
       title: 'Specialized Care',
       description: serviceDescriptions['Specialized Care'],
       priceLabel: 'from ₹15/pc',
@@ -142,7 +145,12 @@ const AllServicesScreen = ({ navigation }: Props) => {
           onFilterPress={() => setShowFilter(true)}
         />
         <PremiumBanner />
-        <ExpertiseSection services={expertiseServices} />
+        <ExpertiseSection
+          services={expertiseServices}
+          onCardPress={(serviceId, serviceTitle) => {
+            navigation.navigate('ServiceDetail', { serviceId, serviceTitle });
+          }}
+        />
         <CareProcessSection />
       </ScrollView>
 

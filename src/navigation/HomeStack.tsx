@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/navigation';
 import HomeScreen from '../screens/Home/HomeScreen';
 import AllServicesScreen from '../screens/services/AllServicesScreen';
+import ServiceDetailScreen from '../screens/services/ServiceDetailScreen';
 import BookPickupScreen from '../screens/BookPickup/BookPickupScreen';
 import PickupDetailsScreen from '../screens/PickupDetails/PickupDetailsScreen';
 import SchedulePickupScreen from '../screens/orders/SchedulePickupScreen';
@@ -26,6 +27,7 @@ const HomeStack = () => {
     <Stack.Navigator screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="AllServices" component={AllServicesScreen} />
+      <Stack.Screen name="ServiceDetail" component={ServiceDetailScreen} />
       <Stack.Screen name="BookPickup" component={BookPickupScreen} />
       <Stack.Screen name="PickupDetails" component={PickupDetailsScreen} />
       <Stack.Screen name="SchedulePickup" component={SchedulePickupScreen} />
