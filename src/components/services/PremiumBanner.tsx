@@ -1,8 +1,13 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../../types/navigation';
 
 const PremiumBanner = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -19,7 +24,11 @@ const PremiumBanner = () => {
           <Text style={styles.heroDesc} allowFontScaling={false}>
             Professional laundry services with premium care for your favorite clothes.
           </Text>
-          <TouchableOpacity style={styles.ctaButton} activeOpacity={0.8}>
+          <TouchableOpacity 
+            style={styles.ctaButton} 
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate('ComingSoon', { title: 'Premium Experience' })}
+          >
             <Text style={styles.ctaText} allowFontScaling={false}>Discover More</Text>
           </TouchableOpacity>
         </View>
