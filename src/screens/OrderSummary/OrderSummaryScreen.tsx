@@ -39,6 +39,8 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
   const services = useBookingStore((s) => s.services);
   const pickupDate = useBookingStore((s) => s.pickupDate);
   const pickupTime = useBookingStore((s) => s.pickupTime);
+  const address = useBookingStore((s) => s.address);
+  const setOrderId = useBookingStore((s) => s.setOrderId);
 
   const lineItems = services
     .filter((s) => s.quantity > 0)
@@ -49,6 +51,12 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
 
   const subtotal = lineItems.reduce((sum, item) => sum + item.price, 0);
   const total = subtotal + DELIVERY_CHARGE - DISCOUNT;
+
+  const handleProceedToPayment = () => {
+    const id = `R${Date.now()}`;
+    setOrderId(id);
+    navigation.navigate('Payment');
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -87,7 +95,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
               </TouchableOpacity>
             </View>
             <Text style={styles.addressText} numberOfLines={2} allowFontScaling={false}>
-              221b Baker Street Bangalore - 50001
+              {address}
             </Text>
             <View style={styles.addressDivider} />
             <View style={styles.timeHeaderRow}>
@@ -122,7 +130,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             style={styles.proceedButton}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate('Payment')}
+            onPress={handleProceedToPayment}
           >
             <LinearGradient colors={['#8259D2', '#8259D2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} style={styles.proceedGradient}>
               <Text style={styles.proceedText} numberOfLines={1} allowFontScaling={false}>Proceed to Payment</Text>
@@ -293,7 +301,7 @@ const styles = StyleSheet.create({
   pricingDiscount: {
     fontSize: responsiveFontSize(14),
     fontWeight: '600',
-    color: '#331970',
+    color: '#41B883',
   },
   pricingDivider: {
     height: 1,

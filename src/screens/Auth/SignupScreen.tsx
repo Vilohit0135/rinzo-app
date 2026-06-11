@@ -7,6 +7,7 @@ import { COLORS } from '../../constants/theme';
 import { SocialButton } from '../../components/buttons/SocialButton';
 import type { SocialProvider } from '../../components/buttons/SocialButton';
 import { authService } from '../../services/authService';
+import { responsiveFontSize, scale, verticalScale } from '../../utils/responsive';
 
 interface SignupScreenProps {
   onSignupSuccess?: () => void;
@@ -14,12 +15,22 @@ interface SignupScreenProps {
 }
 
 const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = async () => {
+    if (!firstName.trim()) {
+      Alert.alert('Error', 'Please enter your first name');
+      return;
+    }
+    if (!lastName.trim()) {
+      Alert.alert('Error', 'Please enter your last name');
+      return;
+    }
     if (!email.trim()) {
       Alert.alert('Error', 'Please enter your email');
       return;
@@ -38,7 +49,7 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
     }
     setLoading(true);
     try {
-      const { error, data } = await authService.signUp(email, password);
+      const { error, data } = await authService.signUp(email, password, firstName.trim(), lastName.trim());
       if (error) throw error;
       Alert.alert(
         'Check your email',
@@ -68,7 +79,13 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
     }
   };
 
-  const canSubmit = !loading && email.trim().length > 0 && password.length > 0 && password === confirmPassword;
+  const allFieldsFilled = firstName.trim().length > 0
+    && lastName.trim().length > 0
+    && email.trim().length > 0
+    && password.length > 0
+    && confirmPassword.length > 0;
+  const passwordsMatch = password === confirmPassword;
+  const canSubmit = !loading && allFieldsFilled && passwordsMatch;
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -84,10 +101,54 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
           resizeMode="contain"
         />
 
-        <Text style={styles.welcomeText}>Welcome to Rinzo</Text>
-        <Text style={styles.subtitle}>Please enter your details</Text>
+        <Text
+          style={styles.welcomeText}
+          allowFontScaling={false}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          Welcome to Rinzo
+        </Text>
+        <Text
+          style={styles.subtitle}
+          allowFontScaling={false}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          Please enter your details
+        </Text>
 
-        <Text style={[styles.label, styles.emailLabel]}>Email</Text>
+        <Text style={[styles.label, styles.emailLabel]} allowFontScaling={false}>
+          First Name
+        </Text>
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+          placeholderTextColor="#8E8E8E"
+          autoCapitalize="words"
+          value={firstName}
+          onChangeText={setFirstName}
+          editable={!loading}
+          allowFontScaling={false}
+        />
+
+        <Text style={[styles.label, styles.passwordLabel]} allowFontScaling={false}>
+          Last Name
+        </Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name"
+          placeholderTextColor="#8E8E8E"
+          autoCapitalize="words"
+          value={lastName}
+          onChangeText={setLastName}
+          editable={!loading}
+          allowFontScaling={false}
+        />
+
+        <Text style={[styles.label, styles.passwordLabel]} allowFontScaling={false}>
+          Email
+        </Text>
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -97,9 +158,12 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
           value={email}
           onChangeText={setEmail}
           editable={!loading}
+          allowFontScaling={false}
         />
 
-        <Text style={[styles.label, styles.passwordLabel]}>Password</Text>
+        <Text style={[styles.label, styles.passwordLabel]} allowFontScaling={false}>
+          Password
+        </Text>
         <TextInput
           style={styles.input}
           placeholder="Enter your password"
@@ -108,9 +172,12 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
           value={password}
           onChangeText={setPassword}
           editable={!loading}
+          allowFontScaling={false}
         />
 
-        <Text style={[styles.label, styles.passwordLabel]}>Confirm Password</Text>
+        <Text style={[styles.label, styles.passwordLabel]} allowFontScaling={false}>
+          Confirm Password
+        </Text>
         <TextInput
           style={styles.input}
           placeholder="Re-enter your password"
@@ -119,6 +186,7 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           editable={!loading}
+          allowFontScaling={false}
         />
 
         <TouchableOpacity
@@ -131,13 +199,17 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
             colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
             style={styles.buttonGradient}
           >
-            <Text style={styles.buttonText}>{loading ? 'Creating account...' : 'Signup'}</Text>
+            <Text style={styles.buttonText} allowFontScaling={false}>
+              {loading ? 'Creating account...' : 'Signup'}
+            </Text>
           </LinearGradient>
         </TouchableOpacity>
 
         <View style={styles.divider}>
           <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>or sign in with</Text>
+          <Text style={styles.dividerText} allowFontScaling={false}>
+            or sign in with
+          </Text>
           <View style={styles.dividerLine} />
         </View>
 
@@ -148,8 +220,11 @@ const SignupScreen = ({ onSignupSuccess, onLoginPress }: SignupScreenProps) => {
         </View>
 
         <TouchableOpacity style={styles.loginLink} activeOpacity={0.7} onPress={onLoginPress}>
-          <Text style={styles.loginLinkText}>
-            Already have an account? <Text style={styles.loginLinkHighlight}>Login</Text>
+          <Text style={styles.loginLinkText} allowFontScaling={false}>
+            Already have an account?{' '}
+            <Text style={styles.loginLinkHighlight} allowFontScaling={false}>
+              Login
+            </Text>
           </Text>
         </TouchableOpacity>
       </ScrollView>
@@ -163,52 +238,52 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F7F7',
   },
   scrollContent: {
-    paddingTop: 100,
-    paddingHorizontal: 24,
+    paddingTop: verticalScale(60),
+    paddingHorizontal: scale(24),
   },
   logo: {
-    width: 220,
-    height: 55,
+    width: scale(220),
+    height: verticalScale(55),
   },
   welcomeText: {
-    fontSize: 24,
+    fontSize: responsiveFontSize(24),
     fontWeight: '700',
     color: '#111111',
-    lineHeight: 30,
-    marginTop: 38,
+    lineHeight: responsiveFontSize(30),
+    marginTop: verticalScale(38),
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '500',
     color: '#A5A5A5',
-    marginTop: 10,
+    marginTop: verticalScale(10),
   },
   label: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '500',
     color: '#222222',
   },
   emailLabel: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
   passwordLabel: {
-    marginTop: 24,
+    marginTop: verticalScale(24),
   },
   input: {
-    height: 56,
-    borderRadius: 12,
+    height: verticalScale(48),
+    borderRadius: scale(12),
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: '#DADADA',
-    paddingHorizontal: 14,
-    fontSize: 16,
-    marginTop: 8,
+    paddingHorizontal: scale(14),
+    fontSize: responsiveFontSize(16),
+    marginTop: verticalScale(8),
     color: '#000000',
   },
   buttonWrapper: {
-    marginTop: 58,
-    height: 56,
-    borderRadius: 12,
+    marginTop: verticalScale(48),
+    height: verticalScale(48),
+    borderRadius: scale(12),
     overflow: 'hidden',
   },
   buttonDisabled: {
@@ -220,14 +295,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
     fontWeight: '500',
     color: '#FFFFFF',
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: verticalScale(40),
   },
   dividerLine: {
     flex: 1,
@@ -235,23 +310,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#E5E5E5',
   },
   dividerText: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     color: '#666666',
-    marginHorizontal: 14,
+    marginHorizontal: scale(14),
   },
   socialRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 30,
-    gap: 22,
+    marginTop: verticalScale(30),
+    gap: scale(22),
   },
   loginLink: {
-    marginTop: 24,
+    marginTop: verticalScale(24),
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: verticalScale(40),
   },
   loginLinkText: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     color: '#52525B',
   },
   loginLinkHighlight: {

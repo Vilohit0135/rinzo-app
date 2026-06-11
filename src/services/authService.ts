@@ -36,8 +36,12 @@ export const authService = {
     });
   },
 
-  async signUp(email: string, password: string) {
-    return supabase.auth.signUp({ email, password });
+  async signUp(email: string, password: string, firstName?: string, lastName?: string) {
+    return supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { first_name: firstName, last_name: lastName } },
+    });
   },
 
   async signInWithProvider(provider: SocialProvider) {

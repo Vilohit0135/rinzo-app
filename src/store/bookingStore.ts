@@ -18,14 +18,20 @@ interface BookingState {
   pickupDate: string;
   pickupTime: string;
   address: string;
+  addressLabel: string;
+  addressContact: string;
   laundryName: string;
+  orderId: string;
   setServices: (services: ServiceSelection[]) => void;
   updateQuantity: (id: string, quantity: number) => void;
   setInstructions: (text: string) => void;
   setPickupDate: (date: string) => void;
   setPickupTime: (time: string) => void;
   setAddress: (address: string) => void;
+  setAddressLabel: (label: string) => void;
+  setAddressContact: (contact: string) => void;
   setLaundryName: (name: string) => void;
+  setOrderId: (id: string) => void;
   clear: () => void;
 }
 
@@ -39,7 +45,10 @@ export const useBookingStore = create<BookingState>((set) => ({
   pickupDate: '',
   pickupTime: '',
   address: '221b Baker Street Bangalore - 50001',
+  addressLabel: 'Home',
+  addressContact: 'MS Mira Sharma - 9875263167',
   laundryName: 'Krishna Laundry',
+  orderId: '',
 
   setServices: (services) => set({ services }),
 
@@ -58,7 +67,13 @@ export const useBookingStore = create<BookingState>((set) => ({
 
   setAddress: (address) => set({ address }),
 
+  setAddressLabel: (addressLabel) => set({ addressLabel }),
+
+  setAddressContact: (addressContact) => set({ addressContact }),
+
   setLaundryName: (laundryName) => set({ laundryName }),
+
+  setOrderId: (orderId) => set({ orderId }),
 
   clear: () =>
     set({
@@ -71,6 +86,9 @@ export const useBookingStore = create<BookingState>((set) => ({
       pickupDate: '',
       pickupTime: '',
       address: '221b Baker Street Bangalore - 50001',
+      addressLabel: 'Home',
+      addressContact: 'MS Mira Sharma - 9875263167',
       laundryName: 'Krishna Laundry',
+      orderId: '',
     }),
 }));

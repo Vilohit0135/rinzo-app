@@ -1,18 +1,26 @@
 import { useState, useMemo } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
-import { scale, verticalScale } from '../../utils/responsive';
+import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 import ServicesHeader from '../../components/services/ServicesHeader';
 import ServicesSearchBar from '../../components/services/ServicesSearchBar';
 import PremiumBanner from '../../components/services/PremiumBanner';
 import ExpertiseSection from '../../components/services/ExpertiseSection';
 import CareProcessSection from '../../components/services/CareProcessSection';
+import ServiceFilterBottomSheet from '../../components/services/ServiceFilterBottomSheet';
+import type { FilterState } from '../../components/services/ServiceFilterBottomSheet';
 import { allServices } from '../../data/services/servicesData';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AllServices'>;
+
+const DEFAULT_FILTERS: FilterState = {
+  sortBy: 'relevance',
+  serviceTypes: [],
+  priceRange: 'all',
+};
 
 const serviceImageMap: Record<string, any> = {
   'Wash & Fold': require('../../../assets/images/service/process.png'),
@@ -31,10 +39,22 @@ const formatPriceLabel = (price: number, unit: string) => {
   return `from ₹${price}/${perUnit}`;
 };
 
+const matchesPriceRange = (price: number, range: string) => {
+  switch (range) {
+    case 'under50': return price < 50;
+    case '50to100': return price >= 50 && price <= 100;
+    case '100to200': return price >= 100 && price <= 200;
+    case '200plus': return price > 200;
+    default: return true;
+  }
+};
+
 const AllServicesScreen = ({ navigation }: Props) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [showFilter, setShowFilter] = useState(false);
+  const [activeFilters, setActiveFilters] = useState<FilterState>(DEFAULT_FILTERS);
 
-  const filteredServices = useMemo(() => {
+  const searchFiltered = useMemo(() => {
     if (!searchQuery.trim()) return allServices;
     const q = searchQuery.toLowerCase();
     return allServices.filter(
@@ -43,6 +63,38 @@ const AllServicesScreen = ({ navigation }: Props) => {
         s.subtitle.toLowerCase().includes(q)
     );
   }, [searchQuery]);
+
+  const filteredServices = useMemo(() => {
+    let results = [...searchFiltered];
+
+    if (activeFilters.serviceTypes.length > 0) {
+      results = results.filter((s) =>
+        activeFilters.serviceTypes.includes(s.title)
+      );
+    }
+
+    if (activeFilters.priceRange !== 'all') {
+      results = results.filter((s) =>
+        matchesPriceRange(s.unitPrice, activeFilters.priceRange)
+      );
+    }
+
+    switch (activeFilters.sortBy) {
+      case 'priceLowHigh':
+        results.sort((a, b) => a.unitPrice - b.unitPrice);
+        break;
+      case 'priceHighLow':
+        results.sort((a, b) => b.unitPrice - a.unitPrice);
+        break;
+    }
+
+    return results;
+  }, [searchFiltered, activeFilters]);
+
+  const availableServiceTypes = useMemo(
+    () => [...new Set(allServices.map((s) => s.title))],
+    []
+  );
 
   const expertiseServices = useMemo(() => {
     const kept = filteredServices.filter(
@@ -84,11 +136,23 @@ const AllServicesScreen = ({ navigation }: Props) => {
         contentContainerStyle={styles.scrollContent}
       >
         <ServicesHeader onBackPress={() => navigation.goBack()} />
-        <ServicesSearchBar value={searchQuery} onChangeText={setSearchQuery} />
+        <ServicesSearchBar
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          onFilterPress={() => setShowFilter(true)}
+        />
         <PremiumBanner />
         <ExpertiseSection services={expertiseServices} />
         <CareProcessSection />
       </ScrollView>
+
+      <ServiceFilterBottomSheet
+        visible={showFilter}
+        onClose={() => setShowFilter(false)}
+        onApply={setActiveFilters}
+        initialFilters={activeFilters}
+        availableServiceTypes={availableServiceTypes}
+      />
     </SafeAreaView>
   );
 };

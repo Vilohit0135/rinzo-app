@@ -17,6 +17,7 @@ import OffersScreen from '../screens/Offers/OffersScreen';
 import ComingSoonScreen from '../screens/ComingSoonScreen';
 import LocationSelectionScreen from '../screens/LocationSelection/LocationSelectionScreen';
 import AddAddressScreen from '../screens/AddAddress/AddAddressScreen';
+import SavedAddressScreen from '../screens/SavedAddress/SavedAddressScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -39,6 +40,7 @@ const HomeStack = () => {
       <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
       <Stack.Screen name="LocationSelection" component={LocationSelectionScreen} />
       <Stack.Screen name="AddAddress" component={AddAddressScreen} />
+      <Stack.Screen name="SavedAddress" component={SavedAddressScreen} />
     </Stack.Navigator>
   );
 };

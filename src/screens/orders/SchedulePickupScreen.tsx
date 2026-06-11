@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
-import { pickupDates, pickupTimeSlots } from '../../data/schedulePickup/schedulePickupData';
+import { generatePickupDates, pickupTimeSlots } from '../../data/schedulePickup/schedulePickupData';
 import ScheduleHeader from '../../components/schedule-pickup/ScheduleHeader';
 import DateSelector from '../../components/schedule-pickup/DateSelector';
 import TimeSlotList from '../../components/schedule-pickup/TimeSlotList';
@@ -15,7 +15,8 @@ import { responsiveFontSize } from '../../utils/responsive';
 type Props = NativeStackScreenProps<RootStackParamList, 'SchedulePickup'>;
 
 const SchedulePickupScreen = ({ navigation }: Props) => {
-  const [selectedDate, setSelectedDate] = useState<string>('2');
+  const pickupDates = useMemo(() => generatePickupDates(), []);
+  const [selectedDate, setSelectedDate] = useState<string>('0');
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('2');
   const setPickupDate = useBookingStore((s) => s.setPickupDate);
   const setPickupTime = useBookingStore((s) => s.setPickupTime);

@@ -25,10 +25,11 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
   const insets = useSafeAreaInsets();
   const pickupDate = useBookingStore((s) => s.pickupDate);
   const pickupTime = useBookingStore((s) => s.pickupTime);
-  const setAddress = useBookingStore((s) => s.setAddress);
+  const address = useBookingStore((s) => s.address);
+  const addressLabel = useBookingStore((s) => s.addressLabel);
+  const addressContact = useBookingStore((s) => s.addressContact);
 
   const handleContinue = () => {
-    setAddress('221b Baker Street, Bangalore - 50001, Karnataka');
     navigation.navigate('SchedulePickup');
   };
 
@@ -79,23 +80,20 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
                 },
               ]}
             >
-              <Text style={[styles.addressTitle, { fontSize: responsiveFontSize(14), marginBottom: verticalScale(6) }]} numberOfLines={1} allowFontScaling={false}>
-                221b Baker Street
-              </Text>
-              <Text style={[styles.addressLine, { fontSize: responsiveFontSize(12) }]} numberOfLines={1} allowFontScaling={false}>
-                Bangalore - 50001 , Karnataka
+              <Text style={[styles.addressTitle, { fontSize: responsiveFontSize(14), marginBottom: verticalScale(6) }]} numberOfLines={2} allowFontScaling={false}>
+                {address}
               </Text>
 
               <View style={[styles.divider, { marginVertical: verticalScale(8) }]} />
 
               <View style={styles.homeRow}>
                 <View style={styles.homeLeft}>
-                  <Text style={[styles.homeLabel, { fontSize: responsiveFontSize(14) }]} numberOfLines={1} allowFontScaling={false}>Home</Text>
+                  <Text style={[styles.homeLabel, { fontSize: responsiveFontSize(14) }]} numberOfLines={1} allowFontScaling={false}>{addressLabel}</Text>
                   <Text style={[styles.homeContact, { fontSize: responsiveFontSize(12) }]} numberOfLines={1} allowFontScaling={false}>
-                    MS Mira Sharma - 9875263167
+                    {addressContact}
                   </Text>
                 </View>
-                <TouchableOpacity activeOpacity={0.7}>
+                <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('SavedAddress', { selectMode: true })}>
                   <Text style={[styles.changeText, { fontSize: responsiveFontSize(14) }]} numberOfLines={1} allowFontScaling={false}>Change</Text>
                 </TouchableOpacity>
               </View>
@@ -257,11 +255,6 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#1D1D1F',
-  },
-  addressLine: {
-    fontSize: responsiveFontSize(12),
-    fontWeight: '500',
-    color: '#9A9A9A',
   },
 
   divider: {

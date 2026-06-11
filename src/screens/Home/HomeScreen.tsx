@@ -1,4 +1,5 @@
-﻿import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+﻿import { useState } from 'react';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -16,6 +17,7 @@ import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../u
 import { laundryItems } from '../../data/laundry/laundryData';
 import { allServices } from '../../data/services/servicesData';
 import { useFavouritesStore } from '../../store/favouritesStore';
+import LocationBottomSheet from '../../components/home/LocationBottomSheet';
 
 type RootStackParamList = {
   Home: undefined;
@@ -77,6 +79,7 @@ const HomeScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
   const favouriteIds = useFavouritesStore((s) => s.favouriteIds);
   const toggleFavourite = useFavouritesStore((s) => s.toggleFavourite);
+  const [isLocationSheetVisible, setLocationSheetVisible] = useState(false);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -87,7 +90,7 @@ const HomeScreen = () => {
         <HeaderSection
           onNotificationPress={() => navigation.navigate('Notifications')}
           onProfilePress={() => (navigation as any).navigate('ProfileTab', { screen: 'PersonalInformation' })}
-          onLocationPress={() => navigation.navigate('LocationSelection')}
+          onLocationPress={() => setLocationSheetVisible(true)}
         />
         <SearchBar onPress={() => navigation.navigate('SearchTab' as never)} />
 
@@ -180,6 +183,10 @@ const HomeScreen = () => {
         </View>
       </ScrollableScreen>
 
+      <LocationBottomSheet
+        visible={isLocationSheetVisible}
+        onClose={() => setLocationSheetVisible(false)}
+      />
     </SafeAreaView>
   );
 };

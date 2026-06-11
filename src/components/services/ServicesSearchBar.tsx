@@ -1,13 +1,14 @@
-import { StyleSheet, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 
 interface ServicesSearchBarProps {
   value: string;
   onChangeText: (text: string) => void;
+  onFilterPress?: () => void;
 }
 
-const ServicesSearchBar = ({ value, onChangeText }: ServicesSearchBarProps) => {
+const ServicesSearchBar = ({ value, onChangeText, onFilterPress }: ServicesSearchBarProps) => {
   return (
     <View style={styles.container}>
       <Ionicons name="search" size={18} color="#9CA3AF" />
@@ -19,7 +20,9 @@ const ServicesSearchBar = ({ value, onChangeText }: ServicesSearchBarProps) => {
         placeholderTextColor="#9CA3AF"
         allowFontScaling={false}
       />
-      <Ionicons name="options-outline" size={18} color="#9CA3AF" />
+      <TouchableOpacity onPress={onFilterPress} activeOpacity={0.7}>
+        <Ionicons name="options-outline" size={18} color="#9CA3AF" />
+      </TouchableOpacity>
     </View>
   );
 };
