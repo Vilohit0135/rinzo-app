@@ -10,7 +10,6 @@ import LaundryInfo from '../../components/laundry/LaundryInfo';
 import ServicePricingCard from '../../components/laundry/ServicePricingCard';
 import AboutSection from '../../components/laundry/AboutSection';
 import ReviewSection from '../../components/laundry/ReviewSection';
-import CheckoutButton from '../../components/laundry/CheckoutButton';
 import { COLORS } from '../../constants/colors';
 import { getLaundryById } from '../../data/laundry/laundryData';
 
@@ -28,7 +27,7 @@ const LaundryDetailScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      setTabBarVisible(false);
+      setTabBarVisible(true);
     }, [])
   );
 
@@ -75,7 +74,6 @@ const LaundryDetailScreen = () => {
           </View>
         </View>
       </ScrollView>
-      <CheckoutButton onPress={() => navigation.navigate('BookPickup' as never)} />
     </SafeAreaView>
   );
 };
@@ -86,7 +84,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   scroll: {
-    paddingBottom: 100,
+    paddingBottom: 140,
   },
   details: {
     paddingHorizontal: 18,

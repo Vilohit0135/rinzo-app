@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ import EmptyCartState from '../../components/cart/EmptyCartState';
 import { COLORS } from '../../constants/colors';
 import { cartData } from '../../data/cart/cartData';
 import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from '../../store/bookingStore';
+import { laundryItems } from '../../data/laundry/laundryData';
 
 type RootStackParamList = {
   Home: undefined;
@@ -50,6 +51,17 @@ const YourCartScreen = () => {
   const pickupTime = useBookingStore((s) => s.pickupTime);
 
   const [clothes, setClothes] = useState(cartData.clothesSummary);
+
+  const handleLaundryCardPress = () => {
+    const targetLaundry = laundryItems.find(
+      (l) => l.name === cartData.laundryInfo.name
+    );
+    const laundryId = targetLaundry ? targetLaundry.id : 'krishna-laundry';
+    navigation.navigate('HomeTab', {
+      screen: 'LaundryDetail',
+      params: { id: laundryId },
+    } as any);
+  };
 
   const hasItems = storeServices.some((s) => s.quantity > 0);
 
@@ -101,7 +113,7 @@ const YourCartScreen = () => {
 <ScrollableScreen
     contentContainerStyle={styles.scroll}
 >
-              <LaundryInfoCard {...cartData.laundryInfo} imageSource={require('../../../assets/images/Laundry/krishna-laundry.png')} />
+              <LaundryInfoCard {...cartData.laundryInfo} imageSource={require('../../../assets/images/Laundry/krishna-laundry.png')} onPress={handleLaundryCardPress} />
 
               <View style={styles.sectionServices}>
                 <Text style={styles.sectionTitle}>Services</Text>
