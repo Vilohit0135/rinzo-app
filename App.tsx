@@ -1,11 +1,11 @@
-﻿import React, { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { ActivityIndicator, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { RootStackParamList } from './src/types/navigation';
 import { supabase } from './src/lib/supabase';
-import { useAuthStore } from './src/store/authStore';
+import { useAuthStore, BYPASS_AUTH } from './src/store/authStore';
 
 import OnboardingScreenOne from './src/screens/Onboarding/OnboardingScreenOne';
 import LocationAccessScreen from './src/screens/LocationAccess/LocationAccessScreen';
@@ -25,7 +25,7 @@ export default function App() {
   useEffect(() => {
     initialize();
 
-    if (!supabase) return;
+    if (!supabase || BYPASS_AUTH) return;
 
     const { data: listener } = supabase.auth.onAuthStateChange(
       (_event, session) => {
@@ -52,44 +52,48 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName={session ? 'Main' : 'Onboarding'}
           screenOptions={{ headerShown: false }}
         >
-          <Stack.Screen name="Onboarding">
-            {({ navigation }) => (
-              <OnboardingScreenOne
-                onNext={() => navigation.navigate('LocationAccess')}
-                onSkip={() => navigation.navigate('LocationAccess')}
-              />
-            )}
-          </Stack.Screen>
+          {session ? (
+            <Stack.Screen name="Main" component={TabNavigator} />
+          ) : (
+            <>
+              <Stack.Screen name="Onboarding">
+                {({ navigation }) => (
+                  <OnboardingScreenOne
+                    onNext={() => navigation.navigate('LocationAccess')}
+                    onSkip={() => navigation.navigate('LocationAccess')}
+                  />
+                )}
+              </Stack.Screen>
 
-          <Stack.Screen name="LocationAccess">
-            {({ navigation }) => (
-              <LocationAccessScreen onNext={() => navigation.navigate('Login')} />
-            )}
-          </Stack.Screen>
+              <Stack.Screen name="LocationAccess">
+                {({ navigation }) => (
+                  <LocationAccessScreen onNext={() => navigation.navigate('Login')} />
+                )}
+              </Stack.Screen>
 
-          <Stack.Screen name="Login">
-            {({ navigation }) => (
-              <LoginScreen
-                onLoginSuccess={(phone) => navigation.navigate('OtpVerification', { phone })}
-                onSignupPress={() => navigation.navigate('Signup')}
-              />
-            )}
-          </Stack.Screen>
+              <Stack.Screen name="Login">
+                {({ navigation }) => (
+                  <LoginScreen
+                    onLoginSuccess={(phone) => navigation.navigate('OtpVerification', { phone })}
+                    onSignupPress={() => navigation.navigate('Signup')}
+                  />
+                )}
+              </Stack.Screen>
 
-          <Stack.Screen name="Signup">
-            {({ navigation }) => (
-              <SignupScreen
-                onSignupSuccess={() => navigation.goBack()}
-                onLoginPress={() => navigation.goBack()}
-              />
-            )}
-          </Stack.Screen>
+              <Stack.Screen name="Signup">
+                {({ navigation }) => (
+                  <SignupScreen
+                    onSignupSuccess={() => navigation.goBack()}
+                    onLoginPress={() => navigation.goBack()}
+                  />
+                )}
+              </Stack.Screen>
 
-          <Stack.Screen name="OtpVerification" component={OtpVerificationScreen} />
-          <Stack.Screen name="Main" component={TabNavigator} />
+              <Stack.Screen name="OtpVerification" component={OtpVerificationScreen} />
+            </>
+          )}
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
