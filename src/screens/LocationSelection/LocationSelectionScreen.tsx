@@ -115,12 +115,12 @@ const LocationSelectionScreen = () => {
                       key={place.id}
                       style={styles.searchRow}
                       activeOpacity={0.7}
-                      onPress={() => selectAddress(`${place.name}, ${place.address}, ${place.city}`)}
+                      onPress={() => selectAddress(`${place.name}, ${place.address}, ${place.area}, ${place.city}`)}
                     >
                       <Ionicons name="location-outline" size={18} color="#8D8DAD" />
                       <View style={styles.searchTextCol}>
                         <Text style={styles.searchName} allowFontScaling={false} numberOfLines={1}>{place.name}</Text>
-                        <Text style={styles.searchAddress} allowFontScaling={false} numberOfLines={1}>{place.address}, {place.city}</Text>
+                        <Text style={styles.searchAddress} allowFontScaling={false} numberOfLines={1}>{place.address}, {place.area}, {place.city}</Text>
                       </View>
                     </TouchableOpacity>
                   ))
