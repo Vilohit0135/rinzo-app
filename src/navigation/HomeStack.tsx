@@ -2,7 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../types/navigation';
 import HomeScreen from '../screens/Home/HomeScreen';
-import AllServicesScreen from '../screens/AllServices/AllServicesScreen';
+import AllServicesScreen from '../screens/services/AllServicesScreen';
 import BookPickupScreen from '../screens/BookPickup/BookPickupScreen';
 import PickupDetailsScreen from '../screens/PickupDetails/PickupDetailsScreen';
 import SchedulePickupScreen from '../screens/orders/SchedulePickupScreen';
