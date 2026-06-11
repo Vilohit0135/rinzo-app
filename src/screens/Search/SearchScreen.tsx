@@ -1,4 +1,4 @@
-﻿import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { useState, useMemo } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -11,7 +11,6 @@ import SearchFilterModal from '../../components/search/SearchFilterModal';
 import type { FilterState } from '../../components/search/SearchFilterModal';
 import EmptySearchState from '../../components/search/EmptySearchState';
 import { COLORS } from '../../constants/colors';
-import { useFavouritesStore } from '../../store/favouritesStore';
 import { scale, responsiveFontSize } from '../../utils/responsive';
 
 type RootStackParamList = {
@@ -46,9 +45,6 @@ const SearchScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('');
   const [showFilter, setShowFilter] = useState(false);
-  const favouriteIds = useFavouritesStore((s) => s.favouriteIds);
-  const toggleFavourite = useFavouritesStore((s) => s.toggleFavourite);
-
   const [activeFilters, setActiveFilters] = useState<FilterState>({
     sortBy: 'relevance',
     serviceTypes: [],
@@ -206,8 +202,6 @@ const SearchScreen = () => {
                   key={item.id}
                   {...item}
                   imageSource={laundryImageMap[item.name]}
-                  isFavourite={favouriteIds.includes(item.id)}
-                  onToggleFavourite={toggleFavourite}
                   onPress={() => navigation.navigate('LaundryDetail', { id: item.id })}
                 />
               ))}

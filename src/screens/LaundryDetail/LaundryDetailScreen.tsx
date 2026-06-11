@@ -13,7 +13,6 @@ import ReviewSection from '../../components/laundry/ReviewSection';
 import CheckoutButton from '../../components/laundry/CheckoutButton';
 import { COLORS } from '../../constants/colors';
 import { getLaundryById } from '../../data/laundry/laundryData';
-import { useFavouritesStore } from '../../store/favouritesStore';
 
 const heroImage = require('../../../assets/images/Detail/krishna-d.png');
 
@@ -25,8 +24,6 @@ const LaundryDetailScreen = () => {
   const navigation = useNavigation();
   const route = useRoute<RouteProp<RootStackParamList, 'LaundryDetail'>>();
   const item = getLaundryById(route.params.id);
-  const favouriteIds = useFavouritesStore((s) => s.favouriteIds);
-  const toggleFavourite = useFavouritesStore((s) => s.toggleFavourite);
   const { setTabBarVisible } = useTabBar();
 
   useFocusEffect(
@@ -42,14 +39,12 @@ const LaundryDetailScreen = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-<ScrollView
-    showsVerticalScrollIndicator={false}
-    contentContainerStyle={styles.scroll}
->
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.scroll}
+      >
         <LaundryHero
           onBackPress={() => navigation.goBack()}
-          isFavourite={favouriteIds.includes(item.id)}
-          onToggleFavourite={() => toggleFavourite(item.id)}
           imageSource={heroImage}
         />
 

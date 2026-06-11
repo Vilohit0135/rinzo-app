@@ -1,6 +1,5 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { FavouriteButton } from '../favourites/FavouriteButton';
 import { responsiveFontSize } from '../../utils/responsive';
 
 interface SearchResultCardProps {
@@ -14,11 +13,9 @@ interface SearchResultCardProps {
   deliveryTime: string;
   imageSource?: any;
   onPress?: () => void;
-  isFavourite: boolean;
-  onToggleFavourite: (id: string) => void;
 }
 
-const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, imageSource, onPress, isFavourite, onToggleFavourite }: SearchResultCardProps) => {
+const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, imageSource, onPress }: SearchResultCardProps) => {
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={styles.card}>
       {imageSource ? (
@@ -56,13 +53,6 @@ const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags
           <Ionicons name="time-outline" size={14} color="#8D8DAD" />
           <Text style={styles.deliveryText} allowFontScaling={false} numberOfLines={1}> Delivery by {deliveryTime}</Text>
         </View>
-      </View>
-
-      <View style={styles.favouriteWrap}>
-        <FavouriteButton
-          isFavourite={isFavourite}
-          onPress={() => onToggleFavourite(id)}
-        />
       </View>
     </TouchableOpacity>
   );
@@ -173,13 +163,6 @@ const styles = StyleSheet.create({
   deliveryText: {
     fontSize: responsiveFontSize(12),
     color: '#8D8DAD',
-  },
-  favouriteWrap: {
-    position: 'absolute',
-    bottom: 8,
-    right: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 
