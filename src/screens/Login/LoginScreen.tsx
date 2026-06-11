@@ -1,10 +1,15 @@
-import { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Alert, Animated, Dimensions, Image, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/theme';
 import { SocialButton } from '../../components/buttons/SocialButton';
+import { authService } from '../../services/authService';
+import { BYPASS_AUTH } from '../../store/authStore';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 interface LoginScreenProps {
   onLoginSuccess?: (phone: string) => void;
@@ -12,66 +17,254 @@ interface LoginScreenProps {
 }
 
 const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
-  const [phone, setPhone] = useState('');
+  const [activeTab, setActiveTab] = useState<'email' | 'phone'>('email');
+  const [email, setEmail] = useState('developer@example.com');
+  const [password, setPassword] = useState('password123');
+  const [phone, setPhone] = useState('9999999999');
+  const [securePassword, setSecurePassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = () => {
-    onLoginSuccess?.(phone);
+  const [tabBarWidth, setTabBarWidth] = useState(0);
+  const tabProgress = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.spring(tabProgress, {
+      toValue: activeTab === 'email' ? 0 : 1,
+      useNativeDriver: true,
+      bounciness: 4,
+    }).start();
+  }, [activeTab]);
+
+  const slideWidth = SCREEN_WIDTH - 48; // marginHorizontal 24 on each side
+  const tabWidth = tabBarWidth ? (tabBarWidth - 8) / 2 : 0; // padding of tabContainer is 4 on each side
+
+  const tabTranslateX = tabProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, tabWidth],
+  });
+
+  const formTranslateX = tabProgress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -slideWidth],
+  });
+
+  const handleLogin = async () => {
+    if (activeTab === 'email') {
+      if (!BYPASS_AUTH && (!email.trim() || !password.trim())) {
+        Alert.alert('Error', 'Please enter both email and password.');
+        return;
+      }
+      setIsLoading(true);
+      try {
+        const { error } = await authService.signIn(email, password);
+        if (error) {
+          Alert.alert('Login Failed', error.message);
+        }
+      } catch (err: any) {
+        Alert.alert('Error', err.message || 'An unexpected error occurred.');
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      if (!BYPASS_AUTH && !phone.trim()) {
+        Alert.alert('Error', 'Please enter your phone number.');
+        return;
+      }
+      setIsLoading(true);
+      try {
+        const { error } = await authService.sendOtp(phone);
+        if (error) {
+          Alert.alert('Error', error.message);
+        } else {
+          onLoginSuccess?.(phone);
+        }
+      } catch (err: any) {
+        Alert.alert('Error', err.message || 'An unexpected error occurred.');
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}
       >
-        <Image
-          source={require('../../assets/images/rinzo-logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <Image
+            source={require('../../assets/images/rinzo-logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
 
-        <Text style={styles.welcomeText}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Please enter your details</Text>
+          <Text style={styles.welcomeText}>Welcome Back</Text>
+          <Text style={styles.subtitle}>Please enter your details</Text>
 
-        <Text style={[styles.label, styles.phoneLabel]}>Phone number</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="+91 8777734343"
-          placeholderTextColor="#8E8E8E"
-          keyboardType="phone-pad"
-          value={phone}
-          onChangeText={setPhone}
-        />
-
-        <TouchableOpacity style={styles.buttonWrapper} activeOpacity={0.8} onPress={handleLogin}>
-          <LinearGradient
-            colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
-            style={styles.buttonGradient}
+          <View
+            style={styles.tabContainer}
+            onLayout={(e) => setTabBarWidth(e.nativeEvent.layout.width)}
           >
-            <Text style={styles.buttonText}>Login</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+            {tabBarWidth > 0 && (
+              <Animated.View
+                style={[
+                  styles.activeTabButtonBackground,
+                  {
+                    width: tabWidth,
+                    transform: [{ translateX: tabTranslateX }],
+                  },
+                ]}
+              />
+            )}
+            <TouchableOpacity
+              style={styles.tabButton}
+              onPress={() => setActiveTab('email')}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.tabText, activeTab === 'email' && styles.activeTabText]}>Email</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.tabButton}
+              onPress={() => setActiveTab('phone')}
+              activeOpacity={0.8}
+            >
+              <Text style={[styles.tabText, activeTab === 'phone' && styles.activeTabText]}>Phone</Text>
+            </TouchableOpacity>
+          </View>
 
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>or sign in with</Text>
-          <View style={styles.dividerLine} />
-        </View>
+          <View style={styles.formWindow}>
+            <Animated.View
+              style={[
+                styles.formContainerRow,
+                {
+                  width: slideWidth * 2,
+                  transform: [{ translateX: formTranslateX }],
+                },
+              ]}
+            >
+              <View style={[styles.formSlide, { width: slideWidth }]}>
+                <Text style={[styles.label, styles.fieldLabel]}>Email address</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="example@gmail.com"
+                  placeholderTextColor="#8E8E8E"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  value={email}
+                  onChangeText={setEmail}
+                />
 
-        <View style={styles.socialRow}>
-          <SocialButton provider="google" onPress={() => {}} />
-          <SocialButton provider="facebook" onPress={() => {}} />
-          <SocialButton provider="apple" onPress={() => {}} />
-        </View>
+                <Text style={[styles.label, styles.fieldLabel]}>Password</Text>
+                <View style={styles.passwordInputContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="••••••••"
+                    placeholderTextColor="#8E8E8E"
+                    secureTextEntry={securePassword}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    value={password}
+                    onChangeText={setPassword}
+                  />
+                  <TouchableOpacity
+                    onPress={() => setSecurePassword(!securePassword)}
+                    activeOpacity={0.7}
+                    style={styles.eyeIcon}
+                  >
+                    <Ionicons
+                      name={securePassword ? 'eye-off-outline' : 'eye-outline'}
+                      size={20}
+                      color="#8E8E8E"
+                    />
+                  </TouchableOpacity>
+                </View>
 
-        <TouchableOpacity style={styles.signupLink} activeOpacity={0.7} onPress={onSignupPress}>
-          <Text style={styles.signupLinkText}>
-            Don't have an account? <Text style={styles.signupLinkHighlight}>Sign up</Text>
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+                <TouchableOpacity style={styles.buttonWrapper} activeOpacity={0.8} onPress={handleLogin} disabled={isLoading}>
+                  <LinearGradient
+                    colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
+                    style={styles.buttonGradient}
+                  >
+                    {isLoading ? (
+                      <ActivityIndicator color="#FFFFFF" size="small" />
+                    ) : (
+                      <Text style={styles.buttonText}>Login</Text>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                <View style={styles.divider}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>or sign in with</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                <View style={styles.socialRow}>
+                  <SocialButton provider="google" onPress={() => {}} />
+                  <SocialButton provider="facebook" onPress={() => {}} />
+                  <SocialButton provider="apple" onPress={() => {}} />
+                </View>
+
+                <TouchableOpacity style={styles.signupLink} activeOpacity={0.7} onPress={onSignupPress}>
+                  <Text style={styles.signupLinkText}>
+                    Don't have an account? <Text style={styles.signupLinkHighlight}>Sign up</Text>
+                  </Text>
+                </TouchableOpacity>
+              </View>
+
+              <View style={[styles.formSlide, { width: slideWidth }]}>
+                <Text style={[styles.label, styles.fieldLabel]}>Phone number</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="+91 8777734343"
+                  placeholderTextColor="#8E8E8E"
+                  keyboardType="phone-pad"
+                  value={phone}
+                  onChangeText={setPhone}
+                />
+
+                <TouchableOpacity style={styles.buttonWrapper} activeOpacity={0.8} onPress={handleLogin} disabled={isLoading}>
+                  <LinearGradient
+                    colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
+                    style={styles.buttonGradient}
+                  >
+                    {isLoading ? (
+                      <ActivityIndicator color="#FFFFFF" size="small" />
+                    ) : (
+                      <Text style={styles.buttonText}>Send OTP</Text>
+                    )}
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                <View style={styles.divider}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>or sign in with</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+
+                <View style={styles.socialRow}>
+                  <SocialButton provider="google" onPress={() => {}} />
+                  <SocialButton provider="facebook" onPress={() => {}} />
+                  <SocialButton provider="apple" onPress={() => {}} />
+                </View>
+
+                <TouchableOpacity style={styles.signupLink} activeOpacity={0.7} onPress={onSignupPress}>
+                  <Text style={styles.signupLinkText}>
+                    Don't have an account? <Text style={styles.signupLinkHighlight}>Sign up</Text>
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Animated.View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -81,9 +274,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
   },
+  flex: {
+    flex: 1,
+  },
   scrollContent: {
-    paddingTop: 140,
+    paddingTop: 80,
     paddingHorizontal: 24,
+    flexGrow: 1,
+    paddingBottom: 40,
   },
   logo: {
     width: 200,
@@ -102,13 +300,60 @@ const styles = StyleSheet.create({
     color: '#A5A5A5',
     marginTop: 10,
   },
+  tabContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    padding: 4,
+    marginTop: 25,
+    marginBottom: 10,
+    position: 'relative',
+  },
+  tabButton: {
+    flex: 1,
+    paddingVertical: 12,
+    alignItems: 'center',
+    borderRadius: 8,
+    zIndex: 1,
+  },
+  activeTabButtonBackground: {
+    position: 'absolute',
+    top: 4,
+    bottom: 4,
+    left: 4,
+    borderRadius: 8,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  tabText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#8E8E8E',
+  },
+  activeTabText: {
+    color: '#8259D2',
+  },
+  formWindow: {
+    width: '100%',
+    overflow: 'hidden',
+  },
+  formContainerRow: {
+    flexDirection: 'row',
+  },
+  formSlide: {
+    // Width configured dynamically in JSX
+  },
   label: {
     fontSize: 16,
     fontWeight: '500',
     color: '#222222',
   },
-  phoneLabel: {
-    marginTop: 28,
+  fieldLabel: {
+    marginTop: 20,
   },
   input: {
     height: 56,
@@ -121,8 +366,31 @@ const styles = StyleSheet.create({
     marginTop: 8,
     color: '#000000',
   },
+  passwordInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 56,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    paddingHorizontal: 14,
+    marginTop: 8,
+  },
+  passwordInput: {
+    flex: 1,
+    height: '100%',
+    fontSize: 16,
+    color: '#000000',
+    paddingVertical: 0,
+  },
+  eyeIcon: {
+    padding: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   buttonWrapper: {
-    marginTop: 58,
+    marginTop: 40,
     height: 50,
     borderRadius: 12,
     overflow: 'hidden',
@@ -140,7 +408,7 @@ const styles = StyleSheet.create({
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 60,
+    marginTop: 45,
   },
   dividerLine: {
     flex: 1,
@@ -155,7 +423,7 @@ const styles = StyleSheet.create({
   socialRow: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 30,
+    marginTop: 25,
     gap: 22,
   },
   signupLink: {

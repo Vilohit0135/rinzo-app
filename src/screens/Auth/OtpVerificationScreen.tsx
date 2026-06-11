@@ -9,6 +9,7 @@ import OtpHeader from '../../components/auth/OtpHeader';
 import OtpInputBoxes from '../../components/auth/OtpInputBoxes';
 import ResendTimer from '../../components/auth/ResendTimer';
 import NumericKeypad from '../../components/auth/NumericKeypad';
+import { authService } from '../../services/authService';
 
 const OtpVerificationScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
@@ -21,16 +22,18 @@ const OtpVerificationScreen = () => {
   const allFilled = digits.every((d) => d !== '');
 
   useEffect(() => {
-    if (allFilled && !navigatedRef.current) {
-      navigatedRef.current = true;
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Main' }],
-        })
-      );
-    }
-  }, [allFilled, navigation]);
+    const handleNavigation = async () => {
+      if (allFilled && !navigatedRef.current) {
+        navigatedRef.current = true;
+        try {
+          await authService.verifyOtp(phone, digits.join(''));
+        } catch (error) {
+          // ignore or log
+        }
+      }
+    };
+    handleNavigation();
+  }, [allFilled, phone, digits]);
 
   const handleDigitPress = (digit: string) => {
     setDigits((prev) => {
