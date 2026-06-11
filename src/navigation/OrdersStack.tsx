@@ -9,6 +9,11 @@ import OrderConfirmationScreen from '../screens/OrderConfirmation/OrderConfirmat
 import OrderPickedUpScreen from '../screens/orders/OrderPickedUpScreen';
 import OrderTrackingScreen from '../screens/OrderTracking/OrderTrackingScreen';
 import ComingSoonScreen from '../screens/ComingSoonScreen';
+import PickupDetailsScreen from '../screens/PickupDetails/PickupDetailsScreen';
+import SchedulePickupScreen from '../screens/orders/SchedulePickupScreen';
+import SavedAddressScreen from '../screens/SavedAddress/SavedAddressScreen';
+import AddAddressScreen from '../screens/AddAddress/AddAddressScreen';
+import EditAddressScreen from '../screens/EditAddress/EditAddressScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -23,6 +28,12 @@ const OrdersStack = () => {
       <Stack.Screen name="OrderPickedUp" component={OrderPickedUpScreen} />
       <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} />
       <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
+      <Stack.Screen name="PickupDetails" component={PickupDetailsScreen} />
+      <Stack.Screen name="SchedulePickup" component={SchedulePickupScreen} />
+      <Stack.Screen name="SavedAddress" component={SavedAddressScreen} />
+      <Stack.Screen name="AddAddress" component={AddAddressScreen} />
+      <Stack.Screen name="AddAddressDetails" component={AddAddressScreen} />
+      <Stack.Screen name="EditAddress" component={EditAddressScreen} />
     </Stack.Navigator>
   );
 };

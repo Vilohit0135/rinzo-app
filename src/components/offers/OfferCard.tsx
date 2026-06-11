@@ -1,5 +1,8 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import * as Clipboard from 'expo-clipboard';
+import Toast from 'react-native-toast-message';
 import { Offer } from '../../data/offers/offersData';
 
 interface OfferCardProps {
@@ -8,6 +11,28 @@ interface OfferCardProps {
 }
 
 const OfferCard = ({ offer, index }: OfferCardProps) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (!offer.couponCode) return;
+    try {
+      await Clipboard.setStringAsync(offer.couponCode);
+      setCopied(true);
+      Toast.show({
+        type: 'success',
+        text1: 'Copied!',
+        text2: `Coupon code "${offer.couponCode}" copied to clipboard`,
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
+      setTimeout(() => {
+        setCopied(false);
+      }, 2000);
+    } catch (e) {
+      console.error('Failed to copy code', e);
+    }
+  };
+
   return (
     <View style={styles.card}>
       <View style={styles.iconWrapper}>
@@ -18,8 +43,16 @@ const OfferCard = ({ offer, index }: OfferCardProps) => {
         <Text style={styles.description}>{offer.description}</Text>
         <Text style={styles.validity}>{offer.validTill}</Text>
       </View>
-      {index === 0 && (
-        <Text style={styles.viewAll}>View All</Text>
+      {offer.couponCode && (
+        <TouchableOpacity 
+          style={[styles.useCodeButton, copied && styles.useCodeButtonCopied]} 
+          activeOpacity={0.7}
+          onPress={handleCopy}
+        >
+          <Text style={[styles.useCodeText, copied && styles.useCodeTextCopied]}>
+            {copied ? 'Copied' : 'Use Code'}
+          </Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -51,6 +84,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     marginLeft: 12,
+    marginRight: 8,
   },
   title: {
     fontSize: 16,
@@ -69,11 +103,28 @@ const styles = StyleSheet.create({
     color: '#9D9D9D',
     marginTop: 4,
   },
-  viewAll: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#352178',
-    textDecorationLine: 'underline',
+  useCodeButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    backgroundColor: '#F3EFFF',
+    borderWidth: 1,
+    borderColor: '#E8E1FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 84,
+  },
+  useCodeButtonCopied: {
+    backgroundColor: '#34C759',
+    borderColor: '#34C759',
+  },
+  useCodeText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#4D2CA3',
+  },
+  useCodeTextCopied: {
+    color: '#FFFFFF',
   },
 });
 

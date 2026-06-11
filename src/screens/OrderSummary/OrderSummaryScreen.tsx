@@ -15,15 +15,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
-import { useBookingStore } from '../../store/bookingStore';
+import { useBookingStore, DELIVERY_CHARGE, calculateDiscount } from '../../store/bookingStore';
 import { responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderSummary'>;
 
 const steps = ['Service', 'Address', 'Time', 'Confirm'];
-
-const DELIVERY_CHARGE = 20;
-const DISCOUNT = 20;
 
 const formatCurrency = (amount: number) => `₹${amount}`;
 
@@ -41,6 +38,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
   const pickupTime = useBookingStore((s) => s.pickupTime);
   const address = useBookingStore((s) => s.address);
   const setOrderId = useBookingStore((s) => s.setOrderId);
+  const appliedCoupon = useBookingStore((s) => s.appliedCoupon);
 
   const lineItems = services
     .filter((s) => s.quantity > 0)
@@ -50,7 +48,8 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
     }));
 
   const subtotal = lineItems.reduce((sum, item) => sum + item.price, 0);
-  const total = subtotal + DELIVERY_CHARGE - DISCOUNT;
+  const discountValue = calculateDiscount(appliedCoupon, subtotal, services);
+  const total = Math.max(0, subtotal + DELIVERY_CHARGE - discountValue);
 
   const handleProceedToPayment = () => {
     const id = `R${Date.now()}`;
@@ -117,8 +116,10 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
               <Text style={styles.pricingValue} allowFontScaling={false}>{formatCurrency(DELIVERY_CHARGE)}</Text>
             </View>
             <View style={styles.pricingRow}>
-              <Text style={styles.pricingLabelDiscount} allowFontScaling={false}>Discount</Text>
-              <Text style={styles.pricingDiscount} allowFontScaling={false}>-{formatCurrency(DISCOUNT)}</Text>
+              <Text style={styles.pricingLabelDiscount} allowFontScaling={false}>
+                {appliedCoupon ? `Discount (${appliedCoupon})` : 'Discount'}
+              </Text>
+              <Text style={styles.pricingDiscount} allowFontScaling={false}>-{formatCurrency(discountValue)}</Text>
             </View>
             <View style={styles.pricingDivider} />
             <View style={styles.pricingRow}>

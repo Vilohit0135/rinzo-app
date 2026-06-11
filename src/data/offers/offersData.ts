@@ -4,6 +4,7 @@ export interface Offer {
   description: string;
   validTill: string;
   icon: string;
+  couponCode?: string;
 }
 
 export const featuredOffer = {
@@ -19,6 +20,7 @@ export const offersData: Offer[] = [
     description: 'Get 20% off on orders above 500',
     validTill: 'valid till 20 may 2026',
     icon: 'pricetag-outline',
+    couponCode: 'FLAT20',
   },
   {
     id: '2',
@@ -26,6 +28,7 @@ export const offersData: Offer[] = [
     description: 'Free Delivery on all orders',
     validTill: 'valid till 20 may 2026',
     icon: 'gift-outline',
+    couponCode: 'FREESHIP',
   },
   {
     id: '3',
@@ -33,5 +36,6 @@ export const offersData: Offer[] = [
     description: '10% on iron services',
     validTill: 'valid till 20 may 2026',
     icon: 'pricetag-outline',
+    couponCode: 'IRON15',
   },
 ];

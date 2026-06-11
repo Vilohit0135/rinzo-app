@@ -17,7 +17,8 @@ import CartHeader from '../../components/cart/CartHeader';
 import EmptyCartState from '../../components/cart/EmptyCartState';
 import { COLORS } from '../../constants/colors';
 import { cartData } from '../../data/cart/cartData';
-import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from '../../store/bookingStore';
+import { useBookingStore, DELIVERY_CHARGE, calculateDiscount } from '../../store/bookingStore';
+import Toast from 'react-native-toast-message';
 import { laundryItems } from '../../data/laundry/laundryData';
 
 type RootStackParamList = {
@@ -49,8 +50,11 @@ const YourCartScreen = () => {
   const address = useBookingStore((s) => s.address);
   const pickupDate = useBookingStore((s) => s.pickupDate);
   const pickupTime = useBookingStore((s) => s.pickupTime);
+  const appliedCoupon = useBookingStore((s) => s.appliedCoupon);
+  const setAppliedCoupon = useBookingStore((s) => s.setAppliedCoupon);
 
   const [clothes, setClothes] = useState(cartData.clothesSummary);
+  const [couponInput, setCouponInput] = useState('');
 
   const handleLaundryCardPress = () => {
     const targetLaundry = laundryItems.find(
@@ -91,11 +95,88 @@ const YourCartScreen = () => {
     [storeServices]
   );
 
-  const total = subtotal + DELIVERY_CHARGE - DISCOUNT;
+  const discountValue = useMemo(() => {
+    return calculateDiscount(appliedCoupon, subtotal, storeServices);
+  }, [appliedCoupon, subtotal, storeServices]);
+
+  const total = Math.max(0, subtotal + DELIVERY_CHARGE - discountValue);
 
   const pickupLabel = pickupTime
     ? `${pickupTime}${pickupDate ? `, ${pickupDate}` : ''}`
     : 'Not selected';
+
+  const handleCouponAction = () => {
+    if (appliedCoupon) {
+      setAppliedCoupon(null);
+      setCouponInput('');
+      Toast.show({
+        type: 'info',
+        text1: 'Coupon Removed',
+        text2: 'The coupon discount has been removed.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
+    } else {
+      const code = couponInput.toUpperCase().trim();
+      if (!code) {
+        Toast.show({
+          type: 'error',
+          text1: 'Empty Code',
+          text2: 'Please enter a coupon code.',
+          position: 'bottom',
+          visibilityTime: 2000,
+        });
+        return;
+      }
+
+      const validCodes = ['323232', 'FLAT20', 'FREESHIP', 'IRON15'];
+      if (!validCodes.includes(code)) {
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Coupon',
+          text2: `"${code}" is not a valid coupon code.`,
+          position: 'bottom',
+          visibilityTime: 2000,
+        });
+        return;
+      }
+
+      const calculated = calculateDiscount(code, subtotal, storeServices);
+      if (code === 'FLAT20' && subtotal < 500) {
+        Toast.show({
+          type: 'error',
+          text1: 'Criteria Not Met',
+          text2: 'FLAT20 requires a minimum subtotal of ₹500.',
+          position: 'bottom',
+          visibilityTime: 2500,
+        });
+        return;
+      }
+
+      if (code === 'IRON15') {
+        const ironService = storeServices.find((s) => s.id === '2' || s.title.toLowerCase().includes('iron'));
+        if (!ironService || ironService.quantity === 0) {
+          Toast.show({
+            type: 'error',
+            text1: 'Criteria Not Met',
+            text2: 'IRON15 requires Iron Only services in your cart.',
+            position: 'bottom',
+            visibilityTime: 2500,
+          });
+          return;
+        }
+      }
+
+      setAppliedCoupon(code);
+      Toast.show({
+        type: 'success',
+        text1: 'Coupon Applied!',
+        text2: `Successfully applied code "${code}". Discount: ₹${calculated}`,
+        position: 'bottom',
+        visibilityTime: 2500,
+      });
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -127,12 +208,22 @@ const YourCartScreen = () => {
 
               <View style={styles.sectionPickup}>
                 <Text style={styles.sectionTitle}>Pickup Details</Text>
-                <PickupDetailsCard address={address} pickupTime={pickupLabel} />
+                <PickupDetailsCard 
+                  address={address} 
+                  pickupTime={pickupLabel} 
+                  onAddressPress={() => (navigation as any).navigate('SavedAddress', { selectMode: true })}
+                  onTimePress={() => (navigation as any).navigate('SchedulePickup')}
+                />
               </View>
 
               <View style={styles.sectionCoupon}>
                 <Text style={styles.sectionTitle}>Apply Coupon</Text>
-                <CouponSection />
+                <CouponSection 
+                  value={couponInput}
+                  onChangeText={setCouponInput}
+                  appliedCoupon={appliedCoupon}
+                  onApplyPress={handleCouponAction}
+                />
               </View>
 
               <View style={styles.sectionPricing}>
@@ -140,7 +231,7 @@ const YourCartScreen = () => {
                   pricing={{
                     subtotal,
                     deliveryCharge: DELIVERY_CHARGE,
-                    discounts: [{ label: 'Discount', value: `-₹${DISCOUNT}` }],
+                    discounts: discountValue > 0 ? [{ label: appliedCoupon ? `Discount (${appliedCoupon})` : 'Discount', value: `-₹${discountValue}` }] : [],
                     total,
                   }}
                 />

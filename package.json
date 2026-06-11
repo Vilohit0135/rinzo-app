@@ -14,6 +14,7 @@
     "axios": "^1.16.1",
     "expo": "~56.0.11",
     "expo-auth-session": "~56.0.14",
+    "expo-clipboard": "~56.0.4",
     "expo-crypto": "~56.0.4",
     "expo-font": "~56.0.5",
     "expo-image": "~56.0.11",
