@@ -1,27 +1,37 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface PickupDetailsCardProps {
   address: string;
   pickupTime: string;
+  onAddressPress?: () => void;
+  onTimePress?: () => void;
 }
 
-const PickupDetailsCard = ({ address, pickupTime }: PickupDetailsCardProps) => {
+const PickupDetailsCard = ({ address, pickupTime, onAddressPress, onTimePress }: PickupDetailsCardProps) => {
   return (
     <View style={styles.card}>
-      <View style={styles.row}>
+      <TouchableOpacity 
+        style={styles.row} 
+        activeOpacity={0.7} 
+        onPress={onAddressPress}
+      >
         <Text style={styles.address}>{address}</Text>
         <Ionicons name="create-outline" size={16} color="#8D8DAD" />
-      </View>
+      </TouchableOpacity>
       <View style={styles.divider} />
-      <View style={styles.row}>
-        <View>
+      <TouchableOpacity 
+        style={styles.row} 
+        activeOpacity={0.7} 
+        onPress={onTimePress}
+      >
+        <View style={{ flex: 1 }}>
           <Text style={styles.label}>Pickup Time</Text>
           <Text style={styles.time}>{pickupTime}</Text>
         </View>
         <Ionicons name="create-outline" size={16} color="#8D8DAD" />
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

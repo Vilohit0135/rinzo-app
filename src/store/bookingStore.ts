@@ -10,7 +10,37 @@ export interface ServiceSelection {
 }
 
 export const DELIVERY_CHARGE = 20;
-export const DISCOUNT = 20;
+
+export const calculateDiscount = (
+  couponCode: string | null,
+  subtotal: number,
+  services: ServiceSelection[]
+): number => {
+  if (!couponCode) return 0;
+  const code = couponCode.toUpperCase().trim();
+  switch (code) {
+    case '323232':
+      return Math.round(subtotal * 0.3);
+    case 'FLAT20':
+      if (subtotal >= 500) {
+        return Math.round(subtotal * 0.2);
+      }
+      return 0;
+    case 'FREESHIP':
+      return DELIVERY_CHARGE;
+    case 'IRON15': {
+      // Iron Only service is id '2' (or check title contains Iron)
+      const ironService = services.find((s) => s.id === '2' || s.title.toLowerCase().includes('iron'));
+      if (ironService) {
+        const ironTotal = ironService.quantity * ironService.unitPrice;
+        return Math.round(ironTotal * 0.15);
+      }
+      return 0;
+    }
+    default:
+      return 0;
+  }
+};
 
 interface BookingState {
   services: ServiceSelection[];
@@ -22,6 +52,7 @@ interface BookingState {
   addressContact: string;
   laundryName: string;
   orderId: string;
+  appliedCoupon: string | null;
   setServices: (services: ServiceSelection[]) => void;
   updateQuantity: (id: string, quantity: number) => void;
   setInstructions: (text: string) => void;
@@ -32,6 +63,7 @@ interface BookingState {
   setAddressContact: (contact: string) => void;
   setLaundryName: (name: string) => void;
   setOrderId: (id: string) => void;
+  setAppliedCoupon: (coupon: string | null) => void;
   clear: () => void;
 }
 
@@ -49,6 +81,7 @@ export const useBookingStore = create<BookingState>((set) => ({
   addressContact: 'MS Mira Sharma - 9875263167',
   laundryName: 'Krishna Laundry',
   orderId: '',
+  appliedCoupon: null,
 
   setServices: (services) => set({ services }),
 
@@ -75,6 +108,8 @@ export const useBookingStore = create<BookingState>((set) => ({
 
   setOrderId: (orderId) => set({ orderId }),
 
+  setAppliedCoupon: (appliedCoupon) => set({ appliedCoupon }),
+
   clear: () =>
     set({
       services: [
@@ -90,5 +125,6 @@ export const useBookingStore = create<BookingState>((set) => ({
       addressContact: 'MS Mira Sharma - 9875263167',
       laundryName: 'Krishna Laundry',
       orderId: '',
+      appliedCoupon: null,
     }),
 }));

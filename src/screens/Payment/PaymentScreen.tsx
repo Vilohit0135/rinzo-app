@@ -6,7 +6,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { LinearGradient } from "expo-linear-gradient";
 import { RootStackParamList } from "../../types/navigation";
-import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from "../../store/bookingStore";
+import { useBookingStore, DELIVERY_CHARGE, calculateDiscount } from "../../store/bookingStore";
 import { scale } from "../../utils/responsive";
 
 interface PaymentMethod {
@@ -48,13 +48,15 @@ type Props = NativeStackScreenProps<RootStackParamList, "Payment">;
 const PaymentScreen = ({ navigation }: Props) => {
   const [selectedMethod, setSelectedMethod] = useState<string>("UPI");
   const services = useBookingStore((s) => s.services);
+  const appliedCoupon = useBookingStore((s) => s.appliedCoupon);
 
   const totalAmount = useMemo(() => {
     const subtotal = services
       .filter((s) => s.quantity > 0)
       .reduce((sum, s) => sum + s.quantity * s.unitPrice, 0);
-    return subtotal + DELIVERY_CHARGE - DISCOUNT;
-  }, [services]);
+    const discountValue = calculateDiscount(appliedCoupon, subtotal, services);
+    return Math.max(0, subtotal + DELIVERY_CHARGE - discountValue);
+  }, [services, appliedCoupon]);
 
   return (
     <SafeAreaView style={styles.safeArea}>

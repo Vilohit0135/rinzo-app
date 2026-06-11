@@ -1,16 +1,30 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
-const CouponSection = () => {
+interface CouponSectionProps {
+  value: string;
+  onChangeText: (text: string) => void;
+  onApplyPress: () => void;
+  appliedCoupon: string | null;
+}
+
+const CouponSection = ({ value, onChangeText, onApplyPress, appliedCoupon }: CouponSectionProps) => {
   return (
     <View style={styles.row}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, appliedCoupon ? styles.inputApplied : null]}
         placeholder="Entry Coupon Code"
         placeholderTextColor="#8D8DAD"
+        value={appliedCoupon ? appliedCoupon : value}
+        onChangeText={onChangeText}
+        editable={!appliedCoupon}
+        autoCapitalize="characters"
+        allowFontScaling={false}
       />
-      <TouchableOpacity activeOpacity={0.7}>
-        <Text style={styles.applyText}>Apply</Text>
+      <TouchableOpacity activeOpacity={0.7} onPress={onApplyPress}>
+        <Text style={[styles.applyText, appliedCoupon ? styles.removeText : null]}>
+          {appliedCoupon ? 'Remove' : 'Apply'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -33,10 +47,19 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(14),
     color: '#1E1E2D',
   },
+  inputApplied: {
+    backgroundColor: '#F3FCF8',
+    borderColor: '#41B883',
+    color: '#41B883',
+    fontWeight: '700',
+  },
   applyText: {
     fontSize: responsiveFontSize(15),
     fontWeight: '700',
     color: '#4D2CA3',
+  },
+  removeText: {
+    color: '#E53E3E',
   },
 });
 

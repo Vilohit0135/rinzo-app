@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -6,6 +6,10 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  PanResponder,
+  Animated,
+  Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
@@ -19,12 +23,30 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useLocationStore } from '../../store/locationStore';
 import { useLocation } from '../../hooks/useLocation';
-import { searchPlaces, type PlaceResult } from '../../services/locationService';
+import { searchPlaces, getPlaceDetails, type PlaceResult } from '../../services/locationService';
 import type { RootStackParamList } from '../../types/navigation';
 import LocationSearchBar from '../../components/location/LocationSearchBar';
 import CurrentLocationCard from '../../components/location/CurrentLocationCard';
 import SavedAddressList from '../../components/location/SavedAddressList';
 import RecentLocationItem from '../../components/location/RecentLocationItem';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+const getCleanSubtitle = (p: PlaceResult) => {
+  const parts = [];
+  if (p.address) parts.push(p.address);
+  if (p.area && !p.address.toLowerCase().includes(p.area.toLowerCase())) {
+    parts.push(p.area);
+  }
+  if (
+    p.city &&
+    !p.address.toLowerCase().includes(p.city.toLowerCase()) &&
+    (!p.area || !p.area.toLowerCase().includes(p.city.toLowerCase()))
+  ) {
+    parts.push(p.city);
+  }
+  return parts.join(', ');
+};
 
 const LocationSelectionScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -40,6 +62,71 @@ const LocationSelectionScreen = () => {
   const clearRecentLocations = useLocationStore((s) => s.clearRecentLocations);
   const removeRecentLocation = useLocationStore((s) => s.removeRecentLocation);
 
+  // Initialize sheet off-screen (at SCREEN_HEIGHT) to animate entrance
+  const panY = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+
+  // Slide up entrance on mount
+  useEffect(() => {
+    Animated.spring(panY, {
+      toValue: 0,
+      tension: 65,
+      friction: 10,
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
+  const resetPositionAnim = Animated.spring(panY, {
+    toValue: 0,
+    tension: 80,
+    friction: 10,
+    useNativeDriver: true,
+  });
+
+  // Slide down off-screen exit
+  const handleDismiss = () => {
+    Animated.timing(panY, {
+      toValue: SCREEN_HEIGHT,
+      duration: 220,
+      useNativeDriver: true,
+    }).start(() => {
+      navigation.goBack();
+    });
+  };
+
+  const startPanY = useRef(0);
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        // Stop any running animations immediately to lock to drag pointer
+        panY.stopAnimation((value) => {
+          startPanY.current = value;
+        });
+      },
+      onPanResponderMove: (_, gestureState) => {
+        // Clamped to positive translateY so it tracks the pointer perfectly downwards
+        panY.setValue(Math.max(0, startPanY.current + gestureState.dy));
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        const currentTranslateY = Math.max(0, startPanY.current + gestureState.dy);
+        if (currentTranslateY > 120 || gestureState.vy > 0.5) {
+          handleDismiss();
+        } else {
+          resetPositionAnim.start();
+        }
+      },
+    })
+  ).current;
+
+  // Background overlay fades in and out in perfect sync with the vertical position of the sheet
+  const backdropOpacity = panY.interpolate({
+    inputRange: [0, SCREEN_HEIGHT],
+    outputRange: [1, 0],
+    extrapolate: 'clamp',
+  });
+
   const handleSearch = async (text: string) => {
     setSearchQuery(text);
     if (text.trim().length > 0) {
@@ -52,10 +139,27 @@ const LocationSelectionScreen = () => {
     }
   };
 
-  const selectAddress = (address: string) => {
+  const [resolvingCoords, setResolvingCoords] = useState(false);
+
+  const selectAddress = async (
+    address: string,
+    coords?: { latitude: number; longitude: number },
+    placeId?: string
+  ) => {
+    let resolvedCoords = coords;
+    if (!resolvedCoords && placeId) {
+      setResolvingCoords(true);
+      const details = await getPlaceDetails(placeId);
+      resolvedCoords = details || undefined;
+      setResolvingCoords(false);
+    }
+
     setCurrentAddress(address);
+    if (resolvedCoords) {
+      setCurrentCoordinates(resolvedCoords);
+    }
     addRecentLocation(address);
-    navigation.goBack();
+    handleDismiss();
   };
 
   const handleCurrentLocation = async () => {
@@ -64,35 +168,53 @@ const LocationSelectionScreen = () => {
       setCurrentAddress(result.address);
       setCurrentCoordinates(result.coords);
       addRecentLocation(result.address);
-      navigation.goBack();
+      handleDismiss();
     }
   };
 
   const handleSelectSavedAddress = (addr: any) => {
     const fullAddress = `${addr.address1}, ${addr.address2}`;
-    selectAddress(fullAddress);
+    selectAddress(fullAddress, { latitude: addr.latitude || 12.9716, longitude: addr.longitude || 77.5946 });
   };
 
   return (
-    <Modal visible transparent animationType="slide" onRequestClose={() => navigation.goBack()}>
+    <Modal visible transparent animationType="none" onRequestClose={handleDismiss}>
       <View style={styles.overlay}>
-        <TouchableOpacity
-          style={styles.backdrop}
-          activeOpacity={1}
-          onPress={() => navigation.goBack()}
-        />
-        <View style={styles.container}>
-          <View style={styles.handleRow}>
+        <Animated.View
+          style={[
+            styles.backdrop,
+            {
+              opacity: backdropOpacity,
+            },
+          ]}
+        >
+          <TouchableOpacity
+            style={StyleSheet.absoluteFill}
+            activeOpacity={1}
+            onPress={handleDismiss}
+          />
+        </Animated.View>
+        <Animated.View
+          style={[
+            styles.container,
+            {
+              transform: [{ translateY: panY }],
+            },
+          ]}
+        >
+          {/* Draggable handle zone covering the top grey line */}
+          <View style={styles.handleRow} {...panResponder.panHandlers}>
             <View style={styles.handle} />
           </View>
 
+          {/* Header with non-draggable title & close button */}
           <View style={styles.header}>
             <Text style={styles.title} allowFontScaling={false} numberOfLines={1}>
               Select Location
             </Text>
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => navigation.goBack()}
+              onPress={handleDismiss}
               hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >
               <Ionicons name="close-outline" size={scale(24)} color="#1C1C38" />
@@ -115,12 +237,17 @@ const LocationSelectionScreen = () => {
                       key={place.id}
                       style={styles.searchRow}
                       activeOpacity={0.7}
-                      onPress={() => selectAddress(`${place.name}, ${place.address}, ${place.area}, ${place.city}`)}
+                      onPress={() => {
+                        const cleanSub = getCleanSubtitle(place);
+                        const fullAddress = cleanSub ? `${place.name}, ${cleanSub}` : place.name;
+                        const coords = (place.latitude && place.longitude) ? { latitude: place.latitude, longitude: place.longitude } : undefined;
+                        selectAddress(fullAddress, coords, place.placeId);
+                      }}
                     >
                       <Ionicons name="location-outline" size={18} color="#8D8DAD" />
                       <View style={styles.searchTextCol}>
                         <Text style={styles.searchName} allowFontScaling={false} numberOfLines={1}>{place.name}</Text>
-                        <Text style={styles.searchAddress} allowFontScaling={false} numberOfLines={1}>{place.address}, {place.area}, {place.city}</Text>
+                        <Text style={styles.searchAddress} allowFontScaling={false} numberOfLines={1}>{getCleanSubtitle(place)}</Text>
                       </View>
                     </TouchableOpacity>
                   ))
@@ -158,11 +285,11 @@ const LocationSelectionScreen = () => {
                     <View style={styles.divider} />
                     {recentLocations.map((loc, index) => (
                       <RecentLocationItem
-                          key={index}
-                          address={loc}
-                          onPress={() => selectAddress(loc)}
-                          onDelete={() => removeRecentLocation(loc)}
-                        />
+                        key={index}
+                        address={loc}
+                        onPress={() => selectAddress(loc)}
+                        onDelete={() => removeRecentLocation(loc)}
+                      />
                     ))}
                   </View>
                 )}
@@ -171,7 +298,12 @@ const LocationSelectionScreen = () => {
 
             <View style={{ height: verticalScale(40) }} />
           </ScrollView>
-        </View>
+          {resolvingCoords && (
+            <View style={styles.loadingOverlay}>
+              <ActivityIndicator size="large" color={COLORS.purple} />
+            </View>
+          )}
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -195,8 +327,11 @@ const styles = StyleSheet.create({
   },
   handleRow: {
     alignItems: 'center',
-    paddingTop: verticalScale(10),
-    paddingBottom: verticalScale(4),
+    paddingTop: verticalScale(14),
+    paddingBottom: verticalScale(14),
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
   },
   handle: {
     width: scale(36),
@@ -275,6 +410,15 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#F0F0F0',
     marginBottom: 4,
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopLeftRadius: moderateScale(20),
+    borderTopRightRadius: moderateScale(20),
+    zIndex: 999,
   },
 });
 
