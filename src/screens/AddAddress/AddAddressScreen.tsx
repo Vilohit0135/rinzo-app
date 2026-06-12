@@ -624,7 +624,7 @@ const styles = StyleSheet.create({
   locationCard: {
     flexDirection: "row",
     alignItems: "center",
-    height: 68,
+    height: 78,
     paddingHorizontal: 10,
     gap: 8,
   },
@@ -643,7 +643,7 @@ const styles = StyleSheet.create({
     color: "#9B9B9B",
   },
   enableBtn: {
-    height: 24,
+    height: 29,
     width: 68,
     borderRadius: 14,
     backgroundColor: "#F1EAFF",
@@ -651,14 +651,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   enableBtnText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "600",
     color: "#4B238D",
   },
 
   formCard: {
     padding: 10,
-    marginTop: 8,
+    marginTop: 14,
   },
   selector: {
     flexDirection: "row",
@@ -679,7 +679,7 @@ const styles = StyleSheet.create({
     color: "#111111",
   },
   selectBtn: {
-    height: 18,
+    height: 25,
     width: 64,
     borderRadius: 13,
     backgroundColor: "#F1EAFF",
@@ -700,7 +700,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "500",
     color: "#111111",
-    marginTop: 8,
+    marginTop: 14,
     marginBottom: 6,
   },
   addressInput: {
@@ -716,7 +716,7 @@ const styles = StyleSheet.create({
 
   contactCard: {
     padding: 10,
-    marginTop: 8,
+    marginTop: 10,
   },
   contactTitle: {
     fontSize: 15,
