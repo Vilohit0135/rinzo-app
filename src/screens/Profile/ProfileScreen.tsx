@@ -50,7 +50,7 @@ const ProfileScreen = () => {
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
       <ScrollableScreen contentContainerStyle={styles.scroll}>
-        <ProfileCard name={profile.name} email={profile.email} onPress={() => navigation.navigate('PersonalInformation')} />
+        <ProfileCard name={profile.name} email={profile.email} imageSource={profile.profileImage} onPress={() => navigation.navigate('PersonalInformation')} />
 
         <StatsCard {...profileData.stats} />
 

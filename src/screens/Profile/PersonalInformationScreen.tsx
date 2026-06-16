@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
+import * as ImagePicker from 'expo-image-picker';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import ProfileImagePicker from '../../components/profile/ProfileImagePicker';
 import ProfileInput from '../../components/profile/ProfileInput';
@@ -13,8 +14,6 @@ import SaveButton from '../../components/profile/SaveButton';
 import DatePickerModal from '../../components/profile/DatePickerModal';
 import { COLORS } from '../../constants/colors';
 import { useProfileStore } from '../../store/profileStore';
-
-const profileImage = require('../../assets/images/profile.png');
 
 type RootStackParamList = {
   Home: undefined;
@@ -36,16 +35,36 @@ const PersonalInformationScreen = () => {
   const [showDobPicker, setShowDobPicker] = useState(false);
   const [gender, setGender] = useState(profile.gender);
   const [language, setLanguage] = useState(profile.preferredLanguage);
+  const [localImage, setLocalImage] = useState<string | null>(profile.profileImage);
 
   const handleSave = () => {
-    profile.updateProfile({ name, email, mobile, dateOfBirth: dob, gender, preferredLanguage: language });
+    profile.updateProfile({ name, email, mobile, dateOfBirth: dob, gender, preferredLanguage: language, profileImage: localImage });
     navigation.goBack();
+  };
+
+  const pickImage = async (useCamera: boolean) => {
+    const permission = useCamera
+      ? await ImagePicker.requestCameraPermissionsAsync()
+      : await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      Alert.alert('Permission required', 'Camera/Gallery access is needed to change your profile photo.');
+      return;
+    }
+
+    const result = useCamera
+      ? await ImagePicker.launchCameraAsync({ allowsEditing: true, aspect: [1, 1], quality: 0.8 })
+      : await ImagePicker.launchImageLibraryAsync({ allowsEditing: true, aspect: [1, 1], quality: 0.8 });
+
+    if (!result.canceled && result.assets[0]) {
+      setLocalImage(result.assets[0].uri);
+    }
   };
 
   const handleImagePick = () => {
     Alert.alert('Change Photo', 'Choose an option', [
-      { text: 'Take Photo' },
-      { text: 'Choose from Gallery' },
+      { text: 'Take Photo', onPress: () => pickImage(true) },
+      { text: 'Choose from Gallery', onPress: () => pickImage(false) },
       { text: 'Cancel', style: 'cancel' },
     ]);
   };
@@ -64,7 +83,7 @@ const PersonalInformationScreen = () => {
           <Text style={styles.title}>Personal Information</Text>
         </View>
 
-        <ProfileImagePicker imageSource={profileImage} onPress={handleImagePick} />
+        <ProfileImagePicker imageSource={localImage} onPress={handleImagePick} />
 
         <View style={styles.form}>
           <ProfileInput label="Name" value={name} onChangeText={setName} />

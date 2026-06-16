@@ -10,6 +10,7 @@ interface ProfileState {
   dateOfBirth: string;
   gender: string;
   preferredLanguage: string;
+  profileImage: string | null;
   updateProfile: (data: Partial<Omit<ProfileState, 'updateProfile'>>) => void;
 }
 
@@ -22,6 +23,7 @@ export const useProfileStore = create<ProfileState>()(
       dateOfBirth: profileData.userProfile.dateOfBirth,
       gender: profileData.userProfile.gender,
       preferredLanguage: profileData.userProfile.preferredLanguage,
+      profileImage: null,
       updateProfile: (data) => set(data),
     }),
     {
