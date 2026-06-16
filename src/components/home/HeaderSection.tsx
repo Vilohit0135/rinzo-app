@@ -3,6 +3,7 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import { useLocationStore } from '../../store/locationStore';
+import NotificationBadge from '../notifications/NotificationBadge';
 
 interface HeaderSectionProps {
   onNotificationPress?: () => void;
@@ -24,7 +25,10 @@ const HeaderSection = ({ onNotificationPress, onProfilePress, onLocationPress }:
           />
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} onPress={onNotificationPress}>
-          <Ionicons name="notifications-outline" size={26} color={COLORS.textDark} />
+          <View style={styles.bellWrap}>
+            <Ionicons name="notifications-outline" size={26} color={COLORS.textDark} />
+            <NotificationBadge />
+          </View>
         </TouchableOpacity>
       </View>
 
@@ -80,6 +84,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: COLORS.purpledarks1,
     flex: 1,
+  },
+  bellWrap: {
+    position: 'relative',
   },
 });
 
