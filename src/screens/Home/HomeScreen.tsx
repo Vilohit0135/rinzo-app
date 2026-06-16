@@ -36,7 +36,7 @@ type RootStackParamList = {
 
 type IconName = string;
 
-type QuickActionRoute = 'BookPickup' | 'OrderTracking';
+type QuickActionRoute = 'BookPickup' | 'OrderTracking' | 'MyOrders';
 
 type QuickAction = {
   title: string;
@@ -61,7 +61,7 @@ const laundryImageMap: Record<string, any> = {
 const quickActions: QuickAction[] = [
   { title: 'Schedule Pickup', icon: 'calendar-outline', route: 'BookPickup' },
   { title: 'Track Order', icon: 'navigate-outline', route: 'OrderTracking' as const },
-  { title: 'Repeat Order', icon: 'refresh-outline' },
+  { title: 'Order History', icon: 'receipt-outline', route: 'MyOrders' },
 ];
 
 const SectionHeader = ({ title, onViewAll }: { title: string; onViewAll?: () => void }) => (
@@ -137,6 +137,8 @@ const HomeScreen = () => {
                   onPress={route ? () => {
                     if (route === 'OrderTracking') {
                       navigation.navigate('OrderTracking', { from: 'Home' });
+                    } else if (route === 'MyOrders') {
+                      (navigation as any).navigate('OrdersTab', { screen: 'MyOrders' });
                     } else {
                       navigation.navigate(route);
                     }
