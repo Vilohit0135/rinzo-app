@@ -14,6 +14,7 @@ import OrderPickedUpScreen from '../screens/orders/OrderPickedUpScreen';
 import OrderTrackingScreen from '../screens/OrderTracking/OrderTrackingScreen';
 import LaundryDetailScreen from '../screens/LaundryDetail/LaundryDetailScreen';
 import NotificationsScreen from '../screens/Notifications/NotificationsScreen';
+import NotificationDetailsScreen from '../screens/NotificationDetails/NotificationDetailsScreen';
 import OffersScreen from '../screens/Offers/OffersScreen';
 import ComingSoonScreen from '../screens/ComingSoonScreen';
 import LocationSelectionScreen from '../screens/LocationSelection/LocationSelectionScreen';
@@ -41,6 +42,7 @@ const HomeStack = () => {
       <Stack.Screen name="Offers" component={OffersScreen} />
       <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
       <Stack.Screen name="LocationSelection" component={LocationSelectionScreen} />
+      <Stack.Screen name="NotificationDetails" component={NotificationDetailsScreen} />
       <Stack.Screen name="AddAddress" component={AddAddressScreen} />
       <Stack.Screen name="SavedAddress" component={SavedAddressScreen} />
     </Stack.Navigator>

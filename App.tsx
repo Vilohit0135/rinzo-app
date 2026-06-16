@@ -13,6 +13,7 @@ import LoginScreen from './src/screens/Login/LoginScreen';
 import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
 import SignupScreen from './src/screens/Auth/SignupScreen';
 import TabNavigator from './src/navigation/TabNavigator';
+import PushNotificationHandler from './src/components/notifications/PushNotificationHandler';
 import Toast from 'react-native-toast-message';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -96,6 +97,7 @@ export default function App() {
             </>
           )}
         </Stack.Navigator>
+        <PushNotificationHandler />
       </NavigationContainer>
       <Toast />
     </SafeAreaProvider>
