@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+﻿import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -26,17 +26,6 @@ const MyOrdersScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'MyOrders'>>();
   const route = useRoute<RouteProp<RootStackParamList, 'MyOrders'>>();
   const [activeFilter, setActiveFilter] = useState('All');
-
-  useEffect(() => {
-    if (!route.params?.fromProfile) return;
-
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      e.preventDefault();
-      (navigation as any).navigate('ProfileTab');
-    });
-
-    return unsubscribe;
-  }, [navigation, route.params?.fromProfile]);
 
   const filteredOrders =
     activeFilter === 'All'
