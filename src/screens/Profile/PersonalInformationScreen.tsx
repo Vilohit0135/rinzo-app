@@ -12,7 +12,9 @@ import LanguageSelector from '../../components/profile/LanguageSelector';
 import SaveButton from '../../components/profile/SaveButton';
 import DatePickerModal from '../../components/profile/DatePickerModal';
 import { COLORS } from '../../constants/colors';
-import { profileData } from '../../data/profile/profileData';
+import { useProfileStore } from '../../store/profileStore';
+
+const profileImage = require('../../assets/images/profile.png');
 
 type RootStackParamList = {
   Home: undefined;
@@ -25,18 +27,19 @@ const genderOptions = ['Female', 'Male', 'Other'];
 
 const PersonalInformationScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
-  const { userProfile } = profileData;
+  const profile = useProfileStore();
 
-  const [name, setName] = useState(userProfile.name);
-  const [email, setEmail] = useState(userProfile.email);
-  const [mobile, setMobile] = useState(userProfile.mobile);
-  const [dob, setDob] = useState(userProfile.dateOfBirth);
+  const [name, setName] = useState(profile.name);
+  const [email, setEmail] = useState(profile.email);
+  const [mobile, setMobile] = useState(profile.mobile);
+  const [dob, setDob] = useState(profile.dateOfBirth);
   const [showDobPicker, setShowDobPicker] = useState(false);
-  const [gender, setGender] = useState(userProfile.gender);
-  const [language, setLanguage] = useState(userProfile.preferredLanguage);
+  const [gender, setGender] = useState(profile.gender);
+  const [language, setLanguage] = useState(profile.preferredLanguage);
 
   const handleSave = () => {
-    Alert.alert('Saved', 'Your changes have been saved successfully.');
+    profile.updateProfile({ name, email, mobile, dateOfBirth: dob, gender, preferredLanguage: language });
+    navigation.goBack();
   };
 
   const handleImagePick = () => {
@@ -61,7 +64,7 @@ const PersonalInformationScreen = () => {
           <Text style={styles.title}>Personal Information</Text>
         </View>
 
-        <ProfileImagePicker imageSource={userProfile.profileImage} onPress={handleImagePick} />
+        <ProfileImagePicker imageSource={profileImage} onPress={handleImagePick} />
 
         <View style={styles.form}>
           <ProfileInput label="Name" value={name} onChangeText={setName} />

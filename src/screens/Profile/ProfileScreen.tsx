@@ -10,6 +10,7 @@ import MenuSection from '../../components/profile/MenuSection';
 import LogoutButton from '../../components/profile/LogoutButton';
 import { COLORS } from '../../constants/colors';
 import { profileData } from '../../data/profile/profileData';
+import { useProfileStore } from '../../store/profileStore';
 import { useAuthStore } from '../../store/authStore';
 
 type RootStackParamList = {
@@ -33,6 +34,7 @@ type RootStackParamList = {
 const ProfileScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
   const signOut = useAuthStore((s) => s.signOut);
+  const profile = useProfileStore();
 
   const handleLogout = async () => {
     await signOut();
@@ -48,7 +50,7 @@ const ProfileScreen = () => {
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
       <ScrollableScreen contentContainerStyle={styles.scroll}>
-        <ProfileCard {...profileData.userProfile} onPress={() => navigation.navigate('PersonalInformation')} />
+        <ProfileCard name={profile.name} email={profile.email} onPress={() => navigation.navigate('PersonalInformation')} />
 
         <StatsCard {...profileData.stats} />
 
