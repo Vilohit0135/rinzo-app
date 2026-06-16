@@ -52,6 +52,7 @@ interface BookingState {
   addressContact: string;
   laundryName: string;
   orderId: string;
+  totalAmount: number;
   appliedCoupon: string | null;
   setServices: (services: ServiceSelection[]) => void;
   updateQuantity: (id: string, quantity: number) => void;
@@ -63,6 +64,7 @@ interface BookingState {
   setAddressContact: (contact: string) => void;
   setLaundryName: (name: string) => void;
   setOrderId: (id: string) => void;
+  setTotalAmount: (amount: number) => void;
   setAppliedCoupon: (coupon: string | null) => void;
   clear: () => void;
 }
@@ -81,6 +83,7 @@ export const useBookingStore = create<BookingState>((set) => ({
   addressContact: 'MS Mira Sharma - 9875263167',
   laundryName: 'Krishna Laundry',
   orderId: '',
+  totalAmount: 0,
   appliedCoupon: null,
 
   setServices: (services) => set({ services }),
@@ -108,6 +111,8 @@ export const useBookingStore = create<BookingState>((set) => ({
 
   setOrderId: (orderId) => set({ orderId }),
 
+  setTotalAmount: (totalAmount) => set({ totalAmount }),
+
   setAppliedCoupon: (appliedCoupon) => set({ appliedCoupon }),
 
   clear: () =>
@@ -125,6 +130,7 @@ export const useBookingStore = create<BookingState>((set) => ({
       addressContact: 'MS Mira Sharma - 9875263167',
       laundryName: 'Krishna Laundry',
       orderId: '',
+      totalAmount: 0,
       appliedCoupon: null,
     }),
 }));

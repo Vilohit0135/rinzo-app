@@ -16,8 +16,9 @@ type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
-  MyOrders: undefined;
+  MyOrders: { fromProfile?: boolean } | undefined;
   MyReviews: undefined;
+  Offers: undefined;
   HelpAndSupport: undefined;
   HelpCenter: undefined;
   ContactSupport: undefined;
@@ -67,9 +68,11 @@ const ProfileScreen = () => {
           heading={profileData.activityMenu.heading}
           items={profileData.activityMenu.items.map((item) =>
             item.title === 'Order History'
-              ? { ...item, onPress: () => (navigation as any).navigate('OrdersTab', { screen: 'MyOrders', params: { fromProfile: true } }) }
+              ? { ...item, onPress: () => navigation.navigate('MyOrders', { fromProfile: true }) }
               : item.title === 'Review and Ratings'
               ? { ...item, onPress: () => navigation.navigate('MyReviews') }
+              : item.title === 'Offers'
+              ? { ...item, onPress: () => navigation.navigate('Offers') }
               : item
           )}
         />
