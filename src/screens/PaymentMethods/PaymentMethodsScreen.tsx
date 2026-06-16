@@ -1,7 +1,5 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import { useTabBar } from '../../utils/TabBarContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
@@ -34,14 +32,6 @@ const wallets = [
 
 const PaymentMethodsScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'PaymentMethods'>>();
-  const { setTabBarVisible } = useTabBar();
-
-  useFocusEffect(
-    useCallback(() => {
-      setTabBarVisible(false);
-    }, [])
-  );
-
   const [selectedCard, setSelectedCard] = useState<number>(0);
   const [selectedUpi, setSelectedUpi] = useState('axis');
 

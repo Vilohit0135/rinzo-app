@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -14,20 +14,53 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import { useBookingStore } from '../../store/bookingStore';
+import { useOrderStore } from '../../store/orderStore';
 import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderConfirmation'>;
 
 const OrderConfirmationScreen = ({ navigation }: Props) => {
   const { setTabBarVisible } = useTabBar();
+  const orderSavedRef = useRef(false);
   const pickupDate = useBookingStore((s) => s.pickupDate);
   const pickupTime = useBookingStore((s) => s.pickupTime);
   const orderId = useBookingStore((s) => s.orderId);
+  const clearBooking = useBookingStore((s) => s.clear);
+  const addOrder = useOrderStore((s) => s.addOrder);
 
   useFocusEffect(
     useCallback(() => {
       setTabBarVisible(false);
-    }, [])
+
+      if (!orderSavedRef.current && orderId) {
+        orderSavedRef.current = true;
+        const state = useBookingStore.getState();
+        addOrder({
+          id: state.orderId,
+          status: 'ongoing',
+          statusLabel: 'Order Confirmed',
+          laundryName: state.laundryName,
+          date: state.pickupDate && state.pickupTime
+            ? `${state.pickupTime}, ${state.pickupDate}`
+            : 'Tomorrow, 2:00–4:00 PM',
+          amount: `₹${state.totalAmount}`,
+          pickupDate: state.pickupDate,
+          pickupTime: state.pickupTime,
+          address: state.address,
+          addressLabel: state.addressLabel,
+          addressContact: state.addressContact,
+          services: state.services
+            .filter((s) => s.quantity > 0)
+            .map((s) => ({
+              title: s.title,
+              quantity: s.quantity,
+              unit: s.unit,
+              price: s.unitPrice,
+            })),
+        });
+        clearBooking();
+      }
+    }, []) // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const pickupDisplay = pickupDate && pickupTime

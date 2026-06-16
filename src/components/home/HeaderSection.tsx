@@ -3,6 +3,7 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import { useLocationStore } from '../../store/locationStore';
+import { useProfileStore } from '../../store/profileStore';
 import NotificationBadge from '../notifications/NotificationBadge';
 
 interface HeaderSectionProps {
@@ -13,13 +14,17 @@ interface HeaderSectionProps {
 
 const HeaderSection = ({ onNotificationPress, onProfilePress, onLocationPress }: HeaderSectionProps) => {
   const currentAddress = useLocationStore((s) => s.currentAddress);
+  const profileName = useProfileStore((s) => s.name);
+  const profileImage = useProfileStore((s) => s.profileImage);
+
+  const avatarSource = profileImage ? { uri: profileImage } : require('../../assets/images/profile.png');
 
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
         <TouchableOpacity activeOpacity={0.7} onPress={onProfilePress}>
           <Image
-            source={require('../../assets/images/profile.png')}
+            source={avatarSource}
             style={styles.profileImage}
             resizeMode="cover"
           />
@@ -32,7 +37,7 @@ const HeaderSection = ({ onNotificationPress, onProfilePress, onLocationPress }:
         </TouchableOpacity>
       </View>
 
-      <Text style={styles.greeting} allowFontScaling={false}>Hey Mira 👋</Text>
+      <Text style={styles.greeting} allowFontScaling={false}>Hey {profileName} 👋</Text>
       <Text style={styles.title} numberOfLines={2} allowFontScaling={false}>Find laundry near you</Text>
 
       <TouchableOpacity style={styles.locationRow} activeOpacity={0.7} onPress={onLocationPress}>

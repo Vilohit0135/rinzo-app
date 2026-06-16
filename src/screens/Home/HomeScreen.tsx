@@ -138,7 +138,7 @@ const HomeScreen = () => {
                     if (route === 'OrderTracking') {
                       navigation.navigate('OrderTracking', { from: 'Home' });
                     } else if (route === 'MyOrders') {
-                      (navigation as any).navigate('OrdersTab', { screen: 'MyOrders' });
+                      navigation.navigate('MyOrders');
                     } else {
                       navigation.navigate(route);
                     }

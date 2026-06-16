@@ -15,6 +15,8 @@ import HelpAndSupportScreen from '../screens/support/HelpAndSupportScreen';
 import ChatSupportScreen from '../screens/support/ChatSupportScreen';
 import ReportIssueScreen from '../screens/support/ReportIssueScreen';
 import ComingSoonScreen from '../screens/ComingSoonScreen';
+import MyOrdersScreen from '../screens/MyOrders/MyOrdersScreen';
+import OffersScreen from '../screens/Offers/OffersScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -36,6 +38,8 @@ const ProfileStack = () => {
       <Stack.Screen name="ChatSupport" component={ChatSupportScreen} />
       <Stack.Screen name="ReportIssue" component={ReportIssueScreen} />
       <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
+      <Stack.Screen name="MyOrders" component={MyOrdersScreen} />
+      <Stack.Screen name="Offers" component={OffersScreen} />
     </Stack.Navigator>
   );
 };

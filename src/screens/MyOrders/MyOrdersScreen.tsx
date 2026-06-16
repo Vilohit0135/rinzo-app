@@ -11,9 +11,7 @@ import OrderFilterTabs from '../../components/orders/OrderFilterTabs';
 import OrderCard from '../../components/orders/OrderCard';
 import EmptyOrdersState from '../../components/orders/EmptyOrdersState';
 import { COLORS } from '../../constants/colors';
-import { ordersData } from '../../data/orders/ordersData';
-import { getLaundryById } from '../../data/laundry/laundryData';
-import { emptyOrdersData } from '../../data/orders/emptyOrdersData';
+import { useOrderStore } from '../../store/orderStore';
 
 type RootStackParamList = {
   Home: undefined;
@@ -26,13 +24,28 @@ const MyOrdersScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'MyOrders'>>();
   const route = useRoute<RouteProp<RootStackParamList, 'MyOrders'>>();
   const [activeFilter, setActiveFilter] = useState('All');
+  const orders = useOrderStore((s) => s.orders);
 
+<<<<<<< HEAD
+=======
+  useEffect(() => {
+    if (!route.params?.fromProfile) return;
+
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+      (navigation as any).navigate('ProfileTab', { screen: 'Profile' });
+    });
+
+    return unsubscribe;
+  }, [navigation, route.params?.fromProfile]);
+
+>>>>>>> 277ee23c746dc33aeb16bb6051c8d312d1ce2893
   const filteredOrders =
     activeFilter === 'All'
-      ? ordersData
-      : ordersData.filter((order) => order.status === activeFilter.toLowerCase());
+      ? orders
+      : orders.filter((order) => order.status === activeFilter.toLowerCase());
 
-  const { hasOrders, title, subtitle } = emptyOrdersData;
+  const hasOrders = orders.length > 0;
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -40,7 +53,7 @@ const MyOrdersScreen = () => {
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <OrdersHeader onBackPress={() => {
           if (route.params?.fromProfile) {
-            (navigation as any).navigate('ProfileTab');
+            (navigation as any).navigate('ProfileTab', { screen: 'Profile' });
           } else {
             navigation.goBack();
           }
@@ -61,14 +74,14 @@ const MyOrdersScreen = () => {
                 id={order.id}
                 status={order.status}
                 statusLabel={order.statusLabel}
-                laundryName={getLaundryById(order.laundryId)?.name || ''}
+                laundryName={order.laundryName}
                 date={order.date}
                 amount={order.amount}
               />
             ))}
           </ScrollableScreen>
         ) : (
-          <EmptyOrdersState title={title} subtitle={subtitle} />
+          <EmptyOrdersState title="No Orders Yet" subtitle="Looks like you haven't placed any orders yet" />
         )}
       </KeyboardAvoidingView>
 

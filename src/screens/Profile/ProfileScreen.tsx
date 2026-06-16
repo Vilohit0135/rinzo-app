@@ -10,14 +10,16 @@ import MenuSection from '../../components/profile/MenuSection';
 import LogoutButton from '../../components/profile/LogoutButton';
 import { COLORS } from '../../constants/colors';
 import { profileData } from '../../data/profile/profileData';
+import { useProfileStore } from '../../store/profileStore';
 import { useAuthStore } from '../../store/authStore';
 
 type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
-  MyOrders: undefined;
+  MyOrders: { fromProfile?: boolean } | undefined;
   MyReviews: undefined;
+  Offers: undefined;
   HelpAndSupport: undefined;
   HelpCenter: undefined;
   ContactSupport: undefined;
@@ -32,6 +34,7 @@ type RootStackParamList = {
 const ProfileScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
   const signOut = useAuthStore((s) => s.signOut);
+  const profile = useProfileStore();
 
   const handleLogout = async () => {
     await signOut();
@@ -47,7 +50,7 @@ const ProfileScreen = () => {
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
       <ScrollableScreen contentContainerStyle={styles.scroll}>
-        <ProfileCard {...profileData.userProfile} onPress={() => navigation.navigate('PersonalInformation')} />
+        <ProfileCard name={profile.name} email={profile.email} imageSource={profile.profileImage} onPress={() => navigation.navigate('PersonalInformation')} />
 
         <StatsCard {...profileData.stats} />
 
@@ -67,9 +70,11 @@ const ProfileScreen = () => {
           heading={profileData.activityMenu.heading}
           items={profileData.activityMenu.items.map((item) =>
             item.title === 'Order History'
-              ? { ...item, onPress: () => (navigation as any).navigate('OrdersTab', { screen: 'MyOrders', params: { fromProfile: true } }) }
+              ? { ...item, onPress: () => navigation.navigate('MyOrders', { fromProfile: true }) }
               : item.title === 'Review and Ratings'
               ? { ...item, onPress: () => navigation.navigate('MyReviews') }
+              : item.title === 'Offers'
+              ? { ...item, onPress: () => navigation.navigate('Offers') }
               : item
           )}
         />
