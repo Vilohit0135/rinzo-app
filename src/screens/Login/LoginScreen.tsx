@@ -221,14 +221,19 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
 
               <View style={[styles.formSlide, { width: slideWidth }]}>
                 <Text style={[styles.label, styles.fieldLabel]}>Phone number</Text>
-                <TextInput
-                  style={styles.input}
-                  placeholder="+91 8777734343"
-                  placeholderTextColor="#8E8E8E"
-                  keyboardType="phone-pad"
-                  value={phone}
-                  onChangeText={setPhone}
-                />
+                <View style={styles.phoneRow}>
+                  <View style={styles.prefixBox}>
+                    <Text style={styles.prefixText}>+91</Text>
+                  </View>
+                  <TextInput
+                    style={styles.phoneInput}
+                    placeholder="8777734343"
+                    placeholderTextColor="#8E8E8E"
+                    keyboardType="phone-pad"
+                    value={phone}
+                    onChangeText={setPhone}
+                  />
+                </View>
 
                 <TouchableOpacity style={styles.buttonWrapper} activeOpacity={0.8} onPress={handleLogin} disabled={isLoading}>
                   <LinearGradient
@@ -364,6 +369,41 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 16,
     marginTop: 8,
+    color: '#000000',
+  },
+  phoneRow: {
+    flexDirection: 'row',
+    marginTop: 8,
+  },
+  prefixBox: {
+    height: 56,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    borderRightWidth: 0,
+    borderRadius: 12,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F9F9F9',
+  },
+  prefixText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#222222',
+  },
+  phoneInput: {
+    flex: 1,
+    height: 56,
+    borderRadius: 12,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    paddingHorizontal: 14,
+    fontSize: 16,
     color: '#000000',
   },
   passwordInputContainer: {
