@@ -15,13 +15,16 @@ interface HeaderSectionProps {
 const HeaderSection = ({ onNotificationPress, onProfilePress, onLocationPress }: HeaderSectionProps) => {
   const currentAddress = useLocationStore((s) => s.currentAddress);
   const profileName = useProfileStore((s) => s.name);
+  const profileImage = useProfileStore((s) => s.profileImage);
+
+  const avatarSource = profileImage ? { uri: profileImage } : require('../../assets/images/profile.png');
 
   return (
     <View style={styles.container}>
       <View style={styles.topRow}>
         <TouchableOpacity activeOpacity={0.7} onPress={onProfilePress}>
           <Image
-            source={require('../../assets/images/profile.png')}
+            source={avatarSource}
             style={styles.profileImage}
             resizeMode="cover"
           />
