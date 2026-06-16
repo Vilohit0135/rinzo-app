@@ -77,13 +77,13 @@ const BottomTabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => 
               canPreventDefault: true,
             });
             if (!event.defaultPrevented) {
-              if (route.name === 'OrdersTab') {
-                navigation.navigate('OrdersTab', { screen: 'YourCart' });
-              } else if (route.name === 'ProfileTab') {
-                navigation.navigate('ProfileTab', { screen: 'Profile' });
-              } else if (!isFocused) {
-                navigation.navigate(route.name);
-              }
+              const defaultScreens: Record<string, string> = {
+                HomeTab: 'Home',
+                SearchTab: 'Search',
+                OrdersTab: 'YourCart',
+                ProfileTab: 'Profile',
+              };
+              navigation.navigate(route.name, { screen: defaultScreens[route.name] });
             }
           };
 

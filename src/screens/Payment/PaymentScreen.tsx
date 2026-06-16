@@ -49,6 +49,7 @@ const PaymentScreen = ({ navigation }: Props) => {
   const [selectedMethod, setSelectedMethod] = useState<string>("UPI");
   const services = useBookingStore((s) => s.services);
   const appliedCoupon = useBookingStore((s) => s.appliedCoupon);
+  const setTotalAmount = useBookingStore((s) => s.setTotalAmount);
 
   const totalAmount = useMemo(() => {
     const subtotal = services
@@ -137,7 +138,10 @@ const PaymentScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             style={styles.payButton}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate("OrderConfirmation")}
+            onPress={() => {
+              setTotalAmount(totalAmount);
+              navigation.navigate("OrderConfirmation");
+            }}
           >
             <LinearGradient
               colors={["#8259D2", "#8259D2"]}

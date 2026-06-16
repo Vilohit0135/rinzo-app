@@ -38,6 +38,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
   const pickupTime = useBookingStore((s) => s.pickupTime);
   const address = useBookingStore((s) => s.address);
   const setOrderId = useBookingStore((s) => s.setOrderId);
+  const setTotalAmount = useBookingStore((s) => s.setTotalAmount);
   const appliedCoupon = useBookingStore((s) => s.appliedCoupon);
 
   const lineItems = services
@@ -54,6 +55,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
   const handleProceedToPayment = () => {
     const id = `R${Date.now()}`;
     setOrderId(id);
+    setTotalAmount(total);
     navigation.navigate('Payment');
   };
 
