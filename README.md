@@ -40,6 +40,7 @@ The Expo CLI will open a development server. Use Expo Go, an emulator, or a simu
 - `npm run ios` - start Expo and open the iOS target
 - `npm run web` - start Expo for web
 
+
 ## Project Structure
 
 ```text
