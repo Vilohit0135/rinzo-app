@@ -14,6 +14,7 @@ export type RootStackParamList = {
   Login: undefined;
   Main: undefined;
   Home: undefined;
+  LaundryNearby: undefined;
   Search: undefined;
   YourCart: undefined;
   Profile: undefined;
