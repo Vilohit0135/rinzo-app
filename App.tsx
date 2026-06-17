@@ -10,6 +10,7 @@ import { useAuthStore, BYPASS_AUTH } from './src/store/authStore';
 import OnboardingScreenOne from './src/screens/Onboarding/OnboardingScreenOne';
 import LocationAccessScreen from './src/screens/LocationAccess/LocationAccessScreen';
 import LoginScreen from './src/screens/Login/LoginScreen';
+import PhoneLoginScreen from './src/screens/Login/PhoneLoginScreen';
 import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
 import SignupScreen from './src/screens/Auth/SignupScreen';
 import TabNavigator from './src/navigation/TabNavigator';
@@ -80,6 +81,15 @@ export default function App() {
                   <LoginScreen
                     onLoginSuccess={(phone) => navigation.navigate('OtpVerification', { phone })}
                     onSignupPress={() => navigation.navigate('Signup')}
+                  />
+                )}
+              </Stack.Screen>
+
+              <Stack.Screen name="PhoneLogin">
+                {({ navigation }) => (
+                  <PhoneLoginScreen
+                    onLoginSuccess={(phone) => navigation.navigate('OtpVerification', { phone })}
+                    onEmailLoginPress={() => navigation.goBack()}
                   />
                 )}
               </Stack.Screen>

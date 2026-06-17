@@ -10,7 +10,7 @@ const OrderCard = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={() => navigation.navigate('MyOrders')}>
       <View style={styles.iconWrap}>
         <Image source={require('../../../assets/images/Laundry/krishna-laundry.png')} style={styles.orderIcon} />
       </View>
@@ -20,11 +20,11 @@ const OrderCard = () => {
         <Text style={styles.orderId} allowFontScaling={false} numberOfLines={1}>Order ID: #KL21345</Text>
         <Text style={styles.schedule} allowFontScaling={false} numberOfLines={1}>Scheduled for Today, 3:00 PM</Text>
       </View>
-      <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={() => navigation.navigate('OrderTracking', { from: 'Home' })}>
+      <View style={styles.button} pointerEvents="box-none">
         <Text style={styles.buttonText} allowFontScaling={false} numberOfLines={1}>Track Order</Text>
         <Ionicons name="chevron-forward" size={14} color={COLORS.purple} />
-      </TouchableOpacity>
-    </View>
+      </View>
+    </TouchableOpacity>
   );
 };
 

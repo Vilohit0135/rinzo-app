@@ -61,7 +61,7 @@ const laundryImageMap: Record<string, any> = {
 const quickActions: QuickAction[] = [
   { title: 'Schedule Pickup', icon: 'calendar-outline', route: 'BookPickup' },
   { title: 'Track Order', icon: 'navigate-outline', route: 'OrderTracking' as const },
-  { title: 'Order History', icon: 'receipt-outline', route: 'MyOrders' },
+  { title: 'All Orders', icon: 'receipt-outline', route: 'MyOrders' },
 ];
 
 const SectionHeader = ({ title, onViewAll }: { title: string; onViewAll?: () => void }) => (
@@ -173,7 +173,7 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.orderSection}>
-          <Text style={styles.sectionTitle} numberOfLines={1} allowFontScaling={false}>Your Order</Text>
+          <SectionHeader title="All Orders" onViewAll={() => navigation.navigate('MyOrders')} />
           <View style={styles.orderCardWrap}>
             <OrderCard />
           </View>
