@@ -8,7 +8,7 @@ interface CheckoutButtonProps {
 
 const CheckoutButton = ({ onPress }: CheckoutButtonProps) => {
   return (
-    <TouchableOpacity activeOpacity={0.9} onPress={onPress}>
+    <TouchableOpacity activeOpacity={0.9} onPress={onPress} style={styles.buttonContainer}>
       <LinearGradient
         colors={['#8259D2', '#8259D2']}
         start={{ x: 0, y: 0 }}
@@ -22,9 +22,13 @@ const CheckoutButton = ({ onPress }: CheckoutButtonProps) => {
 };
 
 const styles = StyleSheet.create({
-  button: {
+  buttonContainer: {
     height: verticalScale(50),
     borderRadius: moderateScale(25),
+    overflow: 'hidden',
+  },
+  button: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
