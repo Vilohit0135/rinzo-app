@@ -69,6 +69,14 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
     ).start();
   }, [dotOpacity]);
 
+  // Auto redirect to OrderSummaryDelivered screen after 5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate('OrderSummaryDelivered', { orderId });
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [navigation, orderId]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
@@ -134,6 +142,18 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
           >
             <Ionicons name="call" size={18} color="#7C5CE6" />
           </TouchableOpacity>
+        </View>
+
+        {/* Uber-style PIN Section */}
+        <View style={styles.pinRow}>
+          <Text style={styles.pinLabel} allowFontScaling={false}>PIN for this trip</Text>
+          <View style={styles.pinContainer}>
+            {['5', '8', '2', '4'].map((digit, idx) => (
+              <View key={idx} style={styles.pinBox}>
+                <Text style={styles.pinText} allowFontScaling={false}>{digit}</Text>
+              </View>
+            ))}
+          </View>
         </View>
 
         {/* Estimated Arrival Time Card */}
@@ -294,6 +314,40 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: verticalScale(16),
+  },
+  pinRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#F8F9FE',
+    borderRadius: scale(10),
+    paddingVertical: verticalScale(10),
+    paddingHorizontal: scale(14),
+    marginBottom: verticalScale(16),
+    borderWidth: 1,
+    borderColor: '#EBEBF0',
+  },
+  pinLabel: {
+    fontSize: responsiveFontSize(13.5),
+    fontWeight: '700',
+    color: '#4B5563',
+  },
+  pinContainer: {
+    flexDirection: 'row',
+    gap: scale(6),
+  },
+  pinBox: {
+    width: scale(26),
+    height: scale(26),
+    backgroundColor: '#172135',
+    borderRadius: scale(4),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pinText: {
+    color: '#FFFFFF',
+    fontSize: responsiveFontSize(13.5),
+    fontWeight: '800',
   },
   avatarContainer: {
     position: 'relative',

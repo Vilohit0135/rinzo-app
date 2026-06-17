@@ -208,7 +208,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             <Image
               source={require('../../../assets/images/order/order-detail.png')}
               style={styles.riderImage}
-              resizeMode="contain"
+              resizeMode="cover"
             />
           </View>
           <View style={styles.statusTextContainer}>
@@ -465,10 +465,11 @@ const styles = StyleSheet.create({
     height: verticalScale(200),
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   riderImage: {
-    width: scale(220),
-    height: verticalScale(180),
+    width: '100%',
+    height: '100%',
   },
   statusTextContainer: {
     alignItems: 'center',

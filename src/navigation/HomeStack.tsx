@@ -23,6 +23,7 @@ import AddAddressScreen from '../screens/AddAddress/AddAddressScreen';
 import SavedAddressScreen from '../screens/SavedAddress/SavedAddressScreen';
 import MyOrdersScreen from '../screens/MyOrders/MyOrdersScreen';
 import OrderDetailScreen from '../screens/OrderDetail/OrderDetailScreen';
+import OrderSummaryDeliveredScreen from '../screens/OrderSummary/OrderSummaryDeliveredScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -48,6 +49,7 @@ const HomeStack = () => {
       <Stack.Screen name="LocationSelection" component={LocationSelectionScreen} />
       <Stack.Screen name="MyOrders" component={MyOrdersScreen} />
       <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+      <Stack.Screen name="OrderSummaryDelivered" component={OrderSummaryDeliveredScreen} />
       <Stack.Screen name="NotificationDetails" component={NotificationDetailsScreen} />
       <Stack.Screen name="AddAddress" component={AddAddressScreen} />
       <Stack.Screen name="SavedAddress" component={SavedAddressScreen} />

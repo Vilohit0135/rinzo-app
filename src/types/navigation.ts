@@ -39,6 +39,7 @@ export type RootStackParamList = {
   LaundryDetail: { id: string };
   MyOrders: { fromProfile?: boolean } | undefined;
   OrderDetail: { orderId: string };
+  OrderSummaryDelivered: { orderId: string };
   OtpVerification: { phone: string };
   Signup: undefined;
   AllServices: { serviceId: string } | undefined;
