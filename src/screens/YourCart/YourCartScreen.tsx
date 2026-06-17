@@ -52,8 +52,30 @@ const YourCartScreen = () => {
   const laundryDistance = useBookingStore((s) => s.laundryDistance);
   const laundryPrice = useBookingStore((s) => s.laundryPrice);
 
-  // Read clothes summary checklist from store
-  const clothes = useBookingStore((s) => s.clothesSummary);
+  // Read clothes summary checklist from store (aggregated per active service)
+  const clothesSummary = useBookingStore((s) => s.clothesSummary);
+  const activeServices = useMemo(() => storeServices.filter((s) => s.quantity > 0), [storeServices]);
+
+  const clothes = useMemo(() => {
+    const map: Record<string, number> = {};
+    const defaultNames = ['Shirts', 'Pants', 'T-Shirts', 'Bedsheets'];
+    defaultNames.forEach((name) => {
+      map[name] = 0;
+    });
+
+    activeServices.forEach((service) => {
+      const serviceClothes = clothesSummary[service.id] || [];
+      serviceClothes.forEach((item) => {
+        map[item.name] = (map[item.name] || 0) + item.quantity;
+      });
+    });
+
+    return Object.entries(map).map(([name, quantity]) => ({
+      name,
+      quantity,
+    }));
+  }, [clothesSummary, activeServices]);
+
   const updateClothesQuantity = useBookingStore((s) => s.updateClothesQuantity);
 
   const [couponInput, setCouponInput] = useState('');

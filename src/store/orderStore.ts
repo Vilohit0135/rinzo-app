@@ -1,6 +1,4 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface PlacedOrder {
   id: string;
@@ -24,23 +22,15 @@ interface OrderStore {
   clearOrders: () => void;
 }
 
-export const useOrderStore = create<OrderStore>()(
-  persist(
-    (set) => ({
-      orders: [],
-      addOrder: (order) =>
-        set((state) => ({ orders: [order, ...state.orders] })),
-      updateOrderStatus: (id, status, statusLabel) =>
-        set((state) => ({
-          orders: state.orders.map((o) =>
-            o.id === id ? { ...o, status, statusLabel } : o
-          ),
-        })),
-      clearOrders: () => set({ orders: [] }),
-    }),
-    {
-      name: 'rinzo-orders',
-      storage: createJSONStorage(() => AsyncStorage),
-    }
-  )
-);
+export const useOrderStore = create<OrderStore>((set) => ({
+  orders: [],
+  addOrder: (order) =>
+    set((state) => ({ orders: [order, ...state.orders] })),
+  updateOrderStatus: (id, status, statusLabel) =>
+    set((state) => ({
+      orders: state.orders.map((o) =>
+        o.id === id ? { ...o, status, statusLabel } : o
+      ),
+    })),
+  clearOrders: () => set({ orders: [] }),
+}));

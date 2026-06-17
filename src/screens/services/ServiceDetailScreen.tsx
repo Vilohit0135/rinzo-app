@@ -114,16 +114,22 @@ const ServiceDetailScreen = () => {
     };
   }, [setTabBarVisible]);
 
-  const storeClothes = useBookingStore((s) => s.clothesSummary);
-  const setStoreClothes = useBookingStore((s) => s.setClothesSummary);
+  // Retrieve base data from database services
+  const service = allServices.find((s) => s.id === serviceId) ||
+                  allServices.find((s) => s.title === serviceTitle) ||
+                  allServices.find((s) => s.title.toLowerCase().includes(serviceTitle?.toLowerCase())) ||
+                  { id: serviceId || '1', title: serviceTitle || 'Wash & Fold', unitPrice: 99, unit: 'Kg', subtitle: '', duration: '24 hrs' };
+
+  const storeClothesSummary = useBookingStore((s) => s.clothesSummary);
+  const setServiceClothes = useBookingStore((s) => s.setServiceClothes);
   const updateStoreQuantity = useBookingStore((s) => s.updateQuantity);
 
-  const [clothes, setClothes] = useState(storeClothes);
+  const [clothes, setClothes] = useState(storeClothesSummary[service.id] || []);
   const [newItemName, setNewItemName] = useState('');
 
   useEffect(() => {
-    setClothes(storeClothes);
-  }, [storeClothes]);
+    setClothes(storeClothesSummary[service.id] || []);
+  }, [storeClothesSummary, service.id]);
 
   const incrementQuantity = (index: number) => {
     setClothes((prev) =>
@@ -154,7 +160,7 @@ const ServiceDetailScreen = () => {
     cartData.clothesSummary = clothes;
     const totalQty = clothes.reduce((sum, item) => sum + item.quantity, 0);
     updateStoreQuantity(service.id, totalQty);
-    setStoreClothes(clothes);
+    setServiceClothes(service.id, clothes);
     Toast.show({
       type: 'success',
       text1: 'Added to Cart',
@@ -173,12 +179,6 @@ const ServiceDetailScreen = () => {
       setTabBarVisible(true);
     }, [setTabBarVisible])
   );
-
-  // Retrieve base data from database services
-  const service = allServices.find((s) => s.id === serviceId) ||
-                  allServices.find((s) => s.title === serviceTitle) ||
-                  allServices.find((s) => s.title.toLowerCase().includes(serviceTitle?.toLowerCase())) ||
-                  { id: serviceId || '1', title: serviceTitle || 'Wash & Fold', unitPrice: 99, unit: 'Kg', subtitle: '', duration: '24 hrs' };
 
   // Fetch mockup specifications
   const meta = serviceMetadata[service.title] || {

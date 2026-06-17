@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { allServices } from '../data/services/servicesData';
 
 export interface ServiceSelection {
   id: string;
@@ -29,7 +30,6 @@ export const calculateDiscount = (
     case 'FREESHIP':
       return DELIVERY_CHARGE;
     case 'IRON15': {
-      // Iron Only service is id '2' (or check title contains Iron)
       const ironService = services.find((s) => s.id === '2' || s.title.toLowerCase().includes('iron'));
       if (ironService) {
         const ironTotal = ironService.quantity * ironService.unitPrice;
@@ -41,6 +41,34 @@ export const calculateDiscount = (
       return 0;
   }
 };
+
+const defaultClothes = [
+  { name: 'Shirts', quantity: 0 },
+  { name: 'Pants', quantity: 0 },
+  { name: 'T-Shirts', quantity: 0 },
+  { name: 'Bedsheets', quantity: 0 },
+];
+
+const getInitialClothesSummary = (): Record<string, { name: string; quantity: number }[]> => ({
+  '1': defaultClothes.map(c => ({ ...c })),
+  '2': defaultClothes.map(c => ({ ...c })),
+  '3': defaultClothes.map(c => ({ ...c })),
+  '4': defaultClothes.map(c => ({ ...c })),
+  '5': defaultClothes.map(c => ({ ...c })),
+  '6': defaultClothes.map(c => ({ ...c })),
+  '7': defaultClothes.map(c => ({ ...c })),
+  '8': defaultClothes.map(c => ({ ...c })),
+});
+
+const getInitialServices = (): ServiceSelection[] =>
+  allServices.map(s => ({
+    id: s.id,
+    title: s.title,
+    unitPrice: s.unitPrice,
+    unit: s.unit,
+    quantity: 0,
+    subtitle: s.subtitle,
+  }));
 
 interface BookingState {
   services: ServiceSelection[];
@@ -59,7 +87,7 @@ interface BookingState {
   orderId: string;
   totalAmount: number;
   appliedCoupon: string | null;
-  clothesSummary: { name: string; quantity: number }[];
+  clothesSummary: Record<string, { name: string; quantity: number }[]>;
   setServices: (services: ServiceSelection[]) => void;
   updateQuantity: (id: string, quantity: number) => void;
   setInstructions: (text: string) => void;
@@ -73,17 +101,14 @@ interface BookingState {
   setOrderId: (id: string) => void;
   setTotalAmount: (amount: number) => void;
   setAppliedCoupon: (coupon: string | null) => void;
-  setClothesSummary: (clothes: { name: string; quantity: number }[]) => void;
+  setClothesSummary: (clothes: Record<string, { name: string; quantity: number }[]>) => void;
+  setServiceClothes: (serviceId: string, clothes: { name: string; quantity: number }[]) => void;
   updateClothesQuantity: (name: string, quantity: number) => void;
   clear: () => void;
 }
 
 export const useBookingStore = create<BookingState>((set) => ({
-  services: [
-    { id: '1', title: 'Wash and Fold', unitPrice: 50, unit: 'Kg', quantity: 0, subtitle: 'Wash , Dry and Neatly Folded' },
-    { id: '2', title: 'Iron Only', unitPrice: 15, unit: 'Itm', quantity: 0, subtitle: 'Wash , Dry and Neatly Folded' },
-    { id: '3', title: 'Dry Clean', unitPrice: 120, unit: 'Itm', quantity: 0, subtitle: 'Wash , Dry and Neatly Folded' },
-  ],
+  services: getInitialServices(),
   instructions: '',
   pickupDate: '',
   pickupTime: '',
@@ -99,21 +124,28 @@ export const useBookingStore = create<BookingState>((set) => ({
   orderId: '',
   totalAmount: 0,
   appliedCoupon: null,
-  clothesSummary: [
-    { name: 'Shirts', quantity: 0 },
-    { name: 'Pants', quantity: 0 },
-    { name: 'T-Shirts', quantity: 0 },
-    { name: 'Bedsheets', quantity: 0 },
-  ],
+  clothesSummary: getInitialClothesSummary(),
 
   setServices: (services) => set({ services }),
 
   updateQuantity: (id, quantity) =>
-    set((state) => ({
-      services: state.services.map((s) =>
-        s.id === id ? { ...s, quantity: Math.max(0, quantity) } : s
-      ),
-    })),
+    set((state) => {
+      const targetQty = Math.max(0, quantity);
+      const nextServices = state.services.map((s) =>
+        s.id === id ? { ...s, quantity: targetQty } : s
+      );
+
+      const nextClothesSummary = { ...state.clothesSummary };
+      if (targetQty === 0 && nextClothesSummary[id]) {
+        // If the service quantity is set to 0, clear all clothes for this service to 0
+        nextClothesSummary[id] = nextClothesSummary[id].map((c) => ({ ...c, quantity: 0 }));
+      }
+
+      return {
+        services: nextServices,
+        clothesSummary: nextClothesSummary,
+      };
+    }),
 
   setInstructions: (instructions) => set({ instructions }),
 
@@ -147,20 +179,94 @@ export const useBookingStore = create<BookingState>((set) => ({
 
   setClothesSummary: (clothesSummary) => set({ clothesSummary }),
 
-  updateClothesQuantity: (name, quantity) =>
+  setServiceClothes: (serviceId, clothes) =>
     set((state) => ({
-      clothesSummary: state.clothesSummary.map((c) =>
-        c.name === name ? { ...c, quantity: Math.max(0, quantity) } : c
-      ),
+      clothesSummary: {
+        ...state.clothesSummary,
+        [serviceId]: clothes,
+      },
     })),
+
+  updateClothesQuantity: (name, targetQuantity) =>
+    set((state) => {
+      // Find active services (quantity > 0)
+      const activeServices = state.services.filter((s) => s.quantity > 0);
+      if (activeServices.length === 0) return {};
+
+      // 1. Calculate current total of this item across all active services
+      let currentTotal = 0;
+      activeServices.forEach((s) => {
+        const list = state.clothesSummary[s.id] || [];
+        const item = list.find((c) => c.name === name);
+        if (item) {
+          currentTotal += item.quantity;
+        }
+      });
+
+      const diff = targetQuantity - currentTotal;
+      if (diff === 0) return {};
+
+      const nextClothesSummary = { ...state.clothesSummary };
+      const nextServices = state.services.map((s) => ({ ...s }));
+
+      if (diff > 0) {
+        // User incremented. Add diff to the first active service.
+        const serviceToUpdate = activeServices[0];
+        const serviceId = serviceToUpdate.id;
+        
+        const serviceList = nextClothesSummary[serviceId]
+          ? nextClothesSummary[serviceId].map((c) => ({ ...c }))
+          : [];
+        const itemIndex = serviceList.findIndex((c) => c.name === name);
+        if (itemIndex > -1) {
+          serviceList[itemIndex].quantity += diff;
+        } else {
+          serviceList.push({ name, quantity: diff });
+        }
+        nextClothesSummary[serviceId] = serviceList;
+
+        const sIdx = nextServices.findIndex((s) => s.id === serviceId);
+        if (sIdx > -1) {
+          nextServices[sIdx].quantity += diff;
+        }
+      } else {
+        // User decremented. Subtract abs(diff) from active services.
+        let remainingToSubtract = Math.abs(diff);
+
+        for (const s of activeServices) {
+          if (remainingToSubtract <= 0) break;
+
+          const serviceId = s.id;
+          const serviceList = nextClothesSummary[serviceId]
+            ? nextClothesSummary[serviceId].map((c) => ({ ...c }))
+            : [];
+          const itemIndex = serviceList.findIndex((c) => c.name === name);
+
+          if (itemIndex > -1 && serviceList[itemIndex].quantity > 0) {
+            const currentQty = serviceList[itemIndex].quantity;
+            const subtractAmount = Math.min(currentQty, remainingToSubtract);
+
+            serviceList[itemIndex].quantity = currentQty - subtractAmount;
+            nextClothesSummary[serviceId] = serviceList;
+            remainingToSubtract -= subtractAmount;
+
+            const sIdx = nextServices.findIndex((service) => service.id === serviceId);
+            if (sIdx > -1) {
+              nextServices[sIdx].quantity = Math.max(0, nextServices[sIdx].quantity - subtractAmount);
+            }
+          }
+        }
+      }
+
+      return {
+        clothesSummary: nextClothesSummary,
+        services: nextServices,
+      };
+    }),
 
   clear: () =>
     set({
-      services: [
-        { id: '1', title: 'Wash and Fold', unitPrice: 50, unit: 'Kg', quantity: 0, subtitle: 'Wash , Dry and Neatly Folded' },
-        { id: '2', title: 'Iron Only', unitPrice: 15, unit: 'Itm', quantity: 0, subtitle: 'Wash , Dry and Neatly Folded' },
-        { id: '3', title: 'Dry Clean', unitPrice: 120, unit: 'Itm', quantity: 0, subtitle: 'Wash , Dry and Neatly Folded' },
-      ],
+      services: getInitialServices(),
       instructions: '',
       pickupDate: '',
       pickupTime: '',
@@ -176,11 +282,7 @@ export const useBookingStore = create<BookingState>((set) => ({
       orderId: '',
       totalAmount: 0,
       appliedCoupon: null,
-      clothesSummary: [
-        { name: 'Shirts', quantity: 0 },
-        { name: 'Pants', quantity: 0 },
-        { name: 'T-Shirts', quantity: 0 },
-        { name: 'Bedsheets', quantity: 0 },
-      ],
+      clothesSummary: getInitialClothesSummary(),
     }),
 }));
+

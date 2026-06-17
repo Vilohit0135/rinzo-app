@@ -28,16 +28,22 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
   // Hide the tab bar when focusing this checkout screen
   useFocusEffect(
     useCallback(() => {
-      setTabBarVisible(false);
+      const timeout = setTimeout(() => {
+        setTabBarVisible(false);
+      }, 50);
       return () => {
+        clearTimeout(timeout);
         setTabBarVisible(true);
       };
     }, [setTabBarVisible])
   );
 
   useEffect(() => {
-    setTabBarVisible(false);
+    const timeout = setTimeout(() => {
+      setTabBarVisible(false);
+    }, 50);
     return () => {
+      clearTimeout(timeout);
       setTabBarVisible(true);
     };
   }, [setTabBarVisible]);
@@ -84,10 +90,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
   const total = Math.max(0, subtotal + DELIVERY_CHARGE - discountValue);
 
   const handleProceedToPayment = () => {
-    const id = `R${Date.now()}`;
-    setOrderId(id);
-    setTotalAmount(total > 0 ? total : 49);
-    navigation.navigate('Payment');
+    navigation.navigate('SchedulePickup');
   };
 
   const isHomeSelected = addressLabel === 'Home';
@@ -124,7 +127,7 @@ const OrderSummaryScreen = ({ navigation }: Props) => {
           <View style={styles.timelineContainer}>
             <View style={styles.timelineItem}>
               <View style={styles.timelineCircleActive}>
-                <Ionicons name="checkmark" size={14} color="#FFFFFF" />
+                <Text style={styles.timelineNumberActive} allowFontScaling={false}>1</Text>
               </View>
               <Text style={styles.timelineLabelActive} allowFontScaling={false}>Address</Text>
             </View>
@@ -310,7 +313,7 @@ const styles = StyleSheet.create({
     width: scale(26),
     height: scale(26),
     borderRadius: scale(13),
-    backgroundColor: '#7C5CE6',
+    backgroundColor: '#EAE8FC',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: verticalScale(6),
@@ -318,7 +321,7 @@ const styles = StyleSheet.create({
   timelineLine: {
     flex: 0.5,
     height: 2,
-    backgroundColor: '#7C5CE6',
+    backgroundColor: '#E2E1F6',
     marginBottom: verticalScale(24),
   },
   timelineLabelActive: {
@@ -329,12 +332,17 @@ const styles = StyleSheet.create({
   timelineLabelInactive: {
     fontSize: responsiveFontSize(11),
     fontWeight: '700',
-    color: '#7C5CE6',
+    color: '#8E8E93',
+  },
+  timelineNumberActive: {
+    fontSize: responsiveFontSize(12),
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   timelineNumberInactive: {
     fontSize: responsiveFontSize(12),
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#7C5CE6',
   },
   mapCard: {
     backgroundColor: '#FFFFFF',
