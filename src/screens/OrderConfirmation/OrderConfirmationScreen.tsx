@@ -77,6 +77,7 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
         status: 'ongoing',
         statusLabel: 'Order Confirmed',
         laundryName: state.laundryName,
+        laundryId: state.selectedLaundryId,
         date: state.pickupDate && state.pickupTime
           ? `${state.pickupTime}, ${state.pickupDate}`
           : 'Tomorrow, 2:00–4:00 PM',
@@ -306,7 +307,7 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             style={styles.trackBtn}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate('OrderTracking')}
+            onPress={() => navigation.navigate('OrderDetail', { orderId: displayOrderId })}
           >
             <Ionicons name="bus-outline" size={18} color="#FFFFFF" style={styles.btnIcon} />
             <Text style={styles.trackBtnText} allowFontScaling={false}>Track Order</Text>
