@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
+import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation, useRoute, useFocusEffect, type RouteProp } from '@react-navigation/native';
@@ -8,8 +8,11 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import type { RootStackParamList } from '../../types/navigation';
 import { allServices } from '../../data/services/servicesData';
 import { useTabBar } from '../../utils/TabBarContext';
-import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import { WashingMachineIcon, SteamIronIcon, HangerIcon } from '../../components/icons/ServiceIcons';
+import { cartData } from '../../data/cart/cartData';
+import { useBookingStore } from '../../store/bookingStore';
+import Toast from 'react-native-toast-message';
 
 type ServiceDetailRouteProp = RouteProp<RootStackParamList, 'ServiceDetail'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -90,8 +93,79 @@ const ServiceDetailScreen = () => {
 
   const { setTabBarVisible } = useTabBar();
   const [extraNotes, setExtraNotes] = useState('');
+  
+  const scrollViewRef = useRef<ScrollView>(null);
 
-  // Keep bottom tab bar visible when entering this screen
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+
+    const showSubscription = Keyboard.addListener(showEvent, () => {
+      setTabBarVisible(false);
+    });
+
+    const hideSubscription = Keyboard.addListener(hideEvent, () => {
+      setTabBarVisible(true);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, [setTabBarVisible]);
+
+  const [clothes, setClothes] = useState<Array<{ name: string; quantity: number }>>([
+    { name: 'Shirts', quantity: 3 },
+    { name: 'Pants', quantity: 3 },
+    { name: 'T- Shirts', quantity: 3 },
+    { name: 'Bedsheets', quantity: 3 },
+  ]);
+  const [newItemName, setNewItemName] = useState('');
+
+  const updateStoreQuantity = useBookingStore((s) => s.updateQuantity);
+
+  const incrementQuantity = (index: number) => {
+    setClothes((prev) =>
+      prev.map((item, idx) => (idx === index ? { ...item, quantity: item.quantity + 1 } : item))
+    );
+  };
+
+  const decrementQuantity = (index: number) => {
+    setClothes((prev) =>
+      prev.map((item, idx) =>
+        idx === index ? { ...item, quantity: Math.max(0, item.quantity - 1) } : item
+      )
+    );
+  };
+
+  const handleAddNewItem = () => {
+    if (!newItemName.trim()) return;
+    const exists = clothes.some((c) => c.name.toLowerCase() === newItemName.trim().toLowerCase());
+    if (exists) {
+      setNewItemName('');
+      return;
+    }
+    setClothes((prev) => [...prev, { name: newItemName.trim(), quantity: 1 }]);
+    setNewItemName('');
+  };
+
+  const handleAddToCart = () => {
+    cartData.clothesSummary = clothes;
+    const totalQty = clothes.reduce((sum, item) => sum + item.quantity, 0);
+    updateStoreQuantity(service.id, totalQty);
+    Toast.show({
+      type: 'success',
+      text1: 'Added to Cart',
+      text2: `${totalQty} clothes added to ${service.title} in your cart.`,
+      position: 'bottom',
+      visibilityTime: 2000,
+    });
+  };
+
+  const handleViewCart = () => {
+    navigation.navigate('OrdersTab' as any, { screen: 'YourCart' });
+  };
+
   useFocusEffect(
     useCallback(() => {
       setTabBarVisible(true);
@@ -141,98 +215,179 @@ const ServiceDetailScreen = () => {
         </Text>
       </View>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+      <KeyboardAvoidingView
+        style={styles.keyboardAvoid}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 40}
       >
-        {/* Main Service Description & Rate Card */}
-        <View style={styles.card}>
-          <View style={styles.iconContainer}>
-            {renderIcon()}
-          </View>
-          <Text style={styles.serviceTitle} allowFontScaling={false}>
-            {service.title}
-          </Text>
-          <Text style={styles.description} allowFontScaling={false}>
-            {meta.description}
-          </Text>
-          
-          <View style={styles.divider} />
-          
-          <View style={styles.priceRow}>
-            <Text style={styles.priceLabel} allowFontScaling={false}>
-              FIXED RATE
+        <ScrollView
+          ref={scrollViewRef}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Main Service Description & Rate Card */}
+          <View style={styles.card}>
+            <View style={styles.iconContainer}>
+              {renderIcon()}
+            </View>
+            <Text style={styles.serviceTitle} allowFontScaling={false}>
+              {service.title}
             </Text>
-            <Text style={styles.priceValue} allowFontScaling={false}>
-              {priceDisplay.split(' / ')[0]}
-              <Text style={styles.priceUnit} allowFontScaling={false}>
-                {priceDisplay.includes(' / ') ? ` / ${priceDisplay.split(' / ')[1]}` : ''}
+            <Text style={styles.description} allowFontScaling={false}>
+              {meta.description}
+            </Text>
+            
+            <View style={styles.divider} />
+            
+            <View style={styles.priceRow}>
+              <Text style={styles.priceLabel} allowFontScaling={false}>
+                FIXED RATE
               </Text>
-            </Text>
+              <Text style={styles.priceValue} allowFontScaling={false}>
+                {priceDisplay.split(' / ')[0]}
+                <Text style={styles.priceUnit} allowFontScaling={false}>
+                  {priceDisplay.includes(' / ') ? ` / ${priceDisplay.split(' / ')[1]}` : ''}
+                </Text>
+              </Text>
+            </View>
           </View>
-        </View>
 
-        {/* Service Categorization Card */}
-        <View style={styles.card}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="grid-outline" size={20} color="#7C5CE6" />
-            <Text style={styles.sectionTitle} allowFontScaling={false}>
-              Service Categorization
+          {/* Service Categorization Card */}
+          <View style={styles.card}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="grid-outline" size={20} color="#7C5CE6" />
+              <Text style={styles.sectionTitle} allowFontScaling={false}>
+                Service Categorization
+              </Text>
+            </View>
+            
+            <View style={styles.badgeRow}>
+              <Ionicons name="ribbon-outline" size={18} color="#7C5CE6" style={styles.badgeIcon} />
+              <Text style={styles.badgeText} allowFontScaling={false}>
+                {meta.categorization}
+              </Text>
+            </View>
+            
+            <Text style={styles.sectionLabel} allowFontScaling={false}>
+              TURNOVER
             </Text>
+            
+            <View style={styles.badgeRow}>
+              <Ionicons name="time-outline" size={18} color="#7C5CE6" style={styles.badgeIcon} />
+              <Text style={styles.badgeText} allowFontScaling={false}>
+                {meta.turnover}
+              </Text>
+            </View>
           </View>
-          
-          <View style={styles.badgeRow}>
-            <Ionicons name="ribbon-outline" size={18} color="#7C5CE6" style={styles.badgeIcon} />
-            <Text style={styles.badgeText} allowFontScaling={false}>
-              {meta.categorization}
-            </Text>
-          </View>
-          
-          <Text style={styles.sectionLabel} allowFontScaling={false}>
-            TURNOVER
-          </Text>
-          
-          <View style={styles.badgeRow}>
-            <Ionicons name="time-outline" size={18} color="#7C5CE6" style={styles.badgeIcon} />
-            <Text style={styles.badgeText} allowFontScaling={false}>
-              {meta.turnover}
-            </Text>
-          </View>
-        </View>
 
-        {/* Service Details Card */}
-        <View style={styles.card}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="document-text-outline" size={20} color="#7C5CE6" />
-            <Text style={styles.sectionTitle} allowFontScaling={false}>
-              Service Details
+          {/* Service Details Card */}
+          <View style={styles.card}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="document-text-outline" size={20} color="#7C5CE6" />
+              <Text style={styles.sectionTitle} allowFontScaling={false}>
+                Service Details
+              </Text>
+            </View>
+            
+            <Text style={styles.sectionLabel} allowFontScaling={false}>
+              DESCRIPTION
+            </Text>
+            
+            <TextInput
+              style={styles.textInput}
+              value={extraNotes}
+              onChangeText={setExtraNotes}
+              placeholder="Ex: High-quali.."
+              placeholderTextColor="#A1A1AA"
+              multiline
+              numberOfLines={4}
+              textAlignVertical="top"
+              allowFontScaling={false}
+            />
+          </View>
+
+          {/* Clothes Summary Section */}
+          <View style={styles.sectionTitleContainer}>
+            <Text style={styles.sectionTitleHeading} allowFontScaling={false}>
+              Items Checklist
             </Text>
           </View>
-          
-          <Text style={styles.sectionLabel} allowFontScaling={false}>
-            DESCRIPTION
-          </Text>
-          
-          <TextInput
-            style={styles.textInput}
-            value={extraNotes}
-            onChangeText={setExtraNotes}
-            placeholder="Ex: High-quali.."
-            placeholderTextColor="#A1A1AA"
-            multiline
-            numberOfLines={4}
-            textAlignVertical="top"
-            allowFontScaling={false}
-          />
-        </View>
+          <View style={styles.summaryCard}>
+            {clothes.map((c, idx) => (
+              <View key={idx}>
+                <View style={styles.summaryItemRow}>
+                  <Text style={styles.summaryItemName} allowFontScaling={false}>
+                    {c.name}
+                  </Text>
+                  
+                  <View style={styles.counterPill}>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => decrementQuantity(idx)}
+                      hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                    >
+                      <View style={[styles.counterBtn, c.quantity === 0 && styles.counterBtnDisabled]}>
+                        <Ionicons name="remove" size={12} color="#FFFFFF" />
+                      </View>
+                    </TouchableOpacity>
+                    <Text style={styles.counterValue}>{c.quantity}</Text>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => incrementQuantity(idx)}
+                      hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+                    >
+                      <View style={styles.counterBtn}>
+                        <Ionicons name="add" size={12} color="#FFFFFF" />
+                      </View>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                {idx < clothes.length - 1 && <View style={styles.summaryDivider} />}
+              </View>
+            ))}
 
-        {/* Add to Cart button sits naturally above bottom tab bar */}
-        <TouchableOpacity style={styles.addButton} activeOpacity={0.8} onPress={() => {}}>
-          <Text style={styles.addButtonText} allowFontScaling={false}>
-            Add to Cart
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+            {/* Add custom item input flow */}
+            <View style={styles.addCustomItemRow}>
+              <TextInput
+                style={styles.customItemInput}
+                placeholder="Add more clothes or item..."
+                placeholderTextColor="#A1A1AA"
+                value={newItemName}
+                onChangeText={setNewItemName}
+                allowFontScaling={false}
+                onFocus={() => {
+                  setTimeout(() => {
+                    scrollViewRef.current?.scrollToEnd({ animated: true });
+                  }, 150);
+                }}
+              />
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={handleAddNewItem}
+                style={styles.customItemAddButton}
+              >
+                <Text style={styles.customItemAddButtonText} allowFontScaling={false}>
+                  Add
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Action Buttons */}
+          <TouchableOpacity style={styles.addButton} activeOpacity={0.8} onPress={handleAddToCart}>
+            <Text style={styles.addButtonText} allowFontScaling={false}>
+              Add to Cart
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.viewCartButton} activeOpacity={0.8} onPress={handleViewCart}>
+            <Text style={styles.viewCartButtonText} allowFontScaling={false}>
+              View Cart
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -241,6 +396,9 @@ const styles = StyleSheet.create({
   safe: {
     flex: 1,
     backgroundColor: '#F8F9FE',
+  },
+  keyboardAvoid: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
@@ -385,6 +543,113 @@ const styles = StyleSheet.create({
     fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#FFFFFF',
+  },
+  sectionTitleContainer: {
+    marginTop: verticalScale(24),
+    marginBottom: verticalScale(12),
+  },
+  sectionTitleHeading: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: '700',
+    color: '#1C1C38',
+  },
+  summaryCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: scale(16),
+    padding: scale(20),
+    marginBottom: verticalScale(16),
+    borderWidth: 1,
+    borderColor: '#EBEBF0',
+  },
+  summaryItemRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: verticalScale(10),
+  },
+  summaryItemName: {
+    fontSize: responsiveFontSize(15),
+    fontWeight: '700',
+    color: '#1E1E2D',
+  },
+  counterPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#BDBDBD',
+    borderRadius: moderateScale(14),
+    width: scale(75),
+    height: scale(22),
+    gap: scale(9),
+  },
+  counterBtn: {
+    width: scale(15),
+    height: scale(15),
+    borderRadius: moderateScale(12),
+    backgroundColor: '#504f4f',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  counterBtnDisabled: {
+    backgroundColor: '#D0D0D0',
+  },
+  counterValue: {
+    fontSize: responsiveFontSize(11),
+    fontWeight: '700',
+    color: '#000000',
+    textAlign: 'center',
+  },
+  summaryDivider: {
+    height: 1,
+    backgroundColor: '#F1F1F6',
+  },
+  addCustomItemRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: verticalScale(14),
+    gap: scale(8),
+  },
+  customItemInput: {
+    flex: 1,
+    height: 42,
+    backgroundColor: '#F8F9FE',
+    borderWidth: 1,
+    borderColor: '#E4E4E7',
+    borderRadius: scale(12),
+    paddingHorizontal: scale(12),
+    fontSize: responsiveFontSize(14),
+    color: '#1E1E2D',
+  },
+  customItemAddButton: {
+    height: 42,
+    backgroundColor: '#7C5CE6',
+    borderRadius: scale(12),
+    paddingHorizontal: scale(16),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  customItemAddButtonText: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+  viewCartButton: {
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#7C5CE6',
+    borderRadius: scale(12),
+    height: verticalScale(50),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: verticalScale(12),
+    marginBottom: verticalScale(8),
+  },
+  viewCartButtonText: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: '700',
+    color: '#7C5CE6',
   },
 });
 
