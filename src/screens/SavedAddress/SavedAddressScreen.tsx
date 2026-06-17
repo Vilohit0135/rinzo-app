@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,7 +7,7 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp, NativeStackScreenProps } from '@react-navigation/native-stack';
 import AddressCard from '../../components/address/AddressCard';
-import { getAddresses, subscribe } from '../../data/addressStore';
+import { useAddressStore } from '../../store/addressStore';
 import { useBookingStore } from '../../store/bookingStore';
 
 type RootStackParamList = {
@@ -33,16 +33,13 @@ const SavedAddressScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'SavedAddress'>>();
   const route = useRoute<NativeStackScreenProps<RootStackParamList, 'SavedAddress'>['route']>();
   const selectMode = route.params?.selectMode ?? false;
-  const [addresses, setAddresses] = useState(getAddresses);
+  const addresses = useAddressStore((s) => s.addresses);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const setAddress = useBookingStore((s) => s.setAddress);
+  const setAddress1 = useBookingStore((s) => s.setAddress1);
+  const setAddress2 = useBookingStore((s) => s.setAddress2);
   const setAddressLabel = useBookingStore((s) => s.setAddressLabel);
   const setAddressContact = useBookingStore((s) => s.setAddressContact);
-
-  useEffect(() => {
-    const unsub = subscribe(() => setAddresses(getAddresses()));
-    return unsub;
-  }, []);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -94,6 +91,8 @@ const SavedAddressScreen = () => {
                   const addr = addresses[selectedIndex];
                   const fullAddress = `${addr.address1}, ${addr.address2}`;
                   setAddress(fullAddress);
+                  setAddress1(addr.address1);
+                  setAddress2(addr.address2);
                   setAddressLabel(addr.title.replace(' ( Default )', ''));
                   setAddressContact(addr.contact);
                   navigation.goBack();

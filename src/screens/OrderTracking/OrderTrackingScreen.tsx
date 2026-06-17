@@ -8,6 +8,7 @@ import {
   Platform,
   Dimensions,
   Animated,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -138,7 +139,7 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             style={styles.callButton}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate('ComingSoon', { title: 'Call Raider', icon: 'call-outline' })}
+            onPress={() => Linking.openURL('tel:+919876543210').catch(err => console.error("Failed to open dialer", err))}
           >
             <Ionicons name="call" size={18} color="#7C5CE6" />
           </TouchableOpacity>

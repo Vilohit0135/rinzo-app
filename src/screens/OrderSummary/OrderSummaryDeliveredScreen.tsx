@@ -9,6 +9,7 @@ import {
   TextInput,
   Platform,
   KeyboardAvoidingView,
+  Linking,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -150,12 +151,7 @@ const OrderSummaryDeliveredScreen = ({ route, navigation }: Props) => {
               <TouchableOpacity
                 style={styles.callButton}
                 activeOpacity={0.8}
-                onPress={() =>
-                  navigation.navigate('ComingSoon', {
-                    title: 'Call Rider',
-                    icon: 'call-outline',
-                  })
-                }
+                onPress={() => Linking.openURL('tel:+919876543210').catch(err => console.error("Failed to open dialer", err))}
               >
                 <Ionicons name="call-outline" size={18} color="#8259D2" />
               </TouchableOpacity>

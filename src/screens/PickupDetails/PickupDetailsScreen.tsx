@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
 import { useBookingStore } from '../../store/bookingStore';
+import { useAddressStore } from '../../store/addressStore';
+import AddressCard from '../../components/address/AddressCard';
 import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PickupDetails'>;
@@ -28,6 +30,26 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
   const address = useBookingStore((s) => s.address);
   const addressLabel = useBookingStore((s) => s.addressLabel);
   const addressContact = useBookingStore((s) => s.addressContact);
+  const address1 = useBookingStore((s) => s.address1);
+  const address2 = useBookingStore((s) => s.address2);
+  const addresses = useAddressStore((s) => s.addresses);
+  const setAddress1 = useBookingStore((s) => s.setAddress1);
+  const setAddress2 = useBookingStore((s) => s.setAddress2);
+  const setAddressLabel = useBookingStore((s) => s.setAddressLabel);
+  const setAddressContact = useBookingStore((s) => s.setAddressContact);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (initialized.current || addresses.length === 0) return;
+    const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
+    if (defaultAddr) {
+      setAddress1(defaultAddr.address1);
+      setAddress2(defaultAddr.address2);
+      setAddressLabel(defaultAddr.title.replace(' ( Default )', ''));
+      setAddressContact(defaultAddr.contact);
+    }
+    initialized.current = true;
+  }, [addresses]);
 
   const handleContinue = () => {
     navigation.navigate('SchedulePickup');
@@ -70,43 +92,22 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
             Pickup Address
           </Text>
 
-          <View
-              style={[
-                styles.addressCard,
-                {
-                  marginTop: verticalScale(16),
-                  borderRadius: scale(18),
-                  padding: scale(16),
-                },
-              ]}
-            >
-              <Text style={[styles.addressTitle, { fontSize: responsiveFontSize(14), marginBottom: verticalScale(6) }]} numberOfLines={2} allowFontScaling={false}>
-                {address}
-              </Text>
-
-              <View style={[styles.divider, { marginVertical: verticalScale(8) }]} />
-
-              <View style={styles.homeRow}>
-                <View style={styles.homeLeft}>
-                  <Text style={[styles.homeLabel, { fontSize: responsiveFontSize(14) }]} numberOfLines={1} allowFontScaling={false}>{addressLabel}</Text>
-                  <Text style={[styles.homeContact, { fontSize: responsiveFontSize(12) }]} numberOfLines={1} allowFontScaling={false}>
-                    {addressContact}
-                  </Text>
-                </View>
-                <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.navigate('SavedAddress', { selectMode: true })}>
-                  <Text style={[styles.changeText, { fontSize: responsiveFontSize(14) }]} numberOfLines={1} allowFontScaling={false}>Change</Text>
-                </TouchableOpacity>
-              </View>
-
-              <View style={[styles.divider, { marginVertical: verticalScale(8) }]} />
-
-              <TouchableOpacity style={styles.addAddressRow} activeOpacity={0.7} onPress={() => (navigation as any).navigate('ProfileTab', { screen: 'AddAddressDetails' })}>
-                <Ionicons name="add-circle-outline" size={scale(20)} color="#8B5CF6" />
-                <Text style={[styles.addAddressText, { fontSize: responsiveFontSize(14) }]} numberOfLines={1} allowFontScaling={false}>
-                  Add New Address
-                </Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.addressCardContainer}>
+            <AddressCard
+              title={addressLabel}
+              address1={address1}
+              address2={address2}
+              contact={addressContact}
+              onSelect={() => navigation.navigate('SavedAddress', { selectMode: true })}
+            />
+            <TouchableOpacity style={styles.changeRow} activeOpacity={0.7} onPress={() => navigation.navigate('SavedAddress', { selectMode: true })}>
+              <Text style={styles.changeText}>Change</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.addAddressRow} activeOpacity={0.7} onPress={() => navigation.navigate('AddAddressDetails')}>
+              <Ionicons name="add-circle-outline" size={scale(20)} color="#8B5CF6" />
+              <Text style={styles.addAddressText}>Add New Address</Text>
+            </TouchableOpacity>
+          </View>
 
           <Text style={[styles.fieldSectionTitle, { marginTop: verticalScale(18), fontSize: responsiveFontSize(15) }]} numberOfLines={1} allowFontScaling={false}>
             Pickup Date
@@ -234,53 +235,15 @@ const styles = StyleSheet.create({
     color: '#22223B',
   },
 
-  addressCard: {
-    width: '92%',
-    height: verticalScale(170),
-    alignSelf: 'center',
-    backgroundColor: '#FFFFFF',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 1,
-      },
-    }),
+  addressCardContainer: {
+    marginTop: verticalScale(16),
   },
-  addressTitle: {
-    fontSize: responsiveFontSize(14),
-    fontWeight: '700',
-    color: '#1D1D1F',
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: '#E5E5E5',
-  },
-
-  homeRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  homeLeft: {
-    flex: 1,
-  },
-  homeLabel: {
-    fontWeight: '700',
-    color: '#1D1D1F',
-    marginBottom: 2,
-    fontSize: responsiveFontSize(14),
-  },
-  homeContact: {
-    fontWeight: '500',
-    color: '#9E9E9E',
-    fontSize: responsiveFontSize(14),
+  changeRow: {
+    marginLeft: 24,
+    marginTop: verticalScale(8),
   },
   changeText: {
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#8259D2',
   },
@@ -288,10 +251,13 @@ const styles = StyleSheet.create({
   addAddressRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginLeft: 24,
+    marginTop: verticalScale(6),
     gap: scale(10),
     paddingVertical: verticalScale(8),
   },
   addAddressText: {
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#8259D2',
   },
