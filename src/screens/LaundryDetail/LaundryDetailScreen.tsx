@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useFocusEffect, useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -9,6 +9,7 @@ import { COLORS } from '../../constants/colors';
 import { useTabBar } from '../../utils/TabBarContext';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 import { getLaundryById } from '../../data/laundry/laundryData';
+import { useBookingStore } from '../../store/bookingStore';
 
 type RootStackParamList = {
   LaundryDetail: { id: string };
@@ -45,6 +46,13 @@ const LaundryDetailScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'LaundryDetail'>>();
   const item = getLaundryById(route.params.id);
   const { setTabBarVisible } = useTabBar();
+  const setSelectedLaundry = useBookingStore((s) => s.setSelectedLaundry);
+
+  useEffect(() => {
+    if (item) {
+      setSelectedLaundry(item);
+    }
+  }, [item, setSelectedLaundry]);
 
   useFocusEffect(
     useCallback(() => {

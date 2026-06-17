@@ -114,15 +114,16 @@ const ServiceDetailScreen = () => {
     };
   }, [setTabBarVisible]);
 
-  const [clothes, setClothes] = useState<Array<{ name: string; quantity: number }>>([
-    { name: 'Shirts', quantity: 3 },
-    { name: 'Pants', quantity: 3 },
-    { name: 'T- Shirts', quantity: 3 },
-    { name: 'Bedsheets', quantity: 3 },
-  ]);
+  const storeClothes = useBookingStore((s) => s.clothesSummary);
+  const setStoreClothes = useBookingStore((s) => s.setClothesSummary);
+  const updateStoreQuantity = useBookingStore((s) => s.updateQuantity);
+
+  const [clothes, setClothes] = useState(storeClothes);
   const [newItemName, setNewItemName] = useState('');
 
-  const updateStoreQuantity = useBookingStore((s) => s.updateQuantity);
+  useEffect(() => {
+    setClothes(storeClothes);
+  }, [storeClothes]);
 
   const incrementQuantity = (index: number) => {
     setClothes((prev) =>
@@ -153,6 +154,7 @@ const ServiceDetailScreen = () => {
     cartData.clothesSummary = clothes;
     const totalQty = clothes.reduce((sum, item) => sum + item.quantity, 0);
     updateStoreQuantity(service.id, totalQty);
+    setStoreClothes(clothes);
     Toast.show({
       type: 'success',
       text1: 'Added to Cart',
