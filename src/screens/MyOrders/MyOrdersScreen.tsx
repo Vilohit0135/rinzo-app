@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,6 +18,7 @@ type RootStackParamList = {
   Search: undefined;
   MyOrders: { fromProfile?: boolean } | undefined;
   Profile: undefined;
+  OrderDetail: { orderId: string };
 };
 
 const MyOrdersScreen = () => {
@@ -74,6 +75,7 @@ const MyOrdersScreen = () => {
                 laundryName={order.laundryName}
                 date={order.date}
                 amount={order.amount}
+                onPress={() => navigation.navigate('OrderDetail', { orderId: order.id })}
               />
             ))}
           </ScrollableScreen>

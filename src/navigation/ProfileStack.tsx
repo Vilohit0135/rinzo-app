@@ -16,6 +16,9 @@ import ChatSupportScreen from '../screens/support/ChatSupportScreen';
 import ReportIssueScreen from '../screens/support/ReportIssueScreen';
 import ComingSoonScreen from '../screens/ComingSoonScreen';
 import MyOrdersScreen from '../screens/MyOrders/MyOrdersScreen';
+import OrderDetailScreen from '../screens/OrderDetail/OrderDetailScreen';
+import OrderTrackingScreen from '../screens/OrderTracking/OrderTrackingScreen';
+import OrderSummaryDeliveredScreen from '../screens/OrderSummary/OrderSummaryDeliveredScreen';
 import OffersScreen from '../screens/Offers/OffersScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -39,6 +42,9 @@ const ProfileStack = () => {
       <Stack.Screen name="ReportIssue" component={ReportIssueScreen} />
       <Stack.Screen name="ComingSoon" component={ComingSoonScreen} />
       <Stack.Screen name="MyOrders" component={MyOrdersScreen} />
+      <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+      <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} />
+      <Stack.Screen name="OrderSummaryDelivered" component={OrderSummaryDeliveredScreen} />
       <Stack.Screen name="Offers" component={OffersScreen} />
     </Stack.Navigator>
   );
