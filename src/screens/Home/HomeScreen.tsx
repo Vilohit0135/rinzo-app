@@ -20,6 +20,7 @@ import LocationBottomSheet from '../../components/home/LocationBottomSheet';
 
 type RootStackParamList = {
   Home: undefined;
+  LaundryNearby: undefined;
   Notifications: undefined;
   Offers: undefined;
   Search: undefined;
@@ -150,7 +151,7 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.popularSection}>
-          <SectionHeader title="Popular Laundry Nearby" onViewAll={() => navigation.navigate('SearchTab' as never)} />
+          <SectionHeader title="Popular Laundry Nearby" onViewAll={() => navigation.navigate('LaundryNearby' as any)} />
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
