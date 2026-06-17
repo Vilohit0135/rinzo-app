@@ -20,15 +20,7 @@ import { cartData } from '../../data/cart/cartData';
 import { useBookingStore, DELIVERY_CHARGE, calculateDiscount } from '../../store/bookingStore';
 import Toast from 'react-native-toast-message';
 import { laundryItems } from '../../data/laundry/laundryData';
-
-type RootStackParamList = {
-  Home: undefined;
-  Search: undefined;
-  YourCart: undefined;
-  MyOrders: undefined;
-  Profile: undefined;
-  OrderSummary: undefined;
-};
+import type { RootStackParamList } from '../../types/navigation';
 
 const serviceImageMap: Record<string, any> = {
   'Wash & Fold': require('../../../assets/images/Home/wash-fold.png'),
@@ -238,7 +230,10 @@ const YourCartScreen = () => {
               </View>
 
               <View style={styles.checkoutWrap}>
-                <CheckoutButton onPress={() => navigation.navigate('OrderSummary')} />
+                  <CheckoutButton onPress={() => {
+                    console.log('Proceed to Checkout pressed, navigating to OrderSummary...');
+                    navigation.navigate('OrderSummary');
+                  }} />
               </View>
             </ScrollableScreen>
           )}
