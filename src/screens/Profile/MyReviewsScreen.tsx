@@ -9,27 +9,19 @@ import ReviewsHeader from '../../components/reviews/ReviewsHeader';
 import ReviewCard from '../../components/reviews/ReviewCard';
 import EditReviewModal from '../../components/reviews/EditReviewModal';
 import { COLORS } from '../../constants/colors';
-import { reviewsData, type ReviewItem } from '../../data/reviews/reviewsData';
+import { type ReviewItem } from '../../data/reviews/reviewsData';
+import { useReviewStore } from '../../store/reviewStore';
 import { getLaundryById } from '../../data/laundry/laundryData';
-
-type RootStackParamList = {
-  Home: undefined;
-  Search: undefined;
-  YourCart: undefined;
-  Profile: undefined;
-};
+import { RootStackParamList } from '../../types/navigation';
 
 const MyReviewsScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
-  const [reviews, setReviews] = useState<ReviewItem[]>(reviewsData);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'MyReviews'>>();
+  const reviews = useReviewStore((s) => s.reviews);
+  const updateReview = useReviewStore((s) => s.updateReview);
   const [editingReview, setEditingReview] = useState<ReviewItem | null>(null);
 
   const handleEditSubmit = (rating: number, feedback: string) => {
-    setReviews((prev) =>
-      prev.map((r) =>
-        r.id === editingReview!.id ? { ...r, rating, reviewText: feedback } : r
-      )
-    );
+    updateReview(editingReview!.id, rating, feedback);
     setEditingReview(null);
   };
 

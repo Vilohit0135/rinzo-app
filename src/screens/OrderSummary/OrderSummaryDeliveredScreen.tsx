@@ -18,6 +18,8 @@ import Ionicons from '@react-native-vector-icons/ionicons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import { useOrderStore } from '../../store/orderStore';
+import { useReviewStore } from '../../store/reviewStore';
+import { laundryItems } from '../../data/laundry/laundryData';
 import { COLORS } from '../../constants/colors';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
@@ -25,12 +27,22 @@ type Props = NativeStackScreenProps<RootStackParamList, 'OrderSummaryDelivered'>
 
 const OrderSummaryDeliveredScreen = ({ route, navigation }: Props) => {
   const { orderId } = route.params;
+  const { setTabBarVisible } = useTabBar();
   const orders = useOrderStore((s) => s.orders);
   const order = orders.find((o) => o.id === orderId);
+  const addReview = useReviewStore((s) => s.addReview);
+
+  // Ensure bottom tab bar is visible on Order Summary Delivered screen
+  useFocusEffect(
+    useCallback(() => {
+      setTabBarVisible(true);
+    }, [setTabBarVisible])
+  );
 
   // Local state for star ratings and feedback text
   const [rating, setRating] = useState<number>(0);
   const [feedback, setFeedback] = useState<string>('');
+  const [isFeedbackSubmitted, setIsFeedbackSubmitted] = useState<boolean>(false);
 
   // Fallback Mock Order details if not found in store
   const defaultOrder = {
@@ -234,59 +246,80 @@ const OrderSummaryDeliveredScreen = ({ route, navigation }: Props) => {
 
           {/* Card 4: Star Rating Feed */}
           <View style={[styles.card, styles.ratingCard]}>
-            <Text style={styles.ratingCardTitle} allowFontScaling={false}>
-              Rate your experience
-            </Text>
+            {isFeedbackSubmitted ? (
+              <View style={styles.successFeedbackContainer}>
+                <Ionicons name="checkmark-circle" size={48} color="#693FB7" />
+                <Text style={styles.successFeedbackTitle} allowFontScaling={false}>
+                  Thank you!
+                </Text>
+                <Text style={styles.successFeedbackText} allowFontScaling={false}>
+                  Your feedback has been submitted successfully.
+                </Text>
+              </View>
+            ) : (
+              <>
+                <Text style={styles.ratingCardTitle} allowFontScaling={false}>
+                  Rate your experience
+                </Text>
 
-            {/* Stars Row */}
-            <View style={styles.starsRow}>
-              {[1, 2, 3, 4, 5].map((starNum) => {
-                const isSelected = rating >= starNum;
-                return (
-                  <TouchableOpacity
-                    key={starNum}
-                    activeOpacity={0.7}
-                    onPress={() => setRating(starNum)}
-                  >
-                    <Ionicons
-                      name={isSelected ? 'star' : 'star-outline'}
-                      size={36}
-                      color={isSelected ? '#FBBF24' : '#7C7C90'}
-                      style={styles.starIcon}
-                    />
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
+                {/* Stars Row */}
+                <View style={styles.starsRow}>
+                  {[1, 2, 3, 4, 5].map((starNum) => {
+                    const isSelected = rating >= starNum;
+                    return (
+                      <TouchableOpacity
+                        key={starNum}
+                        activeOpacity={0.7}
+                        onPress={() => setRating(starNum)}
+                      >
+                        <Ionicons
+                          name={isSelected ? 'star' : 'star-outline'}
+                          size={36}
+                          color={isSelected ? '#FBBF24' : '#7C7C90'}
+                          style={styles.starIcon}
+                        />
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
 
-            {/* Message Input */}
-            <TextInput
-              style={styles.feedbackInput}
-              placeholder="Tell us what you loved about the service..."
-              placeholderTextColor="#A0A0A0"
-              multiline={true}
-              numberOfLines={4}
-              value={feedback}
-              onChangeText={setFeedback}
-              allowFontScaling={false}
-            />
+                {/* Message Input */}
+                <TextInput
+                  style={styles.feedbackInput}
+                  placeholder="Tell us what you loved about the service..."
+                  placeholderTextColor="#A0A0A0"
+                  multiline={true}
+                  numberOfLines={4}
+                  value={feedback}
+                  onChangeText={setFeedback}
+                  allowFontScaling={false}
+                />
 
-            {/* Submit Button */}
-            <TouchableOpacity
-              style={styles.feedbackBtn}
-              activeOpacity={0.8}
-              onPress={() =>
-                navigation.navigate('ComingSoon', {
-                  title: 'Feedback',
-                  icon: 'checkmark-circle-outline',
-                  subtitle: 'Thank you for your rating!',
-                })
-              }
-            >
-              <Text style={styles.feedbackBtnText} allowFontScaling={false}>
-                Submit Feedback
-              </Text>
-            </TouchableOpacity>
+                {/* Submit Button */}
+                <TouchableOpacity
+                  style={styles.feedbackBtn}
+                  activeOpacity={0.8}
+                  onPress={() => {
+                    const resolvedLaundry = laundryItems.find(
+                      (l) => l.name.toLowerCase() === displayOrder.laundryName.toLowerCase()
+                    );
+                    const resolvedLaundryId = (displayOrder as any).laundryId || resolvedLaundry?.id || 'krishna-laundry';
+
+                    addReview({
+                      laundryId: resolvedLaundryId,
+                      rating: rating || 5,
+                      reviewText: feedback || 'Great service, delivered on time!',
+                    });
+
+                    setIsFeedbackSubmitted(true);
+                  }}
+                >
+                  <Text style={styles.feedbackBtnText} allowFontScaling={false}>
+                    Submit Feedback
+                  </Text>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -297,7 +330,7 @@ const OrderSummaryDeliveredScreen = ({ route, navigation }: Props) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F9FAFE',
+    backgroundColor: '#FFFFFF',
   },
   flex: {
     flex: 1,
@@ -382,7 +415,7 @@ const styles = StyleSheet.create({
     elevation: 1.5,
   },
   ratingCard: {
-    backgroundColor: '#693FB71A',
+    backgroundColor: '#916dd41a',
     borderWidth: 0,
     shadowOpacity: 0,
     elevation: 0,
@@ -607,6 +640,24 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: responsiveFontSize(15),
     fontWeight: '800',
+  },
+  successFeedbackContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: verticalScale(14),
+  },
+  successFeedbackTitle: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: '800',
+    color: '#693FB7',
+    marginTop: verticalScale(12),
+    marginBottom: verticalScale(6),
+  },
+  successFeedbackText: {
+    fontSize: responsiveFontSize(13.5),
+    fontWeight: '500',
+    color: '#4B5563',
+    textAlign: 'center',
   },
   ctaBottomPanel: {
     position: 'absolute',

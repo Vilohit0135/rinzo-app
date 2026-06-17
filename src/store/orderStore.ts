@@ -5,6 +5,7 @@ export interface PlacedOrder {
   status: 'ongoing' | 'completed' | 'cancelled';
   statusLabel: string;
   laundryName: string;
+  laundryId?: string;
   date: string;
   amount: string;
   pickupDate: string;
