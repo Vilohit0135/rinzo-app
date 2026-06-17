@@ -4,36 +4,32 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { LinearGradient } from 'expo-linear-gradient';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../../types/navigation';
 import { COLORS } from '../../constants/theme';
 import { SocialButton } from '../../components/buttons/SocialButton';
 import { authService } from '../../services/authService';
 import { BYPASS_AUTH } from '../../store/authStore';
 
-interface LoginScreenProps {
+interface PhoneLoginScreenProps {
   onLoginSuccess?: (phone: string) => void;
-  onSignupPress?: () => void;
+  onEmailLoginPress?: () => void;
 }
 
-const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const [email, setEmail] = useState('developer@example.com');
-  const [password, setPassword] = useState('password123');
-  const [securePassword, setSecurePassword] = useState(true);
+const PhoneLoginScreen = ({ onLoginSuccess, onEmailLoginPress }: PhoneLoginScreenProps) => {
+  const [phone, setPhone] = useState('9999999999');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = async () => {
-    if (!BYPASS_AUTH && (!email.trim() || !password.trim())) {
-      Alert.alert('Error', 'Please enter both email and password.');
+  const handleSendOtp = async () => {
+    if (!BYPASS_AUTH && !phone.trim()) {
+      Alert.alert('Error', 'Please enter your phone number.');
       return;
     }
     setIsLoading(true);
     try {
-      const { error } = await authService.signIn(email, password);
+      const { error } = await authService.sendOtp(phone);
       if (error) {
-        Alert.alert('Login Failed', error.message);
+        Alert.alert('Error', error.message);
+      } else {
+        onLoginSuccess?.(phone);
       }
     } catch (err: any) {
       Alert.alert('Error', err.message || 'An unexpected error occurred.');
@@ -55,61 +51,35 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
+          <TouchableOpacity style={styles.backButton} onPress={onEmailLoginPress} activeOpacity={0.7}>
+            <Ionicons name="chevron-back" size={24} color="#111111" />
+          </TouchableOpacity>
+
           <Image
             source={require('../../assets/images/rinzo-logo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
 
-          <Text style={styles.welcomeText}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Please enter your details</Text>
+          <Text style={styles.welcomeText}>Phone Login</Text>
+          <Text style={styles.subtitle}>Enter your phone number</Text>
 
-          <Text style={[styles.label, styles.fieldLabel]}>Email address</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="example@gmail.com"
-            placeholderTextColor="#8E8E8E"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-            value={email}
-            onChangeText={setEmail}
-          />
-
-          <Text style={[styles.label, styles.fieldLabel]}>Password</Text>
-          <View style={styles.passwordInputContainer}>
+          <Text style={[styles.label, styles.fieldLabel]}>Phone number</Text>
+          <View style={styles.phoneRow}>
+            <View style={styles.prefixBox}>
+              <Text style={styles.prefixText}>+91</Text>
+            </View>
             <TextInput
-              style={styles.passwordInput}
-              placeholder="••••••••"
+              style={styles.phoneInput}
+              placeholder="8777734343"
               placeholderTextColor="#8E8E8E"
-              secureTextEntry={securePassword}
-              autoCapitalize="none"
-              autoCorrect={false}
-              value={password}
-              onChangeText={setPassword}
+              keyboardType="phone-pad"
+              value={phone}
+              onChangeText={setPhone}
             />
-            <TouchableOpacity
-              onPress={() => setSecurePassword(!securePassword)}
-              activeOpacity={0.7}
-              style={styles.eyeIcon}
-            >
-              <Ionicons
-                name={securePassword ? 'eye-off-outline' : 'eye-outline'}
-                size={20}
-                color="#8E8E8E"
-              />
-            </TouchableOpacity>
           </View>
 
-          <TouchableOpacity
-            style={styles.phoneLink}
-            activeOpacity={0.7}
-            onPress={() => navigation.navigate('PhoneLogin')}
-          >
-            <Text style={styles.phoneLinkText}>Login with phone?</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.buttonWrapper} activeOpacity={0.8} onPress={handleLogin} disabled={isLoading}>
+          <TouchableOpacity style={styles.buttonWrapper} activeOpacity={0.8} onPress={handleSendOtp} disabled={isLoading}>
             <LinearGradient
               colors={[COLORS.brandGradientStart, COLORS.brandGradientEnd]}
               style={styles.buttonGradient}
@@ -117,7 +87,7 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
               {isLoading ? (
                 <ActivityIndicator color="#FFFFFF" size="small" />
               ) : (
-                <Text style={styles.buttonText}>Login</Text>
+                <Text style={styles.buttonText}>Send OTP</Text>
               )}
             </LinearGradient>
           </TouchableOpacity>
@@ -134,9 +104,9 @@ const LoginScreen = ({ onLoginSuccess, onSignupPress }: LoginScreenProps) => {
             <SocialButton provider="apple" onPress={() => {}} />
           </View>
 
-          <TouchableOpacity style={styles.signupLink} activeOpacity={0.7} onPress={onSignupPress}>
-            <Text style={styles.signupLinkText}>
-              Don't have an account? <Text style={styles.signupLinkHighlight}>Sign up</Text>
+          <TouchableOpacity style={styles.emailLink} activeOpacity={0.7} onPress={onEmailLoginPress}>
+            <Text style={styles.emailLinkText}>
+              <Ionicons name="arrow-back" size={14} color="#8259D2" /> Back to email login
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -154,10 +124,19 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 80,
+    paddingTop: 60,
     paddingHorizontal: 24,
     flexGrow: 1,
     paddingBottom: 40,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F5F5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   logo: {
     width: 200,
@@ -168,7 +147,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#111111',
     lineHeight: 30,
-    marginTop: 35,
+    marginTop: 25,
   },
   subtitle: {
     fontSize: 16,
@@ -182,53 +161,45 @@ const styles = StyleSheet.create({
     color: '#222222',
   },
   fieldLabel: {
-    marginTop: 20,
+    marginTop: 30,
   },
-  input: {
-    height: 56,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#DADADA',
-    paddingHorizontal: 14,
-    fontSize: 16,
-    marginTop: 8,
-    color: '#000000',
-  },
-  passwordInputContainer: {
+  phoneRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    height: 56,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#DADADA',
-    paddingHorizontal: 14,
     marginTop: 8,
   },
-  passwordInput: {
-    flex: 1,
-    height: '100%',
-    fontSize: 16,
-    color: '#000000',
-    paddingVertical: 0,
-  },
-  eyeIcon: {
-    padding: 4,
+  prefixBox: {
+    height: 56,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    borderRightWidth: 0,
+    borderRadius: 12,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 0,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#F9F9F9',
   },
-  phoneLink: {
-    alignSelf: 'flex-end',
-    marginTop: 12,
-  },
-  phoneLinkText: {
-    fontSize: 14,
+  prefixText: {
+    fontSize: 16,
     fontWeight: '600',
-    color: '#8259D2',
+    color: '#222222',
+  },
+  phoneInput: {
+    flex: 1,
+    height: 56,
+    borderRadius: 12,
+    borderTopLeftRadius: 0,
+    borderBottomLeftRadius: 0,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    paddingHorizontal: 14,
+    fontSize: 16,
+    color: '#000000',
   },
   buttonWrapper: {
-    marginTop: 30,
+    marginTop: 40,
     height: 50,
     borderRadius: 12,
     overflow: 'hidden',
@@ -264,19 +235,15 @@ const styles = StyleSheet.create({
     marginTop: 25,
     gap: 22,
   },
-  signupLink: {
-    marginTop: 24,
+  emailLink: {
+    marginTop: 30,
     alignItems: 'center',
-    marginBottom: 40,
   },
-  signupLinkText: {
+  emailLinkText: {
     fontSize: 15,
-    color: '#52525B',
-  },
-  signupLinkHighlight: {
     color: '#8259D2',
     fontWeight: '600',
   },
 });
 
-export default LoginScreen;
+export default PhoneLoginScreen;
