@@ -16,7 +16,6 @@ import CheckoutButton from '../../components/cart/CheckoutButton';
 import CartHeader from '../../components/cart/CartHeader';
 import EmptyCartState from '../../components/cart/EmptyCartState';
 import { COLORS } from '../../constants/colors';
-import { cartData } from '../../data/cart/cartData';
 import { useBookingStore, DELIVERY_CHARGE, calculateDiscount } from '../../store/bookingStore';
 import Toast from 'react-native-toast-message';
 import { laundryItems } from '../../data/laundry/laundryData';
@@ -45,14 +44,44 @@ const YourCartScreen = () => {
   const appliedCoupon = useBookingStore((s) => s.appliedCoupon);
   const setAppliedCoupon = useBookingStore((s) => s.setAppliedCoupon);
 
-  const [clothes, setClothes] = useState(cartData.clothesSummary);
+  // Read active laundry details from store
+  const selectedLaundryId = useBookingStore((s) => s.selectedLaundryId);
+  const laundryName = useBookingStore((s) => s.laundryName);
+  const laundryRating = useBookingStore((s) => s.laundryRating);
+  const laundryReviews = useBookingStore((s) => s.laundryReviews);
+  const laundryDistance = useBookingStore((s) => s.laundryDistance);
+  const laundryPrice = useBookingStore((s) => s.laundryPrice);
+
+  // Read clothes summary checklist from store (aggregated per active service)
+  const clothesSummary = useBookingStore((s) => s.clothesSummary);
+  const activeServices = useMemo(() => storeServices.filter((s) => s.quantity > 0), [storeServices]);
+
+  const clothes = useMemo(() => {
+    const map: Record<string, number> = {};
+    const defaultNames = ['Shirts', 'Pants', 'T-Shirts', 'Bedsheets'];
+    defaultNames.forEach((name) => {
+      map[name] = 0;
+    });
+
+    activeServices.forEach((service) => {
+      const serviceClothes = clothesSummary[service.id] || [];
+      serviceClothes.forEach((item) => {
+        map[item.name] = (map[item.name] || 0) + item.quantity;
+      });
+    });
+
+    return Object.entries(map).map(([name, quantity]) => ({
+      name,
+      quantity,
+    }));
+  }, [clothesSummary, activeServices]);
+
+  const updateClothesQuantity = useBookingStore((s) => s.updateClothesQuantity);
+
   const [couponInput, setCouponInput] = useState('');
 
   const handleLaundryCardPress = () => {
-    const targetLaundry = laundryItems.find(
-      (l) => l.name === cartData.laundryInfo.name
-    );
-    const laundryId = targetLaundry ? targetLaundry.id : 'krishna-laundry';
+    const laundryId = selectedLaundryId || 'krishna-laundry';
     (navigation as any).navigate('HomeTab', {
       screen: 'LaundryDetail',
       params: { id: laundryId },
@@ -77,9 +106,7 @@ const YourCartScreen = () => {
   );
 
   const handleClothesQuantity = (name: string, qty: number) => {
-    setClothes((prev) =>
-      prev.map((c) => (c.name === name ? { ...c, quantity: Math.max(0, qty) } : c))
-    );
+    updateClothesQuantity(name, qty);
   };
 
   const subtotal = useMemo(
@@ -186,7 +213,15 @@ const YourCartScreen = () => {
 <ScrollableScreen
     contentContainerStyle={styles.scroll}
 >
-              <LaundryInfoCard {...cartData.laundryInfo} imageSource={require('../../../assets/images/Laundry/krishna-laundry.png')} onPress={handleLaundryCardPress} />
+              <LaundryInfoCard
+                name={laundryName}
+                rating={laundryRating}
+                reviews={laundryReviews}
+                distance={laundryDistance}
+                price={laundryPrice}
+                imageSource={selectedLaundryId === 'royal-wash' ? require('../../../assets/images/Laundry/royal-wash.jpg') : require('../../../assets/images/Laundry/krishna-laundry.png')}
+                onPress={handleLaundryCardPress}
+              />
 
               <View style={styles.sectionServices}>
                 <Text style={styles.sectionTitle}>Services</Text>
