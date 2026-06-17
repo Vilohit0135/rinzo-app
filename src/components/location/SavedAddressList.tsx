@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
 import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
-import { getAddresses, subscribe, type AddressItem } from '../../data/addressStore';
+import { useAddressStore, type AddressItem } from '../../store/addressStore';
 
 interface SavedAddressListProps {
   onSelect: (address: AddressItem) => void;
@@ -17,12 +16,7 @@ const typeIcon: Record<string, string> = {
 };
 
 const SavedAddressList = ({ onSelect, onAddNew }: SavedAddressListProps) => {
-  const [addresses, setAddresses] = useState<AddressItem[]>(getAddresses());
-
-  useEffect(() => {
-    const unsub = subscribe(() => setAddresses([...getAddresses()]));
-    return unsub;
-  }, []);
+  const addresses = useAddressStore((s) => s.addresses);
 
   return (
     <View>

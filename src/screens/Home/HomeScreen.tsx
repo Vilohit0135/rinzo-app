@@ -57,6 +57,9 @@ const laundryImageMap: Record<string, any> = {
   'Royal Wash': require('../../../assets/images/Laundry/royal-wash.jpg'),
   'Eco Laundry Hub': require('../../../assets/images/Laundry/krishna-laundry.png'),
   'Sparkle Dry Clean': require('../../../assets/images/Laundry/royal-wash.jpg'),
+  'Crystal Clean': require('../../../assets/images/Laundry/krishna-laundry.png'),
+  'EcoWash Hub': require('../../../assets/images/Laundry/royal-wash.jpg'),
+  'Presto Laundry': require('../../../assets/images/Laundry/krishna-laundry.png'),
 };
 
 const quickActions: QuickAction[] = [

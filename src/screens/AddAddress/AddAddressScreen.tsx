@@ -17,7 +17,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from "@react-navigation/native";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { addAddress } from "../../data/addressStore";
+import { useAddressStore } from "../../store/addressStore";
+import { useBookingStore } from "../../store/bookingStore";
 import CityIcon from "../../assets/icons/city.png";
 import LocationIcon from "../../assets/icons/location.png";
 import * as Location from "expo-location";
@@ -38,6 +39,12 @@ const AddAddressScreen = () => {
     useNavigation<
       NativeStackNavigationProp<RootStackParamList, "AddAddress">
     >();
+  const addAddress = useAddressStore((s) => s.addAddress);
+  const setBkAddress = useBookingStore((s) => s.setAddress);
+  const setBkAddress1 = useBookingStore((s) => s.setAddress1);
+  const setBkAddress2 = useBookingStore((s) => s.setAddress2);
+  const setBkAddressLabel = useBookingStore((s) => s.setAddressLabel);
+  const setBkAddressContact = useBookingStore((s) => s.setAddressContact);
 
   const [selectedRadio, setSelectedRadio] = useState<"Myself" | "someone else">(
     "Myself",
@@ -147,13 +154,19 @@ const AddAddressScreen = () => {
   const handleSave = () => {
     const cityPart = selectedCity ? `${selectedCity}` : "";
     const areaPart = selectedArea ? `, ${selectedArea}` : "";
-    addAddress({
+    const newAddr = {
       title: addressType === "Home" ? "Home ( Default )" : addressType,
       address1: address || "221b Baker Street",
       address2: `${cityPart}${areaPart}` || "Bengaluru, 500012",
       contact: `${receiverName || "Ms Mira Sharma"} – ${mobile || "94444283283"}`,
       isDefault: addressType === "Home",
-    });
+    };
+    addAddress(newAddr);
+    setBkAddress(`${newAddr.address1}, ${newAddr.address2}`);
+    setBkAddress1(newAddr.address1);
+    setBkAddress2(newAddr.address2);
+    setBkAddressLabel(newAddr.title.replace(' ( Default )', ''));
+    setBkAddressContact(newAddr.contact);
     navigation.goBack();
   };
 

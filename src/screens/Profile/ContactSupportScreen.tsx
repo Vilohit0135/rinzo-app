@@ -1,4 +1,4 @@
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Linking, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
@@ -44,7 +44,15 @@ const ContactSupportScreen = () => {
             renderItem={({ item }) => (
               <SupportOptionCard
                 option={item}
-                onPress={() => navigation.navigate('ComingSoon', { title: item.title })}
+                onPress={() => {
+                  if (item.id === 'call') {
+                    Linking.openURL('tel:+919876543210').catch(err => console.error("Failed to open dialer", err));
+                  } else if (item.id === 'email') {
+                    Linking.openURL('mailto:support@laundry.com').catch(err => console.error("Failed to open mail client", err));
+                  } else {
+                    navigation.navigate('ComingSoon', { title: item.title });
+                  }
+                }}
               />
             )}
           />
