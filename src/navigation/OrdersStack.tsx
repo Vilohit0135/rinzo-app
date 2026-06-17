@@ -13,6 +13,7 @@ import SchedulePickupScreen from '../screens/orders/SchedulePickupScreen';
 import SavedAddressScreen from '../screens/SavedAddress/SavedAddressScreen';
 import AddAddressScreen from '../screens/AddAddress/AddAddressScreen';
 import EditAddressScreen from '../screens/EditAddress/EditAddressScreen';
+import OrderDetailScreen from '../screens/OrderDetail/OrderDetailScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -32,6 +33,7 @@ const OrdersStack = () => {
       <Stack.Screen name="AddAddress" component={AddAddressScreen} />
       <Stack.Screen name="AddAddressDetails" component={AddAddressScreen} />
       <Stack.Screen name="EditAddress" component={EditAddressScreen} />
+      <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
     </Stack.Navigator>
   );
 };

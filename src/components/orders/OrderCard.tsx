@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
 interface OrderCardProps {
@@ -8,6 +8,7 @@ interface OrderCardProps {
   laundryName: string;
   date: string;
   amount: string;
+  onPress?: () => void;
 }
 
 const badgeStyles: Record<string, { bg: string; text: string }> = {
@@ -16,11 +17,11 @@ const badgeStyles: Record<string, { bg: string; text: string }> = {
   cancelled: { bg: '#9C9C9C', text: '#FFFFFF' },
 };
 
-const OrderCard = ({ id, status, statusLabel, laundryName, date, amount }: OrderCardProps) => {
+const OrderCard = ({ id, status, statusLabel, laundryName, date, amount, onPress }: OrderCardProps) => {
   const badge = badgeStyles[status] || badgeStyles.cancelled;
 
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
       <Text style={styles.orderId}>#{id}</Text>
 
       <View style={[styles.badge, { backgroundColor: badge.bg }]}>
@@ -35,7 +36,7 @@ const OrderCard = ({ id, status, statusLabel, laundryName, date, amount }: Order
         <Text style={styles.price}>{amount}</Text>
         <Ionicons name="chevron-forward" size={18} color="#111111" />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

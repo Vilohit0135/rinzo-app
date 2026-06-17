@@ -1,416 +1,468 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
-    View,
-    Text,
-    Image,
-    TouchableOpacity,
-    StyleSheet,
-    Platform,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Platform,
+  Dimensions,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { StatusBar } from 'expo-status-bar';
-import Ionicons from "@react-native-vector-icons/ionicons/static";
-import { LinearGradient } from 'expo-linear-gradient';
+import { useFocusEffect } from '@react-navigation/native';
+import { useTabBar } from '../../utils/TabBarContext';
+import Ionicons from '@react-native-vector-icons/ionicons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
-import { scale } from '../../utils/responsive';
+import { useBookingStore } from '../../store/bookingStore';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderTracking'>;
 
-interface TimelineStep {
-  id: number;
-  title: string;
-  time: string;
-  status: 'completed' | 'active' | 'pending';
-}
-
-const timelineSteps: TimelineStep[] = [
-  { id: 1, title: 'Select Services', time: 'Today 9:00 PM', status: 'completed' },
-  { id: 2, title: 'Pickup Completed', time: 'Today 9:30 PM', status: 'completed' },
-  { id: 3, title: 'Washing in Progress', time: '', status: 'active' },
-  { id: 4, title: 'Out for Delivery', time: '', status: 'pending' },
-  { id: 5, title: 'Delivered', time: '', status: 'pending' },
-];
+const { height: screenHeight } = Dimensions.get('window');
 
 const OrderTrackingScreen = ({ navigation }: Props) => {
+  const { setTabBarVisible } = useTabBar();
+  const orderId = useBookingStore((s) => s.orderId) || 'ORD-2025-001';
+
+  // Hide bottom tab bar on focus with timeout to prevent navigation race condition
+  useFocusEffect(
+    useCallback(() => {
+      const timeout = setTimeout(() => {
+        setTabBarVisible(false);
+      }, 50);
+      return () => {
+        clearTimeout(timeout);
+        setTabBarVisible(true);
+      };
+    }, [setTabBarVisible])
+  );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setTabBarVisible(false);
+    }, 50);
+    return () => {
+      clearTimeout(timeout);
+      setTabBarVisible(true);
+    };
+  }, [setTabBarVisible]);
+
+  // Pulsing active tracker dot
+  const dotOpacity = React.useRef(new Animated.Value(0.4)).current;
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(dotOpacity, {
+          toValue: 1,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+        Animated.timing(dotOpacity, {
+          toValue: 0.4,
+          duration: 800,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [dotOpacity]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
-      <View style={styles.container}>
-        <ScrollableScreen contentContainerStyle={styles.scrollContent}>
-          <View style={styles.header}>
-            <TouchableOpacity style={styles.backButton} activeOpacity={0.7} onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={20} color="#A7A7A7" />
-            </TouchableOpacity>
-            <View style={styles.headerTitleWrap}>
-              <Text style={styles.headerTitle}>Order Tracking</Text>
-            </View>
-            <View style={styles.headerRight} />
-          </View>
+      
+      {/* Custom Header */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backButton}
+          activeOpacity={0.7}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="chevron-back" size={20} color="#1E1E2D" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle} allowFontScaling={false}>
+          Order Tracking
+        </Text>
+        <View style={styles.headerSpacer} />
+      </View>
 
-          <View style={styles.statusCard}>
-            <LinearGradient
-              colors={['#BFA5FD', '#8259D2']}
-              start={{ x: 1, y: 0 }}
-              end={{ x: 0, y: 0 }}
-              style={styles.statusGradient}
-            >
-              <View style={styles.statusContent}>
-                <Text style={styles.orderId}>Order ID : R23232329</Text>
-                <Text style={styles.currentStatus}>Washing in Progress</Text>
-                <Text style={styles.estimatedLabel}>Estimated Delivery</Text>
-                <Text style={styles.estimatedTime}>Today 2:00 - 4:00 PM</Text>
-              </View>
-              <Image
-                source={require('../../../assets/images/order-track.png')}
-                style={styles.orderTrackImage}
-              />
-            </LinearGradient>
-          </View>
+      {/* Order Info Subheader Row */}
+      <View style={styles.subheaderRow}>
+        <Text style={styles.orderIdText} allowFontScaling={false}>
+          #{orderId}
+        </Text>
+        <View style={styles.statusBadge}>
+          <Text style={styles.statusBadgeText} allowFontScaling={false}>
+            ON THE WAY
+          </Text>
+        </View>
+      </View>
 
-          <View style={styles.timelineCard}>
-            {timelineSteps.map((step, index) => {
-              const connectorColor = step.status !== 'pending' ? '#8259D2' : '#D0D0D0';
+      {/* Map Background Container */}
+      <View style={styles.mapContainer}>
+        <Image
+          source={require('../../../assets/images/google-map.png')}
+          style={styles.mapImage}
+          resizeMode="cover"
+        />
+      </View>
 
-              return (
-                <View key={step.id}>
-                  <View style={styles.timelineRow}>
-                    <View style={styles.circleCol}>
-                      <View
-                        style={[
-                          styles.circle,
-                          step.status === 'completed' && styles.circleCompleted,
-                          step.status === 'active' && styles.circleActive,
-                          step.status === 'pending' && styles.circlePending,
-                        ]}
-                      >
-                        {step.status === 'completed' && (
-                          <Ionicons name="checkmark" size={16} color="#FFFFFF" />
-                        )}
-                        {step.status === 'active' && (
-                          <Ionicons name="sync-outline" size={16} color="#8259D2" />
-                        )}
-                        {step.status === 'pending' && (
-                          <Ionicons name="refresh-outline" size={16} color="#D0D0D0" />
-                        )}
-                      </View>
-                    </View>
-                    <View style={styles.contentCol}>
-                      <Text
-                        style={[
-                          styles.timelineTitle,
-                          step.status === 'completed' && styles.titleCompleted,
-                          step.status === 'active' && styles.titleActive,
-                          step.status === 'pending' && styles.titlePending,
-                        ]}
-                      >
-                        {step.title}
-                      </Text>
-                      {step.time ? (
-                        <Text style={styles.timelineTime}>{step.time}</Text>
-                      ) : null}
-                      {step.status === 'active' && (
-                        <Text style={styles.activeLabel}>Current Active Step</Text>
-                      )}
-                    </View>
-                  </View>
-                  {index < timelineSteps.length - 1 && (
-                    <View style={[styles.connectorBottom, { backgroundColor: connectorColor }]} />
-                  )}
-                </View>
-              );
-            })}
-          </View>
+      {/* Bottom Raider Details Panel */}
+      <View style={styles.bottomPanel}>
+        {/* Grabber Line Handle */}
+        <View style={styles.panelHandle} />
 
-          <View style={styles.deliveryCard}>
+        {/* Raider Profile Info Row */}
+        <View style={styles.raiderRow}>
+          <View style={styles.avatarContainer}>
             <Image
-              source={{ uri: 'https://i.pravatar.cc/150?img=12' }}
+              source={{ uri: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150' }}
               style={styles.avatar}
             />
-            <View style={styles.deliveryInfo}>
-              <Text style={styles.deliveryName}>Rahul Verma</Text>
-              <Text style={styles.deliverySubtitle}>Delivery Partner</Text>
-              <View style={styles.statusRow}>
-                <Ionicons name="ellipse" size={10} color="#2F9461" />
-                <Text style={styles.statusText}>Online</Text>
-              </View>
+            <View style={styles.activeDot} />
+          </View>
+          <View style={styles.raiderTextCol}>
+            <Text style={styles.raiderLabel} allowFontScaling={false}>Your Raider</Text>
+            <Text style={styles.raiderName} allowFontScaling={false}>Rahul Sharma</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.callButton}
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate('ComingSoon', { title: 'Call Raider', icon: 'call-outline' })}
+          >
+            <Ionicons name="call" size={18} color="#7C5CE6" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Estimated Arrival Time Card */}
+        <View style={styles.arrivalCard}>
+          <Ionicons name="time" size={20} color="#7C5CE6" style={styles.arrivalIcon} />
+          <View style={styles.arrivalTextCol}>
+            <Text style={styles.arrivalLabel} allowFontScaling={false}>Estimated Arrival</Text>
+            <Text style={styles.arrivalTime} allowFontScaling={false}>About 30 minutes</Text>
+          </View>
+        </View>
+
+        {/* Vertical Progress Timeline */}
+        <View style={styles.timelineContainer}>
+          {/* Step 1: Pickup Location */}
+          <View style={styles.timelineRow}>
+            <View style={styles.timelineLeftCol}>
+              <View style={styles.greenOutlineCircle} />
+              <View style={styles.solidLine} />
             </View>
-            <View style={styles.deliveryActions}>
-              <TouchableOpacity style={styles.contactBtn} activeOpacity={0.7} onPress={() => navigation.navigate('ComingSoon', { title: 'Call', icon: 'call-outline' })}>
-                <Ionicons name="call-outline" size={20} color="#8259D2" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.contactBtn} activeOpacity={0.7} onPress={() => navigation.navigate('ComingSoon', { title: 'Chat', icon: 'chatbubble-outline' })}>
-                <Ionicons name="chatbubble-outline" size={20} color="#8259D2" />
-              </TouchableOpacity>
+            <View style={styles.timelineMiddleCol}>
+              <Text style={styles.stepLabel} allowFontScaling={false}>Pickup Location</Text>
+              <Text style={styles.stepMainText} allowFontScaling={false}>24, 10th Main Rd, Indiranagar</Text>
+            </View>
+            <View style={styles.timelineRightCol}>
+              <Text style={styles.stepTime} allowFontScaling={false}>12:30 PM</Text>
             </View>
           </View>
 
-          <TouchableOpacity style={styles.helpButton} activeOpacity={0.7} onPress={() => (navigation as any).navigate('ProfileTab', { screen: 'HelpAndSupport' })}>
-            <Text style={styles.helpText}>Need Help</Text>
-          </TouchableOpacity>
-        </ScrollableScreen>
+          {/* Step 2: On the way */}
+          <View style={styles.timelineRow}>
+            <View style={styles.timelineLeftCol}>
+              <View style={styles.purpleSolidCircle} />
+              <View style={styles.dashedLine} />
+            </View>
+            <View style={styles.timelineMiddleCol}>
+              <Text style={styles.stepLabelActive} allowFontScaling={false}>On the way</Text>
+              <Text style={styles.stepSubTextActive} allowFontScaling={false}>Driver is heading to you</Text>
+            </View>
+            <View style={styles.timelineRightCol}>
+              <Text style={styles.stepTime} allowFontScaling={false}>12:45 PM</Text>
+            </View>
+          </View>
 
+          {/* Step 3: Delivery to you */}
+          <View style={styles.timelineRow}>
+            <View style={styles.timelineLeftCol}>
+              <View style={styles.greySolidCircle} />
+            </View>
+            <View style={styles.timelineMiddleCol}>
+              <Text style={styles.stepLabelPending} allowFontScaling={false}>Delivery to you</Text>
+            </View>
+            <View style={styles.timelineRightCol}>
+              <Text style={styles.stepTime} allowFontScaling={false}>1:00 PM</Text>
+            </View>
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: '#F6F5FA' },
-  container: { flex: 1 },
-  scrollContent: {
-    paddingBottom: 100,
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F8F9FE',
   },
-
   header: {
-    paddingTop: 12,
-    paddingHorizontal: 20,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    justifyContent: 'space-between',
+    paddingHorizontal: scale(18),
+    paddingVertical: verticalScale(14),
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F1F6',
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: scale(36),
+    height: scale(36),
+    borderRadius: scale(18),
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
-      },
-      android: { elevation: 2 },
-    }),
-  },
-  headerTitleWrap: {
-    flex: 1,
-    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#EBEBF0',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 4,
+    elevation: 2,
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#111111',
+    fontSize: responsiveFontSize(18),
+    fontWeight: '800',
+    color: '#1E1E2D',
   },
-  headerRight: {
-    width: 40,
+  headerSpacer: {
+    width: scale(36),
   },
-
-  statusCard: {
-    marginHorizontal: 20,
-    height: 165,
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginBottom: 16,
+  subheaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: scale(20),
+    paddingVertical: verticalScale(12),
+    backgroundColor: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F1F6',
   },
-  statusGradient: {
+  orderIdText: {
+    fontSize: responsiveFontSize(15.5),
+    fontWeight: '800',
+    color: '#1E1E2D',
+  },
+  statusBadge: {
+    backgroundColor: '#E6F7F0',
+    borderRadius: scale(12),
+    paddingHorizontal: scale(10),
+    paddingVertical: verticalScale(6),
+  },
+  statusBadgeText: {
+    fontSize: responsiveFontSize(10.5),
+    fontWeight: '800',
+    color: '#10B981',
+    letterSpacing: 0.3,
+  },
+  mapContainer: {
     flex: 1,
-    padding: 14,
+    width: '100%',
+    height: screenHeight * 0.45,
+  },
+  mapImage: {
+    width: '100%',
+    height: '100%',
+  },
+  bottomPanel: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: scale(30),
+    borderTopRightRadius: scale(30),
+    paddingHorizontal: scale(24),
+    paddingTop: verticalScale(10),
+    paddingBottom: Platform.OS === 'ios' ? verticalScale(34) : verticalScale(20),
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: -6 },
+    shadowOpacity: 0.05,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  panelHandle: {
+    width: scale(40),
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#E5E7EB',
+    alignSelf: 'center',
+    marginBottom: verticalScale(16),
+  },
+  raiderRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: verticalScale(16),
   },
-  statusContent: {
+  avatarContainer: {
+    position: 'relative',
+    marginRight: scale(12),
+  },
+  avatar: {
+    width: scale(46),
+    height: scale(46),
+    borderRadius: scale(23),
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  activeDot: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: scale(12),
+    height: scale(12),
+    borderRadius: scale(6),
+    backgroundColor: '#10B981',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
+  },
+  raiderTextCol: {
     flex: 1,
   },
-  orderId: {
-    fontSize: 11,
-    fontWeight: '400',
-    color: '#FFFFFF',
-    opacity: 0.95,
-    marginBottom: 16,
+  raiderLabel: {
+    fontSize: responsiveFontSize(11.5),
+    fontWeight: '600',
+    color: '#9CA3AF',
   },
-  currentStatus: {
-    fontSize: 18,
-    fontWeight: '700',
-    lineHeight: 24,
-    color: '#FFFFFF',
-    marginBottom: 18,
+  raiderName: {
+    fontSize: responsiveFontSize(16),
+    fontWeight: '800',
+    color: '#1E1E2D',
+    marginTop: verticalScale(2),
   },
-  estimatedLabel: {
-    fontSize: 13,
-    fontWeight: '400',
-    color: '#FFFFFF',
-    marginBottom: 3,
+  callButton: {
+    width: scale(40),
+    height: scale(40),
+    borderRadius: scale(20),
+    backgroundColor: '#F3E8FF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  estimatedTime: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: '#FFFFFF',
+  arrivalCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F7F2FF',
+    borderRadius: scale(14),
+    paddingVertical: verticalScale(12),
+    paddingHorizontal: scale(16),
+    borderWidth: 1,
+    borderColor: '#EFEAFB',
+    marginBottom: verticalScale(20),
   },
-  orderTrackImage: {
-    width: scale(164),
-    height: scale(185),
-    resizeMode: 'contain',
+  arrivalIcon: {
+    marginRight: scale(12),
   },
-
-  timelineCard: {
-    marginHorizontal: 20,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 9,
-    paddingVertical: 26,
-    paddingHorizontal: 16,
-    marginBottom: 14,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.06,
-        shadowRadius: 8,
-      },
-      android: { elevation: 1 },
-    }),
+  arrivalTextCol: {
+    flex: 1,
+  },
+  arrivalLabel: {
+    fontSize: responsiveFontSize(11.5),
+    fontWeight: '600',
+    color: '#9CA3AF',
+  },
+  arrivalTime: {
+    fontSize: responsiveFontSize(14.5),
+    fontWeight: '800',
+    color: '#7C5CE6',
+    marginTop: verticalScale(2),
+  },
+  timelineContainer: {
+    width: '100%',
+    paddingBottom: verticalScale(10),
   },
   timelineRow: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: verticalScale(20),
+  },
+  timelineLeftCol: {
+    width: scale(30),
     alignItems: 'center',
+    position: 'relative',
+    height: '100%',
   },
-  circleCol: {
-    width: 32,
-    alignItems: 'center',
-    justifyContent: 'center',
+  timelineMiddleCol: {
+    flex: 1,
+    paddingLeft: scale(8),
   },
-  circle: {
-    width: 22,
-    height: 22,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+  timelineRightCol: {
+    alignItems: 'flex-end',
+    justifyContent: 'flex-start',
   },
-  circleCompleted: {
-    backgroundColor: '#8259D2',
-  },
-  circleActive: {
-    backgroundColor: '#FFFFFF',
+  greenOutlineCircle: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
     borderWidth: 2,
-    borderColor: '#8259D2',
-  },
-  circlePending: {
+    borderColor: '#10B981',
     backgroundColor: '#FFFFFF',
-    borderWidth: 2,
-    borderColor: '#D0D0D0',
+    zIndex: 2,
   },
-  connectorBottom: {
+  purpleSolidCircle: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#7C5CE6',
+    zIndex: 2,
+  },
+  greySolidCircle: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#E5E7EB',
+    zIndex: 2,
+  },
+  solidLine: {
     width: 2,
-    height: 42,
-    marginLeft: 16,
+    position: 'absolute',
+    top: 14,
+    bottom: -24,
+    backgroundColor: '#10B981',
+    zIndex: 1,
   },
-  contentCol: {
-    marginLeft: 14,
-    flex: 1,
-    justifyContent: 'center',
+  dashedLine: {
+    width: 1,
+    position: 'absolute',
+    top: 14,
+    bottom: -24,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderStyle: 'dashed',
+    borderRadius: 0.1,
+    zIndex: 1,
   },
-  timelineTitle: {
-    fontSize: 16,
+  stepLabel: {
+    fontSize: responsiveFontSize(11.5),
     fontWeight: '600',
+    color: '#9CA3AF',
   },
-  titleCompleted: {
-    color: '#8E8E8E',
-  },
-  titleActive: {
-    color: '#444444',
-  },
-  titlePending: {
-    color: '#B0B0B0',
-  },
-  timelineTime: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#8E8E8E',
-    marginTop: 4,
-  },
-  activeLabel: {
-    fontSize: 11,
-    fontWeight: '600',
-    color: '#7C4DFF',
-    marginTop: 2,
-  },
-
-  deliveryCard: {
-    marginHorizontal: 20,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    height: 84,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 18,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 8,
-      },
-      android: { elevation: 1 },
-    }),
-  },
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    borderWidth: 2,
-    borderColor: '#F0E9FF',
-  },
-  deliveryInfo: {
-    flex: 1,
-    marginLeft: 10,
-  },
-  deliveryName: {
-    fontSize: 16,
+  stepMainText: {
+    fontSize: responsiveFontSize(13.5),
     fontWeight: '700',
-    color: '#111111',
+    color: '#1E1E2D',
+    marginTop: verticalScale(2),
   },
-  deliverySubtitle: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#8A8A8A',
-    marginTop: 1,
+  stepLabelActive: {
+    fontSize: responsiveFontSize(14.5),
+    fontWeight: '800',
+    color: '#7C5CE6',
   },
-  statusRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 2,
-    gap: 4,
-  },
-  statusText: {
-    fontSize: 11,
+  stepSubTextActive: {
+    fontSize: responsiveFontSize(12.5),
     fontWeight: '600',
-    color: '#34C759',
+    color: '#9CA3AF',
+    marginTop: verticalScale(2),
   },
-  deliveryActions: {
-    flexDirection: 'row',
-    gap: 8,
-    marginLeft: 'auto',
+  stepLabelPending: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: '600',
+    color: '#9CA3AF',
   },
-  contactBtn: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
-    backgroundColor: '#F6F1FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
-  helpButton: {
-    marginHorizontal: 20,
-    height: 50,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#8259D2',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-    marginBottom: 20,
-  },
-  helpText: {
-    fontSize: 16,
-    fontWeight: '500',
-    color: '#8259D2',
+  stepTime: {
+    fontSize: responsiveFontSize(11.5),
+    fontWeight: '600',
+    color: '#9CA3AF',
   },
 });
 
