@@ -41,30 +41,6 @@ The Expo CLI will open a development server. Use Expo Go, an emulator, or a simu
 - `npm run web` - start Expo for web
 
 
-## Project Structure
-
-```text
-.
-|-- App.tsx                 # Current screen-state based app flow
-|-- index.ts                # Expo root registration
-|-- app.json                # Expo app configuration
-|-- assets/                 # Expo app icons and image assets
-|-- src/
-|   |-- assets/             # App-level images, fonts, icons, animations
-|   |-- components/         # Reusable UI components
-|   |-- constants/          # Shared constants such as theme colors
-|   |-- data/               # Static or mock data
-|   |-- hooks/              # Reusable hooks
-|   |-- navigation/         # Navigation setup
-|   |-- screens/            # App screens
-|   |-- services/           # API and integration services
-|   |-- store/              # Client state stores
-|   |-- theme/              # Theme primitives
-|   |-- types/              # Shared TypeScript types
-|   `-- utils/              # Utility helpers
-`-- tsconfig.json           # TypeScript configuration
-```
-
 ## Expo Notes
 
 This project is configured for Expo SDK 56 in `package.json` and `app.json`. Before changing Expo APIs or adding Expo packages, check the versioned SDK documentation:
