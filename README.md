@@ -1,6 +1,6 @@
 # Rinzo App
 
-Rinzo is an Expo React Native laundry service app. The current app flow starts with a splash screen, moves through onboarding and location access, and then presents login/signup screens. The repository also contains screen folders for the wider laundry ordering experience, including pickup scheduling, cart, orders, payments, profile, support, offers, and address management.
+Rinzo is an customer laundry service app. The current app flow starts with a splash screen, moves through onboarding and location access, and then presents login/signup screens. The repository also contains screen folders for the wider laundry ordering experience, including pickup scheduling, cart, orders, payments, profile, support, offers, and address management.
 
 ## Tech Stack
 
