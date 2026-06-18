@@ -65,18 +65,6 @@ The Expo CLI will open a development server. Use Expo Go, an emulator, or a simu
 `-- tsconfig.json           # TypeScript configuration
 ```
 
-## Current App Flow
-
-`App.tsx` currently uses local state to move through:
-
-1. Splash
-2. Onboarding
-3. Location access
-4. Login
-5. Signup
-
-`SchedulePickupScreen` is implemented as a standalone screen with selectable pickup dates and time slots. It uses React Navigation's `useNavigation`, so it should be mounted inside a navigator before being used in the main app flow.
-
 ## Expo Notes
 
 This project is configured for Expo SDK 56 in `package.json` and `app.json`. Before changing Expo APIs or adding Expo packages, check the versioned SDK documentation:
