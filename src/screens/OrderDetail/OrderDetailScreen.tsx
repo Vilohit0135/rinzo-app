@@ -385,7 +385,9 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
   // Hide bottom tab bar natively and via context context
   useFocusEffect(
     useCallback(() => {
-      setTabBarVisible(false);
+      const timeout = setTimeout(() => {
+        setTabBarVisible(false);
+      }, 50);
       
       const parent = navigation.getParent();
       if (parent) {
@@ -395,6 +397,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
       }
 
       return () => {
+        clearTimeout(timeout);
         setTabBarVisible(true);
         if (parent) {
           parent.setOptions({
@@ -406,7 +409,9 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
   );
 
   useEffect(() => {
-    setTabBarVisible(false);
+    const timeout = setTimeout(() => {
+      setTabBarVisible(false);
+    }, 50);
     const parent = navigation.getParent();
     if (parent) {
       parent.setOptions({
@@ -414,6 +419,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
       });
     }
     return () => {
+      clearTimeout(timeout);
       setTabBarVisible(true);
       if (parent) {
         parent.setOptions({
