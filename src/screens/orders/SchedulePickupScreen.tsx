@@ -14,7 +14,7 @@ import { useTabBar } from '../../utils/TabBarContext';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
-import { useBookingStore, DELIVERY_CHARGE, calculateDiscount, calculateSubtotal } from '../../store/bookingStore';
+import { useBookingStore, DELIVERY_CHARGE, SERVICE_FEE, calculateDiscount, calculateSubtotal } from '../../store/bookingStore';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SchedulePickup'>;
@@ -166,7 +166,7 @@ const SchedulePickupScreen = ({ navigation }: Props) => {
     const clothesSummary = useBookingStore.getState().clothesSummary;
     const subtotal = calculateSubtotal(services, clothesSummary);
     const discountValue = calculateDiscount(appliedCoupon, subtotal, services);
-    const total = Math.max(0, subtotal + DELIVERY_CHARGE - discountValue);
+    const total = Math.max(0, subtotal + DELIVERY_CHARGE + SERVICE_FEE - discountValue);
 
     setTotalAmount(total > 0 ? total : 49);
     navigation.navigate('Payment');

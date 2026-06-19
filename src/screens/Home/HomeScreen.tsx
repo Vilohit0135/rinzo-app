@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   },
   quickActionsRow: {
     marginTop: verticalScale(15),
-    gap: scale(12),
+    gap: scale(17),
     paddingRight: scale(18),
   },
   popularSection: {

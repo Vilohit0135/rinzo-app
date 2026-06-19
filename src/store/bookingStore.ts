@@ -10,7 +10,8 @@ export interface ServiceSelection {
   subtitle: string;
 }
 
-export const DELIVERY_CHARGE = 20;
+export const DELIVERY_CHARGE = 30;
+export const SERVICE_FEE = 15;
 
 export const calculateSubtotal = (
   services: ServiceSelection[],

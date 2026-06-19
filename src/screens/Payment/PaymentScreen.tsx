@@ -5,7 +5,7 @@ import { StatusBar } from "expo-status-bar";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Ionicons from "@react-native-vector-icons/ionicons";
 import { RootStackParamList } from "../../types/navigation";
-import { useBookingStore, DELIVERY_CHARGE, calculateDiscount, calculateSubtotal } from "../../store/bookingStore";
+import { useBookingStore, DELIVERY_CHARGE, SERVICE_FEE, calculateDiscount, calculateSubtotal } from "../../store/bookingStore";
 import { scale, verticalScale, moderateScale, responsiveFontSize } from "../../utils/responsive";
 import { useFocusEffect } from "@react-navigation/native";
 import { useTabBar } from "../../utils/TabBarContext";
@@ -48,7 +48,7 @@ const PaymentScreen = ({ navigation }: Props) => {
   const totalAmount = useMemo(() => {
     const subtotal = calculateSubtotal(services, clothesSummary);
     const discountValue = calculateDiscount(appliedCoupon, subtotal, services);
-    const calculatedTotal = subtotal + DELIVERY_CHARGE - discountValue;
+    const calculatedTotal = subtotal + DELIVERY_CHARGE + SERVICE_FEE - discountValue;
     return Math.max(0, calculatedTotal > 0 ? calculatedTotal : 330);
   }, [services, clothesSummary, appliedCoupon]);
 
