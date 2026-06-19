@@ -34,6 +34,7 @@ interface TimelineStepProps {
   activeStep: number;
   incomingLineAnim: Animated.Value | null;
   outgoingLineAnim: Animated.Value | null;
+  targetStep: number;
 }
 
 const TimelineStep = ({
@@ -47,55 +48,24 @@ const TimelineStep = ({
   activeStep,
   incomingLineAnim,
   outgoingLineAnim,
+  targetStep,
 }: TimelineStepProps) => {
   const travelAnim = useRef(new Animated.Value(0)).current;
   const travelOpacityAnim = useRef(new Animated.Value(0)).current;
 
-  const [highlightActive, setHighlightActive] = useState(false);
+  const highlightActive = isActive;
+  const lineReached = isActive;
   const activeAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
   const glowOpacity = useRef(new Animated.Value(isActive ? 1 : 0)).current;
   const pulseAnim = useRef(new Animated.Value(0)).current;
 
   // Bonus effects for step 3 (Washing in Progress)
-  const [lineReached, setLineReached] = useState(false);
   const rippleScale = useRef(new Animated.Value(1)).current;
   const rippleOpacity = useRef(new Animated.Value(0)).current;
   const brightnessAnim = useRef(new Animated.Value(0)).current;
 
   const isInitialRender = useRef(true);
   const premiumEasing = Easing.bezier(0.25, 0.1, 0.25, 1);
-
-  // Synchronize highlighting with incomingLineAnim completion
-  useEffect(() => {
-    if (!isActive) {
-      setHighlightActive(false);
-      setLineReached(false);
-      return;
-    }
-
-    if (incomingLineAnim) {
-      const listenerId = incomingLineAnim.addListener(({ value }) => {
-        if (value >= 0.92) {
-          setHighlightActive(true);
-          setLineReached(true);
-        }
-      });
-
-      const initialVal = (incomingLineAnim as any)._value;
-      if (initialVal >= 0.92) {
-        setHighlightActive(true);
-        setLineReached(true);
-      }
-
-      return () => {
-        incomingLineAnim.removeListener(listenerId);
-      };
-    } else {
-      // Step 1 has no incoming line, highlight immediately
-      setHighlightActive(true);
-      setLineReached(true);
-    }
-  }, [incomingLineAnim, isActive]);
 
   // Active state transitions (grow / shrink / glow) driven by highlightActive
   useEffect(() => {
@@ -195,7 +165,7 @@ const TimelineStep = ({
   // Traveling pulse dot animation loop
   useEffect(() => {
     let travelLoop: Animated.CompositeAnimation | null = null;
-    const isLineProgressing = activeStep === stepNum + 1;
+    const isLineProgressing = activeStep === stepNum && activeStep < targetStep;
 
     if (isLineProgressing) {
       travelAnim.setValue(0);
@@ -239,7 +209,7 @@ const TimelineStep = ({
       }
       isInitialRender.current = false;
     };
-  }, [activeStep]);
+  }, [activeStep, targetStep, stepNum]);
 
   // Text transform & color interpolations
   const scaleText = activeAnim.interpolate({
@@ -255,7 +225,7 @@ const TimelineStep = ({
     outputRange: [isCompleted ? '#1C1C38' : '#9CA3AF', '#8259D2'],
   });
 
-  const showTravelingPulse = activeStep === stepNum + 1;
+  const showTravelingPulse = activeStep === stepNum && activeStep < targetStep;
 
   return (
     <View style={styles.timelineStepRow}>
@@ -404,6 +374,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
   const { orderId } = route.params;
   const orders = useOrderStore((s) => s.orders);
   const order = orders.find((o) => o.id === orderId);
+  const updateOrderStatus = useOrderStore((s) => s.updateOrderStatus);
 
   const line1Fill = useRef(new Animated.Value(0)).current;
   const line2Fill = useRef(new Animated.Value(0)).current;
@@ -411,28 +382,46 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
   const line4Fill = useRef(new Animated.Value(0)).current;
   const isParentInitialRender = useRef(true);
 
-  // Hide bottom tab bar
+  // Hide bottom tab bar natively and via context context
   useFocusEffect(
     useCallback(() => {
-      const timeout = setTimeout(() => {
-        setTabBarVisible(false);
-      }, 50);
+      setTabBarVisible(false);
+      
+      const parent = navigation.getParent();
+      if (parent) {
+        parent.setOptions({
+          tabBarStyle: { display: 'none' },
+        });
+      }
+
       return () => {
-        clearTimeout(timeout);
         setTabBarVisible(true);
+        if (parent) {
+          parent.setOptions({
+            tabBarStyle: undefined,
+          });
+        }
       };
-    }, [setTabBarVisible])
+    }, [navigation, setTabBarVisible])
   );
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setTabBarVisible(false);
-    }, 50);
+    setTabBarVisible(false);
+    const parent = navigation.getParent();
+    if (parent) {
+      parent.setOptions({
+        tabBarStyle: { display: 'none' },
+      });
+    }
     return () => {
-      clearTimeout(timeout);
       setTabBarVisible(true);
+      if (parent) {
+        parent.setOptions({
+          tabBarStyle: undefined,
+        });
+      }
     };
-  }, [setTabBarVisible]);
+  }, [navigation, setTabBarVisible]);
 
   // Fallback Mock Order details if not found in store
   const defaultOrder = {
@@ -466,129 +455,154 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
 
   // Map order status to progress timeline steps
   const getInitialActiveStep = () => {
-    if (displayOrder.status === 'completed') {
-      return 5;
-    } else if (displayOrder.status === 'cancelled') {
-      return 1;
-    } else {
-      const label = displayOrder.statusLabel.toLowerCase();
-      if (label.includes('placed') || label.includes('confirmed')) {
-        return 1;
-      } else if (label.includes('pick') || label.includes('picked')) {
-        return 2;
-      } else if (label.includes('wash') || label.includes('progress')) {
-        return 3;
-      } else if (label.includes('delivery') || label.includes('out')) {
-        return 4;
-      }
-    }
-    return 3;
+    const label = displayOrder.statusLabel.toLowerCase();
+    if (displayOrder.status === 'completed' || label.includes('delivered')) return 5;
+    if (displayOrder.status === 'cancelled') return 1;
+    if (label.includes('placed') || label.includes('confirmed')) return 1;
+    if (label.includes('pick') || label.includes('picked')) return 2;
+    if (label.includes('wash') || label.includes('progress')) return 3;
+    if (label.includes('delivery') || label.includes('out')) return 4;
+    return 1;
   };
 
-  const [activeStep, setActiveStep] = useState(getInitialActiveStep());
+  const targetStep = getInitialActiveStep();
+  const [activeStep, setActiveStep] = useState(1);
 
-  // Local simulator to transition step-by-step for animation demonstration
-  // without modifying the global store state (prevents background side-effects)
-  useEffect(() => {
-    const initialStep = getInitialActiveStep();
-    setActiveStep(initialStep);
+  const getStatusLabelForStep = (step: number) => {
+    switch (step) {
+      case 1:
+        return 'Order Confirmed';
+      case 2:
+        return 'Picked Up';
+      case 3:
+        return 'Washing in Progress';
+      case 4:
+        return 'Out for Delivery';
+      case 5:
+        return 'Delivered';
+      default:
+        return displayOrder.statusLabel;
+    }
+  };
 
-    if (initialStep === 1) {
-      const t1 = setTimeout(() => {
-        setActiveStep(2);
-      }, 3000);
+  // Parent animation controller for the connecting lines, triggered on screen focus
+  useFocusEffect(
+    useCallback(() => {
+      const activeLineIdx = targetStep - 1;
 
-      const t2 = setTimeout(() => {
-        setActiveStep(3);
-      }, 7000);
+      // 1. Initialize animation segment values based on current targetStep
+      // Lines before activeLineIdx are fully filled (1)
+      // The active line at activeLineIdx is animated from 0 to 1
+      // Lines after activeLineIdx are pending (0)
+      line1Fill.setValue(activeLineIdx > 1 ? 1 : 0);
+      line2Fill.setValue(activeLineIdx > 2 ? 1 : 0);
+      line3Fill.setValue(activeLineIdx > 3 ? 1 : 0);
+      line4Fill.setValue(activeLineIdx > 4 ? 1 : 0);
+
+      // Set activeStep starting value to targetStep - 1 (or 1 if targetStep is 1)
+      const initialActive = targetStep > 1 ? targetStep - 1 : 1;
+      setActiveStep(initialActive);
+
+      // 2. Add dynamic listeners to transition activeStep as the line fills
+      const l1 = line1Fill.addListener(({ value }) => {
+        if (value >= 0.92) setActiveStep(2);
+      });
+      const l2 = line2Fill.addListener(({ value }) => {
+        if (value >= 0.92) setActiveStep(3);
+      });
+      const l3 = line3Fill.addListener(({ value }) => {
+        if (value >= 0.92) setActiveStep(4);
+      });
+      const l4 = line4Fill.addListener(({ value }) => {
+        if (value >= 0.92) setActiveStep(5);
+      });
+
+      // 3. Build timing animation only for the active segment
+      let compositeAnim: Animated.CompositeAnimation | null = null;
+
+      if (targetStep >= 2 && activeLineIdx === 1) {
+        compositeAnim = Animated.sequence([
+          Animated.delay(1000),
+          Animated.timing(line1Fill, {
+            toValue: 1,
+            duration: 4000,
+            easing: Easing.bezier(0.42, 0, 0.58, 1),
+            useNativeDriver: false,
+          }),
+        ]);
+      } else if (targetStep >= 3 && activeLineIdx === 2) {
+        compositeAnim = Animated.sequence([
+          Animated.delay(1000),
+          Animated.timing(line2Fill, {
+            toValue: 1,
+            duration: 4000,
+            easing: Easing.bezier(0.42, 0, 0.58, 1),
+            useNativeDriver: false,
+          }),
+        ]);
+      } else if (targetStep >= 4 && activeLineIdx === 3) {
+        compositeAnim = Animated.sequence([
+          Animated.delay(1000),
+          Animated.timing(line3Fill, {
+            toValue: 1,
+            duration: 4000,
+            easing: Easing.bezier(0.42, 0, 0.58, 1),
+            useNativeDriver: false,
+          }),
+        ]);
+      } else if (targetStep >= 5 && activeLineIdx === 4) {
+        compositeAnim = Animated.sequence([
+          Animated.delay(1000),
+          Animated.timing(line4Fill, {
+            toValue: 1,
+            duration: 4000,
+            easing: Easing.bezier(0.42, 0, 0.58, 1),
+            useNativeDriver: false,
+          }),
+        ]);
+      }
+
+      if (compositeAnim) {
+        compositeAnim.start();
+      }
+
+      // 4. Simulator timer: Transition ongoing order status in store
+      let simulatorTimer: any = null;
+      if (displayOrder.status === 'ongoing') {
+        const currentLabel = displayOrder.statusLabel;
+        if (currentLabel === 'Order Confirmed') {
+          simulatorTimer = setTimeout(() => {
+            updateOrderStatus(displayOrder.id, 'ongoing', 'Picked Up');
+          }, 4500);
+        } else if (currentLabel === 'Picked Up') {
+          simulatorTimer = setTimeout(() => {
+            updateOrderStatus(displayOrder.id, 'ongoing', 'Washing in Progress');
+          }, 4500);
+        } else if (currentLabel === 'Washing in Progress') {
+          simulatorTimer = setTimeout(() => {
+            updateOrderStatus(displayOrder.id, 'ongoing', 'Out for Delivery');
+          }, 4500);
+        } else if (currentLabel === 'Out for Delivery') {
+          simulatorTimer = setTimeout(() => {
+            updateOrderStatus(displayOrder.id, 'completed', 'Delivered');
+          }, 4500);
+        }
+      }
 
       return () => {
-        clearTimeout(t1);
-        clearTimeout(t2);
+        line1Fill.removeListener(l1);
+        line2Fill.removeListener(l2);
+        line3Fill.removeListener(l3);
+        line4Fill.removeListener(l4);
+        if (compositeAnim) {
+          compositeAnim.stop();
+        }
+        if (simulatorTimer) {
+          clearTimeout(simulatorTimer);
+        }
       };
-    }
-  }, [displayOrder.id, displayOrder.statusLabel]);
-
-  // Parent animation controller for the connecting lines
-  useEffect(() => {
-    // Line 1: Placed -> Picked Up
-    if (activeStep > 2) {
-      line1Fill.setValue(1);
-    } else if (activeStep === 2) {
-      if (isParentInitialRender.current) {
-        line1Fill.setValue(1);
-      } else {
-        line1Fill.setValue(0);
-        Animated.timing(line1Fill, {
-          toValue: 1,
-          duration: 8000,
-          easing: Easing.bezier(0.42, 0, 0.58, 1),
-          useNativeDriver: false,
-        }).start();
-      }
-    } else {
-      line1Fill.setValue(0);
-    }
-
-    // Line 2: Picked Up -> Washing in Progress
-    if (activeStep > 3) {
-      line2Fill.setValue(1);
-    } else if (activeStep === 3) {
-      if (isParentInitialRender.current) {
-        line2Fill.setValue(1);
-      } else {
-        line2Fill.setValue(0);
-        Animated.timing(line2Fill, {
-          toValue: 1,
-          duration: 8000,
-          easing: Easing.bezier(0.42, 0, 0.58, 1),
-          useNativeDriver: false,
-        }).start();
-      }
-    } else {
-      line2Fill.setValue(0);
-    }
-
-    // Line 3: Washing in Progress -> Out for Delivery
-    if (activeStep > 4) {
-      line3Fill.setValue(1);
-    } else if (activeStep === 4) {
-      if (isParentInitialRender.current) {
-        line3Fill.setValue(1);
-      } else {
-        line3Fill.setValue(0);
-        Animated.timing(line3Fill, {
-          toValue: 1,
-          duration: 8000,
-          easing: Easing.bezier(0.42, 0, 0.58, 1),
-          useNativeDriver: false,
-        }).start();
-      }
-    } else {
-      line3Fill.setValue(0);
-    }
-
-    // Line 4: Out for Delivery -> Delivered
-    if (activeStep > 5) {
-      line4Fill.setValue(1);
-    } else if (activeStep === 5) {
-      if (isParentInitialRender.current) {
-        line4Fill.setValue(1);
-      } else {
-        line4Fill.setValue(0);
-        Animated.timing(line4Fill, {
-          toValue: 1,
-          duration: 8000,
-          easing: Easing.bezier(0.42, 0, 0.58, 1),
-          useNativeDriver: false,
-        }).start();
-      }
-    } else {
-      line4Fill.setValue(0);
-    }
-
-    isParentInitialRender.current = false;
-  }, [activeStep]);
+    }, [targetStep, displayOrder.status, displayOrder.statusLabel, displayOrder.id, updateOrderStatus])
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -635,7 +649,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
           </View>
           <View style={styles.statusTextContainer}>
             <Text style={styles.statusTitle} allowFontScaling={false}>
-              {displayOrder.statusLabel}
+              {getStatusLabelForStep(activeStep)}
             </Text>
             <Text style={styles.statusDescription} allowFontScaling={false}>
               Your order #{displayOrder.id} is being treated with care at{' '}
@@ -666,6 +680,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             activeStep={activeStep}
             incomingLineAnim={null}
             outgoingLineAnim={line1Fill}
+            targetStep={targetStep}
           />
 
           <TimelineStep
@@ -678,6 +693,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             activeStep={activeStep}
             incomingLineAnim={line1Fill}
             outgoingLineAnim={line2Fill}
+            targetStep={targetStep}
           />
 
           <TimelineStep
@@ -690,6 +706,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             activeStep={activeStep}
             incomingLineAnim={line2Fill}
             outgoingLineAnim={line3Fill}
+            targetStep={targetStep}
           />
 
           <TimelineStep
@@ -702,6 +719,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             activeStep={activeStep}
             incomingLineAnim={line3Fill}
             outgoingLineAnim={line4Fill}
+            targetStep={targetStep}
           />
 
           <TimelineStep
@@ -715,6 +733,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             activeStep={activeStep}
             incomingLineAnim={line4Fill}
             outgoingLineAnim={null}
+            targetStep={targetStep}
           />
         </View>
 
