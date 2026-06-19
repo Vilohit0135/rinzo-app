@@ -17,40 +17,45 @@ const QuickActionCard = ({ title, icon, iconSource, onPress }: QuickActionCardPr
         {iconSource ? (
           <Image source={iconSource} style={styles.quickIcon} />
         ) : (
-          <Ionicons name={icon as any} size={24} color={COLORS.purple} />
+          <Ionicons name={icon as any} size={22} color={COLORS.purple} />
         )}
       </View>
-      <Text style={styles.title} allowFontScaling={false} numberOfLines={2}>{title.replace(' ', '\n')}</Text>
+      <Text style={styles.title} allowFontScaling={false} numberOfLines={1}>{title}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    width: scale(135),
-    height: verticalScale(43),
-    backgroundColor: COLORS.purpleLight,
+    width: scale(102),
+    height: verticalScale(104),
+    backgroundColor: COLORS.white,
     borderRadius: moderateScale(20),
-    paddingHorizontal: scale(14),
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconWrap: {
-    width: scale(26),
-    height: verticalScale(26),
-    borderRadius: moderateScale(9),
+    borderWidth: 1,
+    borderColor: '#EFEFF4',
     alignItems: 'center',
     justifyContent: 'center',
+    paddingVertical: verticalScale(10),
+  },
+  iconWrap: {
+    width: scale(48),
+    height: scale(48),
+    borderRadius: scale(24),
+    backgroundColor: '#F5F0FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: verticalScale(6),
   },
   quickIcon: {
-    width: scale(24),
-    height: verticalScale(24),
+    width: scale(22),
+    height: scale(22),
   },
   title: {
-    marginLeft: scale(10),
     fontSize: responsiveFontSize(11),
     fontWeight: '700',
-    color: '#331970',
+    color: '#1C1C30',
+    textAlign: 'center',
+    marginTop: verticalScale(2),
   },
 });
 
