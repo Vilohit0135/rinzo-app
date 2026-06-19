@@ -10,9 +10,9 @@ import { useAuthStore, BYPASS_AUTH } from './src/store/authStore';
 import OnboardingScreenOne from './src/screens/Onboarding/OnboardingScreenOne';
 import LocationAccessScreen from './src/screens/LocationAccess/LocationAccessScreen';
 import LoginScreen from './src/screens/Login/LoginScreen';
-import PhoneLoginScreen from './src/screens/Login/PhoneLoginScreen';
 import OtpVerificationScreen from './src/screens/Auth/OtpVerificationScreen';
 import SignupScreen from './src/screens/Auth/SignupScreen';
+import ForgotPasswordScreen from './src/screens/Auth/ForgotPasswordScreen';
 import TabNavigator from './src/navigation/TabNavigator';
 import PushNotificationHandler from './src/components/notifications/PushNotificationHandler';
 import Toast from 'react-native-toast-message';
@@ -85,15 +85,6 @@ export default function App() {
                 )}
               </Stack.Screen>
 
-              <Stack.Screen name="PhoneLogin">
-                {({ navigation }) => (
-                  <PhoneLoginScreen
-                    onLoginSuccess={(phone) => navigation.navigate('OtpVerification', { phone })}
-                    onEmailLoginPress={() => navigation.goBack()}
-                  />
-                )}
-              </Stack.Screen>
-
               <Stack.Screen name="Signup">
                 {({ navigation }) => (
                   <SignupScreen
@@ -102,6 +93,8 @@ export default function App() {
                   />
                 )}
               </Stack.Screen>
+
+              <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
 
               <Stack.Screen name="OtpVerification" component={OtpVerificationScreen} />
             </>

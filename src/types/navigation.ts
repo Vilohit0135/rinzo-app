@@ -42,6 +42,7 @@ export type RootStackParamList = {
   OrderSummaryDelivered: { orderId: string };
   OtpVerification: { phone: string };
   Signup: undefined;
+  ForgotPassword: undefined;
   AllServices: { serviceId: string } | undefined;
   ServiceDetail: { serviceId: string; serviceTitle: string };
   BookPickup: undefined;
@@ -54,7 +55,6 @@ export type RootStackParamList = {
   OrderTracking: { from?: string } | undefined;
   ComingSoon: { title?: string; icon?: string; subtitle?: string } | undefined;
   LocationSelection: undefined;
-  PhoneLogin: undefined;
   NotificationDetails: { notificationId: string };
 };
 

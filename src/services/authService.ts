@@ -121,6 +121,15 @@ export const authService = {
     return sessionData.session;
   },
 
+  async sendPasswordResetEmail(email: string) {
+    if (BYPASS_AUTH) {
+      return { data: {}, error: null };
+    }
+    return supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: getRedirectUri(),
+    });
+  },
+
   async signOut() {
     if (BYPASS_AUTH) {
       useAuthStore.getState().signOut();
