@@ -1,4 +1,5 @@
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View, Platform, ToastAndroid } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
@@ -12,6 +13,7 @@ import GenderSelector from '../../components/profile/GenderSelector';
 import LanguageSelector from '../../components/profile/LanguageSelector';
 import SaveButton from '../../components/profile/SaveButton';
 import DatePickerModal from '../../components/profile/DatePickerModal';
+import ImagePickerModal from '../../components/profile/ImagePickerModal';
 import { COLORS } from '../../constants/colors';
 import { useProfileStore } from '../../store/profileStore';
 
@@ -33,12 +35,24 @@ const PersonalInformationScreen = () => {
   const [mobile, setMobile] = useState(profile.mobile);
   const [dob, setDob] = useState(profile.dateOfBirth);
   const [showDobPicker, setShowDobPicker] = useState(false);
+  const [showImagePicker, setShowImagePicker] = useState(false);
   const [gender, setGender] = useState(profile.gender);
   const [language, setLanguage] = useState(profile.preferredLanguage);
   const [localImage, setLocalImage] = useState<string | null>(profile.profileImage);
 
   const handleSave = () => {
     profile.updateProfile({ name, email, mobile, dateOfBirth: dob, gender, preferredLanguage: language, profileImage: localImage });
+    
+    if (Platform.OS === 'android') {
+      ToastAndroid.show('Profile updated successfully!', ToastAndroid.SHORT);
+    }
+    Toast.show({
+      type: 'success',
+      text1: 'Profile Saved',
+      text2: 'Your personal information has been updated.',
+      position: 'top',
+    });
+    
     navigation.goBack();
   };
 
@@ -62,11 +76,7 @@ const PersonalInformationScreen = () => {
   };
 
   const handleImagePick = () => {
-    Alert.alert('Change Photo', 'Choose an option', [
-      { text: 'Take Photo', onPress: () => pickImage(true) },
-      { text: 'Choose from Gallery', onPress: () => pickImage(false) },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
+    setShowImagePicker(true);
   };
 
   return (
@@ -93,6 +103,12 @@ const PersonalInformationScreen = () => {
             <ProfileInput label="Date of Birth" value={dob} editable={false} rightIcon="calendar-outline" />
           </TouchableOpacity>
           <DatePickerModal visible={showDobPicker} value={dob} onSelect={setDob} onClose={() => setShowDobPicker(false)} />
+          <ImagePickerModal
+            visible={showImagePicker}
+            onClose={() => setShowImagePicker(false)}
+            onTakePhoto={() => pickImage(true)}
+            onChooseFromGallery={() => pickImage(false)}
+          />
 
           <GenderSelector value={gender} options={genderOptions} onChange={setGender} />
           <LanguageSelector value={language} onChange={setLanguage} />

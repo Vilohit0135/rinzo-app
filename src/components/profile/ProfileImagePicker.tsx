@@ -23,7 +23,9 @@ const ProfileImagePicker = ({ imageSource, onPress }: ProfileImagePickerProps) =
           <Ionicons name="camera" size={14} color="#FFFFFF" />
         </TouchableOpacity>
       </View>
-      <Text style={styles.changeText}>Change photo</Text>
+      <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
+        <Text style={styles.changeText}>Change photo</Text>
+      </TouchableOpacity>
     </View>
   );
 };

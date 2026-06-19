@@ -46,18 +46,20 @@ const SearchScreen = () => {
   const [activeFilter, setActiveFilter] = useState('');
   const [showFilter, setShowFilter] = useState(false);
   const [activeFilters, setActiveFilters] = useState<FilterState>({
-    sortBy: 'relevance',
+    sortBy: 'distance',
     serviceTypes: [],
     ratings: [],
     availability: [],
+    priceRange: '',
   });
 
   const activeFilterCount = useMemo(() => {
     let count = 0;
-    if (activeFilters.sortBy !== 'relevance') count++;
+    if (activeFilters.sortBy !== 'distance') count++;
     count += activeFilters.serviceTypes.length;
     count += activeFilters.ratings.length;
     count += activeFilters.availability.length;
+    if (activeFilters.priceRange) count++;
     return count;
   }, [activeFilters]);
 
@@ -124,6 +126,17 @@ const SearchScreen = () => {
           )
         )
       );
+    }
+
+    if (activeFilters.priceRange) {
+      results = results.filter((item) => {
+        const priceNum = parseInt(item.price.replace(/[^0-9]/g, ''), 10);
+        if (isNaN(priceNum)) return true;
+        if (activeFilters.priceRange === 'under30') return priceNum < 30;
+        if (activeFilters.priceRange === '30to50') return priceNum >= 30 && priceNum <= 50;
+        if (activeFilters.priceRange === 'above50') return priceNum > 50;
+        return true;
+      });
     }
 
     return results;
