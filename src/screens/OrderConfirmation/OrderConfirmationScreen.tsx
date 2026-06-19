@@ -127,7 +127,7 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
       ])
     ).start();
 
-    // spring checkmark pop
+    // spring checkmark pop (snappy and normal)
     Animated.spring(scaleAnim, {
       toValue: 1,
       friction: 5,
@@ -135,56 +135,66 @@ const OrderConfirmationScreen = ({ navigation }: Props) => {
       useNativeDriver: true,
     }).start();
 
-    // ripple ring waves
-    Animated.parallel([
-      Animated.sequence([
-        Animated.delay(100),
-        Animated.parallel([
-          Animated.timing(ring1Scale, {
-            toValue: 1.45,
-            duration: 900,
-            useNativeDriver: true,
-          }),
+    // ripple ring waves (loops continuously at normal speed)
+    Animated.loop(
+      Animated.parallel([
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(ring1Scale, { toValue: 0.3, duration: 0, useNativeDriver: true }),
+            Animated.timing(ring1Opacity, { toValue: 0, duration: 0, useNativeDriver: true }),
+          ]),
+          Animated.delay(100),
+          Animated.parallel([
+            Animated.timing(ring1Scale, {
+              toValue: 1.45,
+              duration: 1000,
+              useNativeDriver: true,
+            }),
+            Animated.timing(ring1Opacity, {
+              toValue: 0.5,
+              duration: 250,
+              useNativeDriver: true,
+            }),
+          ]),
           Animated.timing(ring1Opacity, {
-            toValue: 0.5,
-            duration: 200,
+            toValue: 0,
+            duration: 750,
             useNativeDriver: true,
           }),
         ]),
-        Animated.timing(ring1Opacity, {
-          toValue: 0,
-          duration: 700,
-          useNativeDriver: true,
-        }),
-      ]),
-      Animated.sequence([
-        Animated.delay(300),
-        Animated.parallel([
-          Animated.timing(ring2Scale, {
-            toValue: 1.6,
-            duration: 900,
-            useNativeDriver: true,
-          }),
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(ring2Scale, { toValue: 0.3, duration: 0, useNativeDriver: true }),
+            Animated.timing(ring2Opacity, { toValue: 0, duration: 0, useNativeDriver: true }),
+          ]),
+          Animated.delay(400),
+          Animated.parallel([
+            Animated.timing(ring2Scale, {
+              toValue: 1.6,
+              duration: 1000,
+              useNativeDriver: true,
+            }),
+            Animated.timing(ring2Opacity, {
+              toValue: 0.35,
+              duration: 250,
+              useNativeDriver: true,
+            }),
+          ]),
           Animated.timing(ring2Opacity, {
-            toValue: 0.35,
-            duration: 200,
+            toValue: 0,
+            duration: 750,
             useNativeDriver: true,
           }),
         ]),
-        Animated.timing(ring2Opacity, {
-          toValue: 0,
-          duration: 700,
-          useNativeDriver: true,
-        }),
-      ]),
-    ]).start();
+      ])
+    ).start();
 
-    // Checkmark draw animation
+    // Checkmark draw animation (starts drawing right after pop, draws smoothly over 1.2 seconds)
     Animated.sequence([
       Animated.delay(300),
       Animated.timing(tickDrawAnim, {
         toValue: 1,
-        duration: 350,
+        duration: 1200,
         useNativeDriver: true,
       }),
     ]).start();

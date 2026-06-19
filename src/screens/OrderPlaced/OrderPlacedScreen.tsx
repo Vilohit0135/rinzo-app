@@ -177,8 +177,11 @@ const styles = StyleSheet.create({
     marginTop: verticalScale(30),
     width: scale(260),
     height: scale(260),
+    borderRadius: scale(130),
+    backgroundColor: '#E2F2FE',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   illustration: {
     width: '100%',
