@@ -16,7 +16,7 @@ import CheckoutButton from '../../components/cart/CheckoutButton';
 import CartHeader from '../../components/cart/CartHeader';
 import EmptyCartState from '../../components/cart/EmptyCartState';
 import { COLORS } from '../../constants/colors';
-import { useBookingStore, DELIVERY_CHARGE, calculateDiscount } from '../../store/bookingStore';
+import { useBookingStore, DELIVERY_CHARGE, calculateDiscount, calculateSubtotal } from '../../store/bookingStore';
 import Toast from 'react-native-toast-message';
 import { laundryItems } from '../../data/laundry/laundryData';
 import type { RootStackParamList } from '../../types/navigation';
@@ -94,15 +94,23 @@ const YourCartScreen = () => {
     () =>
       storeServices
         .filter((s) => s.quantity > 0)
-        .map((s) => ({
-          id: s.id,
-          name: s.title,
-          price: `₹${s.unitPrice}/${s.unit}`,
-          quantity: `${s.quantity} ${s.unit === 'Kg' ? 'kg' : 'itm'}`,
-          total: s.quantity * s.unitPrice,
-          icon: serviceIcons[s.id] || 'shirt-outline',
-        })),
-    [storeServices]
+        .map((s) => {
+          const isItemBased = s.unit !== 'Kg';
+          let total = s.quantity * s.unitPrice;
+          if (isItemBased) {
+            const serviceClothes = clothesSummary[s.id] || [];
+            total = serviceClothes.reduce((sum, item) => sum + item.quantity * (item.unitPrice || s.unitPrice), 0);
+          }
+          return {
+            id: s.id,
+            name: s.title,
+            price: isItemBased ? 'Item rates' : `₹${s.unitPrice}/${s.unit}`,
+            quantity: `${s.quantity} ${s.unit === 'Kg' ? 'kg' : 'itm'}`,
+            total,
+            icon: serviceIcons[s.id] || 'shirt-outline',
+          };
+        }),
+    [storeServices, clothesSummary]
   );
 
   const handleClothesQuantity = (name: string, qty: number) => {
@@ -110,8 +118,8 @@ const YourCartScreen = () => {
   };
 
   const subtotal = useMemo(
-    () => storeServices.reduce((sum, s) => sum + s.quantity * s.unitPrice, 0),
-    [storeServices]
+    () => calculateSubtotal(storeServices, clothesSummary),
+    [storeServices, clothesSummary]
   );
 
   const discountValue = useMemo(() => {

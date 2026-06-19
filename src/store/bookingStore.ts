@@ -12,6 +12,25 @@ export interface ServiceSelection {
 
 export const DELIVERY_CHARGE = 20;
 
+export const calculateSubtotal = (
+  services: ServiceSelection[],
+  clothesSummary: Record<string, { name: string; quantity: number; unitPrice?: number }[]>
+): number => {
+  let sum = 0;
+  services.forEach((s) => {
+    if (s.quantity > 0) {
+      if (s.unit === 'Kg') {
+        sum += s.quantity * s.unitPrice;
+      } else {
+        const serviceClothes = clothesSummary[s.id] || [];
+        sum += serviceClothes.reduce((sub, item) => sub + item.quantity * (item.unitPrice || s.unitPrice), 0);
+      }
+    }
+  });
+  return sum;
+};
+
+
 export const calculateDiscount = (
   couponCode: string | null,
   subtotal: number,
@@ -96,7 +115,7 @@ interface BookingState {
   orderId: string;
   totalAmount: number;
   appliedCoupon: string | null;
-  clothesSummary: Record<string, { name: string; quantity: number }[]>;
+  clothesSummary: Record<string, { name: string; quantity: number; unitPrice?: number }[]>;
   setServices: (services: ServiceSelection[]) => void;
   updateQuantity: (id: string, quantity: number) => void;
   setInstructions: (text: string) => void;
@@ -112,8 +131,8 @@ interface BookingState {
   setOrderId: (id: string) => void;
   setTotalAmount: (amount: number) => void;
   setAppliedCoupon: (coupon: string | null) => void;
-  setClothesSummary: (clothes: Record<string, { name: string; quantity: number }[]>) => void;
-  setServiceClothes: (serviceId: string, clothes: { name: string; quantity: number }[]) => void;
+  setClothesSummary: (clothes: Record<string, { name: string; quantity: number; unitPrice?: number }[]>) => void;
+  setServiceClothes: (serviceId: string, clothes: { name: string; quantity: number; unitPrice?: number }[]) => void;
   updateClothesQuantity: (name: string, quantity: number) => void;
   clear: () => void;
 }

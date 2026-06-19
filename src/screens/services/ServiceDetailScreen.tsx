@@ -19,7 +19,7 @@ import { allServices } from '../../data/services/servicesData';
 import { garmentItems } from '../../data/services/itemsData';
 import { useTabBar } from '../../utils/TabBarContext';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
-import { useBookingStore } from '../../store/bookingStore';
+import { useBookingStore, calculateSubtotal } from '../../store/bookingStore';
 
 type ServiceDetailRouteProp = RouteProp<RootStackParamList, 'ServiceDetail'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
@@ -34,8 +34,9 @@ const ServiceDetailScreen = () => {
   const clothesSummary = useBookingStore((s) => s.clothesSummary);
   const updateStoreQuantity = useBookingStore((s) => s.updateQuantity);
   const setServiceClothes = useBookingStore((s) => s.setServiceClothes);
+  const clearStore = useBookingStore((s) => s.clear);
 
-  const [activeToggle, setActiveToggle] = useState<'item' | 'kg'>('kg');
+  const [activeToggle, setActiveToggle] = useState<'item' | 'kg'>('item');
   const [activeCategory, setActiveCategory] = useState<'Men' | 'Women' | 'Household' | 'Kids'>('Men');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -43,19 +44,20 @@ const ServiceDetailScreen = () => {
   useEffect(() => {
     if (serviceTitle) {
       const titleLower = serviceTitle.toLowerCase();
-      if (titleLower.includes('iron only') || titleLower.includes('dry clean') || titleLower.includes('specialized')) {
-        setActiveToggle('item');
-        if (titleLower.includes('household')) {
-          setActiveCategory('Household');
-        } else if (titleLower.includes('kids')) {
-          setActiveCategory('Kids');
-        } else if (titleLower.includes('women')) {
-          setActiveCategory('Women');
-        } else {
-          setActiveCategory('Men');
-        }
-      } else {
+      if (titleLower.includes('per kg') || titleLower.includes('weight') || titleLower.includes('fold')) {
         setActiveToggle('kg');
+      } else {
+        setActiveToggle('item');
+      }
+      
+      if (titleLower.includes('household')) {
+        setActiveCategory('Household');
+      } else if (titleLower.includes('kids')) {
+        setActiveCategory('Kids');
+      } else if (titleLower.includes('women')) {
+        setActiveCategory('Women');
+      } else {
+        setActiveCategory('Men');
       }
     }
   }, [serviceTitle]);
@@ -83,8 +85,8 @@ const ServiceDetailScreen = () => {
     };
   }, [setTabBarVisible]);
 
-  // Subtotal and added items computation
-  const subtotal = storeServices.reduce((sum, s) => sum + s.quantity * s.unitPrice, 0);
+  // Subtotal and added items computation using helper
+  const subtotal = calculateSubtotal(storeServices, clothesSummary);
   const totalItemsCount = storeServices.reduce((sum, s) => sum + s.quantity, 0);
 
   // List of weight-based services
@@ -130,7 +132,7 @@ const ServiceDetailScreen = () => {
         currentClothes[itemIndex] = { ...currentClothes[itemIndex], quantity: nextQty };
       }
     } else if (diff > 0) {
-      currentClothes.push({ name: garment.name, quantity: diff });
+      currentClothes.push({ name: garment.name, quantity: diff, unitPrice: garment.price });
     }
 
     // Set new clothes checklist and update total service quantity
@@ -141,6 +143,25 @@ const ServiceDetailScreen = () => {
 
   const handleViewCart = () => {
     navigation.navigate('OrdersTab' as any, { screen: 'YourCart' });
+  };
+
+  const handleClearCart = () => {
+    clearStore();
+  };
+
+  // Dynamic banner copy for weight-based category tabs
+  const getWeightBannerDesc = () => {
+    switch (activeCategory) {
+      case 'Women':
+        return "Perfect for Women's daily wear. Wash, dry, and fold at unbeatable rates per kilogram.";
+      case 'Household':
+        return "Perfect for blankets, sheets & household items. Wash, dry, and fold at unbeatable rates per kilogram.";
+      case 'Kids':
+        return "Perfect for kids' delicate clothes. Wash, dry, and fold at unbeatable rates per kilogram.";
+      case 'Men':
+      default:
+        return "Perfect for Men's daily wear. Wash, dry, and fold at unbeatable rates per kilogram.";
+    }
   };
 
   return (
@@ -201,14 +222,14 @@ const ServiceDetailScreen = () => {
             activeOpacity={0.85}
           >
             <Text style={[styles.toggleText, activeToggle === 'kg' && styles.toggleTextActive]} allowFontScaling={false}>
-              Service Per KG
+              Service per KG
             </Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* Category Tabs (only for Price per Item) */}
-      {activeToggle === 'item' && !searchQuery && (
+      {/* Category Tabs (ALWAYS visible per user instructions) */}
+      {!searchQuery && (
         <View style={styles.categoryContainer}>
           {['Men', 'Women', 'Household', 'Kids'].map((cat) => (
             <TouchableOpacity
@@ -228,20 +249,17 @@ const ServiceDetailScreen = () => {
 
       <ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={[
-          styles.scrollContent,
-          activeToggle === 'item' && styles.scrollContentItem,
-        ]}
+        contentContainerStyle={styles.scrollContent}
       >
-        {/* Hero Banner (only for Service Per KG) */}
-        {activeToggle === 'kg' && (
+        {/* Banner Segment */}
+        {activeToggle === 'kg' ? (
           <View style={styles.bannerContainer}>
             <View style={styles.bannerContent}>
               <Text style={styles.bannerTitle} allowFontScaling={false}>
                 Weight-based Laundry
               </Text>
               <Text style={styles.bannerDesc} allowFontScaling={false}>
-                Perfect for daily wear. Wash, dry, and fold at unbeatable rates per kilogram.
+                {getWeightBannerDesc()}
               </Text>
             </View>
             <Image
@@ -249,6 +267,26 @@ const ServiceDetailScreen = () => {
               style={styles.bannerImage}
               resizeMode="contain"
             />
+          </View>
+        ) : (
+          <View style={styles.dryCleanBannerContainer}>
+            <Image
+              source={require('../../../assets/images/service/dry-clean-banner.png')}
+              style={styles.dryCleanBannerBg}
+              resizeMode="cover"
+            />
+            <View style={styles.dryCleanBannerOverlay} />
+            <View style={styles.dryCleanBannerContent}>
+              <View style={styles.flashBadge}>
+                <Text style={styles.flashBadgeText} allowFontScaling={false}>FLASH SALE</Text>
+              </View>
+              <Text style={styles.dryCleanTitle} allowFontScaling={false}>
+                Premium Dry Clean
+              </Text>
+              <Text style={styles.dryCleanDesc} allowFontScaling={false}>
+                20% off on all Silk items
+              </Text>
+            </View>
           </View>
         )}
 
@@ -289,7 +327,7 @@ const ServiceDetailScreen = () => {
                       activeOpacity={0.8}
                       onPress={() => handleWeightQuantityChange(service.id, 1)}
                     >
-                      <Ionicons name="add" size={20} color="#FFFFFF" />
+                      <Ionicons name="add" size={20} color="#7C4DFF" />
                     </TouchableOpacity>
                   ) : (
                     <View style={styles.counterPill}>
@@ -329,39 +367,45 @@ const ServiceDetailScreen = () => {
                       <Text style={styles.cardTitle} allowFontScaling={false}>
                         {item.name}
                       </Text>
-                      <Text style={styles.cardPrice} allowFontScaling={false}>
-                        ₹{item.price}/pc
+                      <Text style={styles.cardSubtitle} allowFontScaling={false}>
+                        {item.subtitle}
                       </Text>
                     </View>
                   </View>
+                  
+                  <View style={styles.cardRightWrap}>
+                    <Text style={styles.cardPricePerItem} allowFontScaling={false}>
+                      ₹{item.price}
+                    </Text>
 
-                  {currentQty === 0 ? (
-                    <TouchableOpacity
-                      style={styles.addBtn}
-                      activeOpacity={0.8}
-                      onPress={() => handleItemQuantityChange(item.id, 1)}
-                    >
-                      <Ionicons name="add" size={20} color="#FFFFFF" />
-                    </TouchableOpacity>
-                  ) : (
-                    <View style={styles.counterPill}>
+                    {currentQty === 0 ? (
                       <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => handleItemQuantityChange(item.id, -1)}
-                      >
-                        <Ionicons name="remove" size={16} color="#7C4DFF" />
-                      </TouchableOpacity>
-                      <Text style={styles.counterValue} allowFontScaling={false}>
-                        {currentQty}
-                      </Text>
-                      <TouchableOpacity
-                        activeOpacity={0.7}
+                        style={styles.addBtn}
+                        activeOpacity={0.8}
                         onPress={() => handleItemQuantityChange(item.id, 1)}
                       >
-                        <Ionicons name="add" size={16} color="#7C4DFF" />
+                        <Ionicons name="add" size={20} color="#7C4DFF" />
                       </TouchableOpacity>
-                    </View>
-                  )}
+                    ) : (
+                      <View style={styles.counterPill}>
+                        <TouchableOpacity
+                          activeOpacity={0.7}
+                          onPress={() => handleItemQuantityChange(item.id, -1)}
+                        >
+                          <Ionicons name="remove" size={16} color="#7C4DFF" />
+                        </TouchableOpacity>
+                        <Text style={styles.counterValue} allowFontScaling={false}>
+                          {currentQty}
+                        </Text>
+                        <TouchableOpacity
+                          activeOpacity={0.7}
+                          onPress={() => handleItemQuantityChange(item.id, 1)}
+                        >
+                          <Ionicons name="add" size={16} color="#7C4DFF" />
+                        </TouchableOpacity>
+                      </View>
+                    )}
+                  </View>
                 </View>
               );
             })
@@ -378,26 +422,43 @@ const ServiceDetailScreen = () => {
         )}
       </ScrollView>
 
-      {/* Floating Footer Cart Bar */}
-      <View style={styles.footer}>
-        <View style={styles.footerLeft}>
-          <Text style={styles.footerItemsText} allowFontScaling={false}>
-            {totalItemsCount} {totalItemsCount === 1 ? 'Item' : 'Items'} Added
-          </Text>
-          <Text style={styles.footerPriceText} allowFontScaling={false}>
-            ₹{subtotal.toFixed(2)}
-          </Text>
+      {/* Floating Footer Cart Bar matching Mockup */}
+      <View style={styles.footerContainer}>
+        <View style={styles.footerInner}>
+          <View style={styles.footerSummaryRow}>
+            <View style={styles.footerInfoCol}>
+              <View style={styles.basketIconWrap}>
+                <Ionicons name="basket-outline" size={20} color="#7C4DFF" />
+              </View>
+              <View style={styles.footerTextWrap}>
+                <Text style={styles.footerItemsText} allowFontScaling={false}>
+                  {totalItemsCount} {totalItemsCount === 1 ? 'Item' : 'Items'} Added
+                </Text>
+                <Text style={styles.footerSubtotalText} allowFontScaling={false}>
+                  Subtotal: ₹{subtotal}
+                </Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={handleClearCart}
+              style={styles.clearBtn}
+            >
+              <Text style={styles.clearBtnText} allowFontScaling={false}>Clear</Text>
+            </TouchableOpacity>
+          </View>
+          
+          <TouchableOpacity
+            style={styles.viewCartBtn}
+            activeOpacity={0.85}
+            onPress={handleViewCart}
+          >
+            <Text style={styles.viewCartBtnText} allowFontScaling={false}>
+              View My Cart
+            </Text>
+            <Ionicons name="arrow-forward" size={16} color="#FFFFFF" style={styles.viewCartIcon} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={styles.viewCartBtn}
-          activeOpacity={0.85}
-          onPress={handleViewCart}
-        >
-          <Text style={styles.viewCartBtnText} allowFontScaling={false}>
-            View My Cart
-          </Text>
-          <Ionicons name="chevron-forward" size={16} color="#FFFFFF" style={styles.viewCartIcon} />
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -525,10 +586,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: scale(16),
     paddingTop: verticalScale(14),
-    paddingBottom: verticalScale(110),
-  },
-  scrollContentItem: {
-    paddingTop: verticalScale(16),
+    paddingBottom: verticalScale(160), // Larger padding for the height of the dual-row footer
   },
   bannerContainer: {
     flexDirection: 'row',
@@ -565,6 +623,58 @@ const styles = StyleSheet.create({
     height: '110%',
     width: '100%',
     marginBottom: verticalScale(-15),
+  },
+  dryCleanBannerContainer: {
+    height: verticalScale(140),
+    borderRadius: moderateScale(16),
+    overflow: 'hidden',
+    position: 'relative',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  dryCleanBannerBg: {
+    width: '100%',
+    height: '100%',
+  },
+  dryCleanBannerOverlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: 'rgba(124, 77, 255, 0.25)', // slight purple overlay
+  },
+  dryCleanBannerContent: {
+    position: 'absolute',
+    left: scale(16),
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+  },
+  flashBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.22)',
+    borderRadius: moderateScale(20),
+    paddingHorizontal: scale(10),
+    paddingVertical: verticalScale(4),
+    alignSelf: 'flex-start',
+    marginBottom: verticalScale(8),
+  },
+  flashBadgeText: {
+    color: '#FFFFFF',
+    fontSize: responsiveFontSize(9.5),
+    fontWeight: '800',
+    letterSpacing: 0.5,
+  },
+  dryCleanTitle: {
+    fontSize: responsiveFontSize(20),
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  dryCleanDesc: {
+    fontSize: responsiveFontSize(13),
+    color: '#FFFFFF',
+    opacity: 0.9,
+    marginTop: verticalScale(4),
+    fontWeight: '500',
   },
   listSectionTitle: {
     fontSize: responsiveFontSize(15),
@@ -610,24 +720,35 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: '#1C1C30',
   },
+  cardSubtitle: {
+    fontSize: responsiveFontSize(12),
+    color: '#8E8E9E',
+    marginTop: verticalScale(2),
+    fontWeight: '500',
+  },
   cardPrice: {
     fontSize: responsiveFontSize(12.5),
     color: '#8E8E9E',
     marginTop: verticalScale(2),
     fontWeight: '500',
   },
+  cardRightWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: scale(12),
+  },
+  cardPricePerItem: {
+    fontSize: responsiveFontSize(14.5),
+    fontWeight: '800',
+    color: '#1C1C30',
+  },
   addBtn: {
-    backgroundColor: '#7C4DFF',
+    backgroundColor: '#EFEFF4',
     borderRadius: moderateScale(18),
     width: scale(36),
     height: scale(36),
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#7C4DFF',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 2,
   },
   counterPill: {
     flexDirection: 'row',
@@ -661,7 +782,7 @@ const styles = StyleSheet.create({
     color: '#8E8E9E',
     fontWeight: '500',
   },
-  footer: {
+  footerContainer: {
     position: 'absolute',
     bottom: 0,
     left: 0,
@@ -670,31 +791,62 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#F2F2F7',
     paddingHorizontal: scale(16),
-    paddingVertical: verticalScale(12),
+    paddingTop: verticalScale(12),
+    paddingBottom: Platform.OS === 'ios' ? verticalScale(26) : verticalScale(14),
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  footerInner: {
+    gap: verticalScale(12),
+  },
+  footerSummaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    height: verticalScale(74),
   },
-  footerLeft: {
+  footerInfoCol: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  basketIconWrap: {
+    width: scale(38),
+    height: scale(38),
+    borderRadius: scale(19),
+    backgroundColor: '#F3EEFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: scale(10),
+  },
+  footerTextWrap: {
     justifyContent: 'center',
   },
   footerItemsText: {
+    fontSize: responsiveFontSize(13.5),
+    fontWeight: '700',
+    color: '#1C1C30',
+  },
+  footerSubtotalText: {
     fontSize: responsiveFontSize(12),
     color: '#8E8E9E',
     fontWeight: '500',
+    marginTop: verticalScale(1),
   },
-  footerPriceText: {
-    fontSize: responsiveFontSize(18),
-    fontWeight: '800',
-    color: '#1C1C30',
-    marginTop: verticalScale(2),
+  clearBtn: {
+    paddingVertical: verticalScale(4),
+    paddingHorizontal: scale(8),
+  },
+  clearBtnText: {
+    color: '#7C4DFF',
+    fontSize: responsiveFontSize(14),
+    fontWeight: '700',
   },
   viewCartBtn: {
     backgroundColor: '#7C4DFF',
     borderRadius: moderateScale(10),
-    paddingHorizontal: scale(20),
-    height: verticalScale(44),
+    height: verticalScale(48),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -706,11 +858,11 @@ const styles = StyleSheet.create({
   },
   viewCartBtnText: {
     color: '#FFFFFF',
-    fontSize: responsiveFontSize(14),
+    fontSize: responsiveFontSize(15),
     fontWeight: '700',
   },
   viewCartIcon: {
-    marginLeft: scale(4),
+    marginLeft: scale(6),
   },
 });
 
