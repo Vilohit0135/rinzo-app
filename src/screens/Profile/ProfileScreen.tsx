@@ -1,24 +1,25 @@
-﻿import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, CommonActions } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import ProfileCard from '../../components/profile/ProfileCard';
 import StatsCard from '../../components/profile/StatsCard';
 import MenuSection from '../../components/profile/MenuSection';
 import LogoutButton from '../../components/profile/LogoutButton';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { profileData } from '../../data/profile/profileData';
+import { useProfileStore } from '../../store/profileStore';
 import { useAuthStore } from '../../store/authStore';
 
 type RootStackParamList = {
   Home: undefined;
   Search: undefined;
   YourCart: undefined;
-  MyOrders: undefined;
-  Favourites: undefined;
+  MyOrders: { fromProfile?: boolean } | undefined;
   MyReviews: undefined;
+  Offers: undefined;
   HelpAndSupport: undefined;
   HelpCenter: undefined;
   ContactSupport: undefined;
@@ -33,20 +34,23 @@ type RootStackParamList = {
 const ProfileScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
   const signOut = useAuthStore((s) => s.signOut);
+  const profile = useProfileStore();
 
   const handleLogout = async () => {
     await signOut();
-    navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      })
+    );
   };
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}
-      >
-        <ProfileCard {...profileData.userProfile} onPress={() => navigation.navigate('PersonalInformation')} />
+      <ScrollableScreen contentContainerStyle={styles.scroll}>
+        <ProfileCard name={profile.name} email={profile.email} imageSource={profile.profileImage} onPress={() => navigation.navigate('PersonalInformation')} />
 
         <StatsCard {...profileData.stats} />
 
@@ -66,11 +70,11 @@ const ProfileScreen = () => {
           heading={profileData.activityMenu.heading}
           items={profileData.activityMenu.items.map((item) =>
             item.title === 'Order History'
-              ? { ...item, onPress: () => navigation.navigate('MyOrders') }
-              : item.title === 'Favourites'
-              ? { ...item, onPress: () => navigation.navigate('Favourites') }
+              ? { ...item, onPress: () => navigation.navigate('MyOrders', { fromProfile: true }) }
               : item.title === 'Review and Ratings'
               ? { ...item, onPress: () => navigation.navigate('MyReviews') }
+              : item.title === 'Offers'
+              ? { ...item, onPress: () => navigation.navigate('Offers') }
               : item
           )}
         />
@@ -90,8 +94,7 @@ const ProfileScreen = () => {
         />
 
         <LogoutButton onPress={handleLogout} />
-      </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+      </ScrollableScreen>
     </SafeAreaView>
   );
 };

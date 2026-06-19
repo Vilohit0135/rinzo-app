@@ -1,6 +1,7 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from '../../constants/colors';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface PromoBannerProps {
   onClaimPress?: () => void;
@@ -14,15 +15,18 @@ const PromoBanner = ({ onClaimPress }: PromoBannerProps) => {
       end={{ x: 1, y: 1 }}
       style={styles.banner}
     >
+      <View style={styles.bgImageWrap}>
+        <Image source={require('../../../assets/images/promo.png')} style={styles.bgImage} />
+      </View>
       <View style={styles.content}>
         <View style={styles.label}>
-          <Text style={styles.labelText}>PROMO</Text>
+          <Text style={styles.labelText} allowFontScaling={false} numberOfLines={1}>PROMO</Text>
         </View>
-        <Text style={styles.title}>Get 30% Off</Text>
-        <Text style={styles.subtitle}>On your first order</Text>
+        <Text style={styles.title} allowFontScaling={false} numberOfLines={1}>Get 30% Off</Text>
+        <Text style={styles.subtitle} allowFontScaling={false} numberOfLines={1}>On your first order</Text>
       </View>
       <TouchableOpacity style={styles.button} activeOpacity={0.8} onPress={onClaimPress}>
-        <Text style={styles.buttonText}>Claim Now →</Text>
+        <Text style={styles.buttonText} allowFontScaling={false} numberOfLines={1}>Claim Now →</Text>
       </TouchableOpacity>
     </LinearGradient>
   );
@@ -30,13 +34,29 @@ const PromoBanner = ({ onClaimPress }: PromoBannerProps) => {
 
 const styles = StyleSheet.create({
   banner: {
-    height: 80,
-    borderRadius: 17,
-    padding: 14,
+    height: verticalScale(80),
+    borderRadius: moderateScale(17),
+    paddingHorizontal: scale(14),
+    paddingVertical: verticalScale(14),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     overflow: 'hidden',
+  },
+  bgImageWrap: {
+    position: 'absolute',
+    left: scale(90),
+    right: 0,
+    top: verticalScale(50),
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  bgImage: {
+    width: scale(140),
+    height: verticalScale(140),
+    resizeMode: 'contain',
+    opacity: 1,
   },
   content: {
     flex: 1,
@@ -44,38 +64,37 @@ const styles = StyleSheet.create({
   label: {
     alignSelf: 'flex-start',
     backgroundColor: COLORS.purple,
-    borderRadius: 5,
-    paddingHorizontal: 19,
-    paddingVertical: 3,
+    borderRadius: moderateScale(5),
+    paddingHorizontal: scale(19),
+    paddingVertical: verticalScale(3),
   },
   labelText: {
-    fontSize: 9,
+    fontSize: responsiveFontSize(9),
     fontWeight: '700',
     color: COLORS.white,
   },
   title: {
-    marginTop: 1,
-    fontSize: 20,
+    marginTop: verticalScale(1),
+    fontSize: responsiveFontSize(20),
     fontWeight: '700',
     color: COLORS.textPrimary,
   },
   subtitle: {
     marginTop: 0,
-    fontSize: 13,
-    fontFamily: 'Poppins',
+    fontSize: responsiveFontSize(13),
     fontWeight: '600',
     color: COLORS.textPrimary,
   },
   button: {
-    height: 29,
-    borderRadius: 12,
+    height: verticalScale(29),
+    borderRadius: moderateScale(12),
     backgroundColor: COLORS.purple,
-    paddingHorizontal: 14,
+    paddingHorizontal: scale(14),
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonText: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '700',
     color: COLORS.white,
   },

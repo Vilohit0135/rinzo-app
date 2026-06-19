@@ -1,13 +1,12 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   StyleSheet,
   Platform,
-  Dimensions,
 } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import Ionicons from "@react-native-vector-icons/ionicons/static";
@@ -15,29 +14,44 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
 import BookingStepper from '../../components/common/BookingStepper';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { useBookingStore } from '../../store/bookingStore';
+import { useAddressStore } from '../../store/addressStore';
+import AddressCard from '../../components/address/AddressCard';
+import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PickupDetails'>;
 
 const steps = ['Service', 'Address', 'Time', 'Confirm'];
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-const scale = Math.min(SCREEN_WIDTH / 390, 1.3);
-const vertScale = Math.min(SCREEN_HEIGHT / 844, 1.3);
-
-const hp = (px: number) => Math.round(px * vertScale);
-const wp = (px: number) => Math.round(px * scale);
-const fs = (px: number) => Math.round(px * Math.min(scale, 1.15));
-
 const PickupDetailsScreen = ({ navigation }: Props) => {
   const insets = useSafeAreaInsets();
   const pickupDate = useBookingStore((s) => s.pickupDate);
   const pickupTime = useBookingStore((s) => s.pickupTime);
-  const setAddress = useBookingStore((s) => s.setAddress);
+  const address = useBookingStore((s) => s.address);
+  const addressLabel = useBookingStore((s) => s.addressLabel);
+  const addressContact = useBookingStore((s) => s.addressContact);
+  const address1 = useBookingStore((s) => s.address1);
+  const address2 = useBookingStore((s) => s.address2);
+  const addresses = useAddressStore((s) => s.addresses);
+  const setAddress1 = useBookingStore((s) => s.setAddress1);
+  const setAddress2 = useBookingStore((s) => s.setAddress2);
+  const setAddressLabel = useBookingStore((s) => s.setAddressLabel);
+  const setAddressContact = useBookingStore((s) => s.setAddressContact);
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (initialized.current || addresses.length === 0) return;
+    const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
+    if (defaultAddr) {
+      setAddress1(defaultAddr.address1);
+      setAddress2(defaultAddr.address2);
+      setAddressLabel(defaultAddr.title.replace(' ( Default )', ''));
+      setAddressContact(defaultAddr.contact);
+    }
+    initialized.current = true;
+  }, [addresses]);
 
   const handleContinue = () => {
-    setAddress('221b Baker Street, Bangalore - 50001, Karnataka');
     navigation.navigate('SchedulePickup');
   };
 
@@ -45,148 +59,127 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBar style="dark" />
       <View style={styles.container}>
-        <ScrollView
+        <ScrollableScreen
           contentContainerStyle={[
             styles.scrollContent,
-            { paddingBottom: insets.bottom + 100 },
+            { paddingBottom: insets.bottom + 40 },
           ]}
-          showsVerticalScrollIndicator={false}
         >
-          <View style={[styles.header, { paddingTop: hp(14) }]}>
+          <View style={[styles.header, { paddingTop: verticalScale(14) }]}>
             <TouchableOpacity
               style={[
                 styles.backButton,
                 {
-                  width: wp(40),
-                  height: wp(40),
-                  borderRadius: wp(20),
+                  width: scale(40),
+                  height: scale(40),
+                  borderRadius: scale(20),
                 },
               ]}
               onPress={() => navigation.goBack()}
               activeOpacity={0.7}
             >
-              <Ionicons name="chevron-back" size={wp(18)} color="#B5B5B5" />
+              <Ionicons name="chevron-back" size={scale(18)} color="#B5B5B5" />
             </TouchableOpacity>
-            <Text style={[styles.headerTitle, { fontSize: fs(20) }]}>
+            <Text style={[styles.headerTitle, { fontSize: responsiveFontSize(20) }]} numberOfLines={1} allowFontScaling={false}>
               Book Pickup
             </Text>
-            <View style={{ width: wp(40) }} />
+            <View style={{ width: scale(40) }} />
           </View>
 
           <BookingStepper steps={steps} currentStep={1} />
 
-          <Text style={[styles.sectionTitle, { marginTop: hp(40), fontSize: fs(15) }]}>
+          <Text style={[styles.sectionTitle, { marginTop: verticalScale(40), fontSize: responsiveFontSize(15) }]} numberOfLines={1} allowFontScaling={false}>
             Pickup Address
           </Text>
 
-          <View
-            style={[
-              styles.addressCard,
-              {
-                marginTop: hp(16),
-                borderRadius: wp(18),
-                padding: wp(16),
-              },
-            ]}
-          >
-            <Text style={[styles.addressTitle, { fontSize: fs(14), marginBottom: hp(6) }]}>
-              221b Baker Street
-            </Text>
-            <Text style={[styles.addressLine, { fontSize: fs(12) }]}>
-              Bangalore - 50001 , Karnataka
-            </Text>
-
-            <View style={[styles.divider, { marginVertical: hp(8) }]} />
-
-            <View style={styles.homeRow}>
-              <View style={styles.homeLeft}>
-                <Text style={[styles.homeLabel, { fontSize: fs(14) }]}>Home</Text>
-                <Text style={[styles.homeContact, { fontSize: fs(12) }]}>
-                  MS Mira Sharma - 9875263167
-                </Text>
-              </View>
-              <TouchableOpacity activeOpacity={0.7}>
-                <Text style={[styles.changeText, { fontSize: fs(14) }]}>Change</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={[styles.divider, { marginVertical: hp(8) }]} />
-
+          <View style={styles.addressCardContainer}>
+            <AddressCard
+              title={addressLabel}
+              address1={address1}
+              address2={address2}
+              contact={addressContact}
+              onSelect={() => navigation.navigate('SavedAddress', { selectMode: true })}
+            />
+            <TouchableOpacity style={styles.changeRow} activeOpacity={0.7} onPress={() => navigation.navigate('SavedAddress', { selectMode: true })}>
+              <Text style={styles.changeText}>Change</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.addAddressRow} activeOpacity={0.7} onPress={() => navigation.navigate('AddAddressDetails')}>
-              <Ionicons name="add-circle-outline" size={wp(20)} color="#8B5CF6" />
-              <Text style={[styles.addAddressText, { fontSize: fs(14) }]}>
-                Add New Address
-              </Text>
+              <Ionicons name="add-circle-outline" size={scale(20)} color="#8B5CF6" />
+              <Text style={styles.addAddressText}>Add New Address</Text>
             </TouchableOpacity>
           </View>
 
-          <Text style={[styles.fieldSectionTitle, { marginTop: hp(18), fontSize: fs(15) }]}>
+          <Text style={[styles.fieldSectionTitle, { marginTop: verticalScale(18), fontSize: responsiveFontSize(15) }]} numberOfLines={1} allowFontScaling={false}>
             Pickup Date
           </Text>
 
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => navigation.navigate('SchedulePickup')}
-            style={[
-              styles.fieldCard,
-              {
-                marginTop: hp(10),
-                height: hp(44),
-                borderRadius: wp(16),
-                paddingHorizontal: wp(16),
-              },
-            ]}
-          >
-            <View style={styles.fieldRow}>
-              <Text
-                style={[
-                  styles.fieldText,
-                  { fontSize: fs(12), color: pickupDate ? '#1D1D1F' : '#B8B8B8' },
-                ]}
-              >
-                {pickupDate || 'Select pickup date'}
-              </Text>
-              <Ionicons name="chevron-forward" size={wp(14)} color="#B8B8B8" />
-            </View>
-          </TouchableOpacity>
+              style={[
+                styles.fieldCard,
+                {
+                  marginTop: verticalScale(10),
+                  height: verticalScale(44),
+                  borderRadius: scale(16),
+                  paddingHorizontal: scale(16),
+                },
+              ]}
+            >
+              <View style={styles.fieldRow}>
+                <Text
+                  style={[
+                    styles.fieldText,
+                    { fontSize: responsiveFontSize(12), color: pickupDate ? '#1D1D1F' : '#B8B8B8' },
+                  ]}
+                  numberOfLines={1}
+                  allowFontScaling={false}
+                >
+                  {pickupDate || 'Select pickup date'}
+                </Text>
+                <Ionicons name="chevron-forward" size={scale(14)} color="#B8B8B8" />
+              </View>
+            </TouchableOpacity>
 
-          <Text style={[styles.fieldSectionTitle, { marginTop: hp(14), fontSize: fs(15) }]}>
-            Pickup Time
-          </Text>
+            <Text style={[styles.fieldSectionTitle, { marginTop: verticalScale(14), fontSize: responsiveFontSize(15) }]} numberOfLines={1} allowFontScaling={false}>
+              Pickup Time
+            </Text>
 
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => navigation.navigate('SchedulePickup')}
-            style={[
-              styles.fieldCard,
-              {
-                marginTop: hp(10),
-                height: hp(44),
-                borderRadius: wp(16),
-                paddingHorizontal: wp(16),
-              },
-            ]}
-          >
-            <View style={styles.fieldRow}>
-              <Text
-                style={[
-                  styles.fieldText,
-                  { fontSize: fs(12), color: pickupTime ? '#1D1D1F' : '#B8B8B8' },
-                ]}
-              >
-                {pickupTime || 'Select pickup time'}
-              </Text>
-              <Ionicons name="chevron-forward" size={wp(14)} color="#B8B8B8" />
-            </View>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.navigate('SchedulePickup')}
+              style={[
+                styles.fieldCard,
+                {
+                  marginTop: verticalScale(10),
+                  height: verticalScale(44),
+                  borderRadius: scale(16),
+                  paddingHorizontal: scale(16),
+                },
+              ]}
+            >
+              <View style={styles.fieldRow}>
+                <Text
+                  style={[
+                    styles.fieldText,
+                    { fontSize: responsiveFontSize(12), color: pickupTime ? '#1D1D1F' : '#B8B8B8' },
+                  ]}
+                  numberOfLines={1}
+                  allowFontScaling={false}
+                >
+                  {pickupTime || 'Select pickup time'}
+                </Text>
+                <Ionicons name="chevron-forward" size={scale(14)} color="#B8B8B8" />
+              </View>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={[
               styles.continueButton,
               {
-                marginTop: hp(45),
-                marginBottom: hp(20),
-                height: hp(38),
+                marginTop: verticalScale(45),
+                marginBottom: verticalScale(20),
+                height: verticalScale(38),
               },
             ]}
             activeOpacity={0.8}
@@ -198,24 +191,17 @@ const PickupDetailsScreen = ({ navigation }: Props) => {
               end={{ x: 1, y: 0 }}
               style={[
                 styles.continueGradient,
-                { borderRadius: hp(24) },
+                { borderRadius: verticalScale(24) },
               ]}
             >
-              <Text style={[styles.continueText, { fontSize: fs(14) }]}>
+              <Text style={[styles.continueText, { fontSize: responsiveFontSize(14) }]} numberOfLines={1} allowFontScaling={false}>
                 Continue
               </Text>
             </LinearGradient>
           </TouchableOpacity>
-        </ScrollView>
+        </ScrollableScreen>
 
-        <BottomTabBar
-          activeTab="Home"
-          onTabPress={(tab) => {
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Orders') navigation.navigate('YourCart');
-            if (tab === 'Profile') navigation.navigate('Profile');
-          }}
-        />
+
       </View>
     </SafeAreaView>
   );
@@ -249,58 +235,15 @@ const styles = StyleSheet.create({
     color: '#22223B',
   },
 
-  addressCard: {
-    width: '92%',
-    height: hp(170),
-    alignSelf: 'center',
-    backgroundColor: '#FFFFFF',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
-      },
-      android: {
-        elevation: 1,
-      },
-    }),
+  addressCardContainer: {
+    marginTop: verticalScale(16),
   },
-  addressTitle: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1D1D1F',
-  },
-  addressLine: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#9A9A9A',
-  },
-
-  divider: {
-    height: 1,
-    backgroundColor: '#E5E5E5',
-  },
-
-  homeRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-  },
-  homeLeft: {
-    flex: 1,
-  },
-  homeLabel: {
-    fontWeight: '700',
-    color: '#1D1D1F',
-    marginBottom: 2,
-    fontSize: 14,
-  },
-  homeContact: {
-    fontWeight: '500',
-    color: '#9E9E9E',
-    fontSize: 14,
+  changeRow: {
+    marginLeft: 24,
+    marginTop: verticalScale(8),
   },
   changeText: {
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#8259D2',
   },
@@ -308,10 +251,13 @@ const styles = StyleSheet.create({
   addAddressRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: wp(10),
-    paddingVertical: hp(8),
+    marginLeft: 24,
+    marginTop: verticalScale(6),
+    gap: scale(10),
+    paddingVertical: verticalScale(8),
   },
   addAddressText: {
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#8259D2',
   },

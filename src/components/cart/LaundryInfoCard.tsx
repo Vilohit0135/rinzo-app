@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface LaundryInfoCardProps {
   name: string;
@@ -7,12 +8,23 @@ interface LaundryInfoCardProps {
   reviews: number;
   distance: string;
   price: string;
+  imageSource?: any;
+  onPress?: () => void;
 }
 
-const LaundryInfoCard = ({ name, rating, reviews, distance, price }: LaundryInfoCardProps) => {
+const LaundryInfoCard = ({ name, rating, reviews, distance, price, imageSource, onPress }: LaundryInfoCardProps) => {
   return (
-    <View style={styles.card}>
-      <View style={styles.thumbnail} />
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={onPress ? 0.7 : 1}
+      onPress={onPress}
+      disabled={!onPress}
+    >
+      {imageSource ? (
+        <Image source={imageSource} style={styles.thumbnailImage} />
+      ) : (
+        <View style={styles.thumbnail} />
+      )}
       <View style={styles.content}>
         <View style={styles.row1}>
           <Text style={styles.name} numberOfLines={1}>{name}</Text>
@@ -30,77 +42,83 @@ const LaundryInfoCard = ({ name, rating, reviews, distance, price }: LaundryInfo
           <Text style={styles.price}>{price}</Text>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    height: 96,
-    top: 15,
+    height: verticalScale(96),
+    top: verticalScale(15),
     backgroundColor: '#FFFFFF',
-    borderRadius: 20,
+    borderRadius: moderateScale(20),
     borderWidth: 1,
     borderColor: '#EFEAFB',
-    padding: 12,
+    padding: scale(12),
     flexDirection: 'row',
     alignItems: 'center',
   },
   thumbnail: {
-    width: 62,
-    height: 62,
-    borderRadius: 12,
+    width: scale(62),
+    height: verticalScale(62),
+    borderRadius: moderateScale(12),
     backgroundColor: '#F1ECFF',
+  },
+  thumbnailImage: {
+    width: scale(62),
+    height: verticalScale(62),
+    borderRadius: moderateScale(12),
+    resizeMode: 'cover',
   },
   content: {
     flex: 1,
-    paddingLeft: 12,
+    paddingLeft: scale(12),
   },
   row1: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 22,
+    height: verticalScale(22),
   },
   name: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#1E1E2D',
   },
   ratingGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginLeft: 8,
-    gap: 4,
+    marginLeft: scale(8),
+    gap: scale(4),
   },
   rating: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
     color: '#1E1E2D',
   },
   reviews: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     color: '#A1A1B5',
   },
   row2: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 4,
+    marginTop: verticalScale(4),
   },
   locationGroup: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: scale(4),
   },
   distance: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     color: '#8D8DAD',
   },
   price: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     fontWeight: '700',
-    color: '#6C4DFF',
-    marginLeft: 12,
+    color: '#331970',
+    marginLeft: scale(12),
   },
 });
 

@@ -1,9 +1,11 @@
-﻿import { useMemo } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, Text, View } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { scale, verticalScale, responsiveFontSize } from '../../utils/responsive';
 import LaundryInfoCard from '../../components/cart/LaundryInfoCard';
 import ServicesCard from '../../components/cart/ServicesCard';
 import ClothesSummaryCard from '../../components/cart/ClothesSummaryCard';
@@ -13,17 +15,17 @@ import PriceSummary from '../../components/cart/PriceSummary';
 import CheckoutButton from '../../components/cart/CheckoutButton';
 import CartHeader from '../../components/cart/CartHeader';
 import EmptyCartState from '../../components/cart/EmptyCartState';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
-import { cartData } from '../../data/cart/cartData';
-import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from '../../store/bookingStore';
+import { useBookingStore, DELIVERY_CHARGE, calculateDiscount } from '../../store/bookingStore';
+import Toast from 'react-native-toast-message';
+import { laundryItems } from '../../data/laundry/laundryData';
+import type { RootStackParamList } from '../../types/navigation';
 
-type RootStackParamList = {
-  Home: undefined;
-  Search: undefined;
-  YourCart: undefined;
-  MyOrders: undefined;
-  Profile: undefined;
+const serviceImageMap: Record<string, any> = {
+  'Wash & Fold': require('../../../assets/images/Home/wash-fold.png'),
+  'Wash and Fold': require('../../../assets/images/Home/wash-fold.png'),
+  'Iron Only': require('../../../assets/images/Home/iron-only.png'),
+  'Dry Clean': require('../../../assets/images/Home/dry-only.png'),
 };
 
 const serviceIcons: Record<string, string> = {
@@ -35,9 +37,56 @@ const serviceIcons: Record<string, string> = {
 const YourCartScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'YourCart'>>();
   const storeServices = useBookingStore((s) => s.services);
+  const updateQuantity = useBookingStore((s) => s.updateQuantity);
   const address = useBookingStore((s) => s.address);
   const pickupDate = useBookingStore((s) => s.pickupDate);
   const pickupTime = useBookingStore((s) => s.pickupTime);
+  const appliedCoupon = useBookingStore((s) => s.appliedCoupon);
+  const setAppliedCoupon = useBookingStore((s) => s.setAppliedCoupon);
+
+  // Read active laundry details from store
+  const selectedLaundryId = useBookingStore((s) => s.selectedLaundryId);
+  const laundryName = useBookingStore((s) => s.laundryName);
+  const laundryRating = useBookingStore((s) => s.laundryRating);
+  const laundryReviews = useBookingStore((s) => s.laundryReviews);
+  const laundryDistance = useBookingStore((s) => s.laundryDistance);
+  const laundryPrice = useBookingStore((s) => s.laundryPrice);
+
+  // Read clothes summary checklist from store (aggregated per active service)
+  const clothesSummary = useBookingStore((s) => s.clothesSummary);
+  const activeServices = useMemo(() => storeServices.filter((s) => s.quantity > 0), [storeServices]);
+
+  const clothes = useMemo(() => {
+    const map: Record<string, number> = {};
+    const defaultNames = ['Shirts', 'Pants', 'T-Shirts', 'Bedsheets'];
+    defaultNames.forEach((name) => {
+      map[name] = 0;
+    });
+
+    activeServices.forEach((service) => {
+      const serviceClothes = clothesSummary[service.id] || [];
+      serviceClothes.forEach((item) => {
+        map[item.name] = (map[item.name] || 0) + item.quantity;
+      });
+    });
+
+    return Object.entries(map).map(([name, quantity]) => ({
+      name,
+      quantity,
+    }));
+  }, [clothesSummary, activeServices]);
+
+  const updateClothesQuantity = useBookingStore((s) => s.updateClothesQuantity);
+
+  const [couponInput, setCouponInput] = useState('');
+
+  const handleLaundryCardPress = () => {
+    const laundryId = selectedLaundryId || 'krishna-laundry';
+    (navigation as any).navigate('HomeTab', {
+      screen: 'LaundryDetail',
+      params: { id: laundryId },
+    });
+  };
 
   const hasItems = storeServices.some((s) => s.quantity > 0);
 
@@ -46,25 +95,107 @@ const YourCartScreen = () => {
       storeServices
         .filter((s) => s.quantity > 0)
         .map((s) => ({
+          id: s.id,
           name: s.title,
           price: `₹${s.unitPrice}/${s.unit}`,
-          quantity: `${s.quantity} ${s.unit === 'Kg' ? 'kg' : 'items'}`,
+          quantity: `${s.quantity} ${s.unit === 'Kg' ? 'kg' : 'itm'}`,
           total: s.quantity * s.unitPrice,
           icon: serviceIcons[s.id] || 'shirt-outline',
         })),
     [storeServices]
   );
 
+  const handleClothesQuantity = (name: string, qty: number) => {
+    updateClothesQuantity(name, qty);
+  };
+
   const subtotal = useMemo(
     () => storeServices.reduce((sum, s) => sum + s.quantity * s.unitPrice, 0),
     [storeServices]
   );
 
-  const total = subtotal + DELIVERY_CHARGE - DISCOUNT;
+  const discountValue = useMemo(() => {
+    return calculateDiscount(appliedCoupon, subtotal, storeServices);
+  }, [appliedCoupon, subtotal, storeServices]);
+
+  const total = Math.max(0, subtotal + DELIVERY_CHARGE - discountValue);
 
   const pickupLabel = pickupTime
     ? `${pickupTime}${pickupDate ? `, ${pickupDate}` : ''}`
     : 'Not selected';
+
+  const handleCouponAction = () => {
+    if (appliedCoupon) {
+      setAppliedCoupon(null);
+      setCouponInput('');
+      Toast.show({
+        type: 'info',
+        text1: 'Coupon Removed',
+        text2: 'The coupon discount has been removed.',
+        position: 'bottom',
+        visibilityTime: 2000,
+      });
+    } else {
+      const code = couponInput.toUpperCase().trim();
+      if (!code) {
+        Toast.show({
+          type: 'error',
+          text1: 'Empty Code',
+          text2: 'Please enter a coupon code.',
+          position: 'bottom',
+          visibilityTime: 2000,
+        });
+        return;
+      }
+
+      const validCodes = ['323232', 'FLAT20', 'FREESHIP', 'IRON15'];
+      if (!validCodes.includes(code)) {
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Coupon',
+          text2: `"${code}" is not a valid coupon code.`,
+          position: 'bottom',
+          visibilityTime: 2000,
+        });
+        return;
+      }
+
+      const calculated = calculateDiscount(code, subtotal, storeServices);
+      if (code === 'FLAT20' && subtotal < 500) {
+        Toast.show({
+          type: 'error',
+          text1: 'Criteria Not Met',
+          text2: 'FLAT20 requires a minimum subtotal of ₹500.',
+          position: 'bottom',
+          visibilityTime: 2500,
+        });
+        return;
+      }
+
+      if (code === 'IRON15') {
+        const ironService = storeServices.find((s) => s.id === '2' || s.title.toLowerCase().includes('iron'));
+        if (!ironService || ironService.quantity === 0) {
+          Toast.show({
+            type: 'error',
+            text1: 'Criteria Not Met',
+            text2: 'IRON15 requires Iron Only services in your cart.',
+            position: 'bottom',
+            visibilityTime: 2500,
+          });
+          return;
+        }
+      }
+
+      setAppliedCoupon(code);
+      Toast.show({
+        type: 'success',
+        text1: 'Coupon Applied!',
+        text2: `Successfully applied code "${code}". Discount: ₹${calculated}`,
+        position: 'bottom',
+        visibilityTime: 2500,
+      });
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -79,30 +210,47 @@ const YourCartScreen = () => {
               subtitle="Looks like you haven't add any service yet"
             />
           ) : (
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.scroll}
-            >
-              <LaundryInfoCard {...cartData.laundryInfo} />
+<ScrollableScreen
+    contentContainerStyle={styles.scroll}
+>
+              <LaundryInfoCard
+                name={laundryName}
+                rating={laundryRating}
+                reviews={laundryReviews}
+                distance={laundryDistance}
+                price={laundryPrice}
+                imageSource={selectedLaundryId === 'royal-wash' ? require('../../../assets/images/Laundry/royal-wash.jpg') : require('../../../assets/images/Laundry/krishna-laundry.png')}
+                onPress={handleLaundryCardPress}
+              />
 
               <View style={styles.sectionServices}>
                 <Text style={styles.sectionTitle}>Services</Text>
-                <ServicesCard services={services} />
+                <ServicesCard services={services} onUpdateQuantity={updateQuantity} serviceImages={serviceImageMap} />
               </View>
 
               <View style={styles.sectionClothes}>
                 <Text style={styles.sectionTitle}>Clothes Summary</Text>
-                <ClothesSummaryCard items={cartData.clothesSummary} />
+                <ClothesSummaryCard items={clothes} onUpdateQuantity={handleClothesQuantity} />
               </View>
 
               <View style={styles.sectionPickup}>
                 <Text style={styles.sectionTitle}>Pickup Details</Text>
-                <PickupDetailsCard address={address} pickupTime={pickupLabel} />
+                <PickupDetailsCard 
+                  address={address} 
+                  pickupTime={pickupLabel} 
+                  onAddressPress={() => (navigation as any).navigate('SavedAddress', { selectMode: true })}
+                  onTimePress={() => (navigation as any).navigate('SchedulePickup')}
+                />
               </View>
 
               <View style={styles.sectionCoupon}>
                 <Text style={styles.sectionTitle}>Apply Coupon</Text>
-                <CouponSection />
+                <CouponSection 
+                  value={couponInput}
+                  onChangeText={setCouponInput}
+                  appliedCoupon={appliedCoupon}
+                  onApplyPress={handleCouponAction}
+                />
               </View>
 
               <View style={styles.sectionPricing}>
@@ -110,20 +258,23 @@ const YourCartScreen = () => {
                   pricing={{
                     subtotal,
                     deliveryCharge: DELIVERY_CHARGE,
-                    discounts: [{ label: 'Discount', value: `-₹${DISCOUNT}` }],
+                    discounts: discountValue > 0 ? [{ label: appliedCoupon ? `Discount (${appliedCoupon})` : 'Discount', value: `-₹${discountValue}` }] : [],
                     total,
                   }}
                 />
               </View>
 
               <View style={styles.checkoutWrap}>
-                <CheckoutButton />
+                  <CheckoutButton onPress={() => {
+                    console.log('Proceed to Checkout pressed, navigating to OrderSummary...');
+                    navigation.navigate('OrderSummary');
+                  }} />
               </View>
-            </ScrollView>
+            </ScrollableScreen>
           )}
         </View>
       </KeyboardAvoidingView>
-      <BottomTabBar activeTab="Orders" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate( 'Search'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
+
     </SafeAreaView>
   );
 };
@@ -135,37 +286,37 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
-    paddingHorizontal: 16,
+    paddingHorizontal: scale(16),
   },
   content: {
     flex: 1,
   },
   scroll: {
-    paddingBottom: 140,
+    paddingBottom: verticalScale(140),
   },
   sectionServices: {
-    marginTop: 24,
+    marginTop: verticalScale(24),
   },
   sectionTitle: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '700',
     color: '#20203A',
-    marginBottom: 12,
+    marginBottom: verticalScale(12),
   },
   sectionClothes: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
   sectionPickup: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
   sectionCoupon: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
   sectionPricing: {
-    marginTop: 28,
+    marginTop: verticalScale(28),
   },
   checkoutWrap: {
-    marginTop: 20,
+    marginTop: verticalScale(20),
   },
 });
 

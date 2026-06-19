@@ -1,9 +1,14 @@
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
-const CheckoutButton = () => {
+interface CheckoutButtonProps {
+  onPress: () => void;
+}
+
+const CheckoutButton = ({ onPress }: CheckoutButtonProps) => {
   return (
-    <TouchableOpacity activeOpacity={0.9}>
+    <TouchableOpacity activeOpacity={0.9} onPress={onPress} style={styles.buttonContainer}>
       <LinearGradient
         colors={['#8259D2', '#8259D2']}
         start={{ x: 0, y: 0 }}
@@ -17,14 +22,18 @@ const CheckoutButton = () => {
 };
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    height: verticalScale(50),
+    borderRadius: moderateScale(25),
+    overflow: 'hidden',
+  },
   button: {
-    height: 50,
-    borderRadius: 25,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   text: {
-    fontSize: 16,
+    fontSize: responsiveFontSize(16),
     fontWeight: '600',
     color: '#FFFFFF',
   },

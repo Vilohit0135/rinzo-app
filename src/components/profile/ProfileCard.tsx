@@ -1,16 +1,25 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
+const defaultImage = require('../../assets/images/profile.png');
+
 interface ProfileCardProps {
   name: string;
   email: string;
+  imageSource?: number | string | null;
   onPress?: () => void;
 }
 
-const ProfileCard = ({ name, email, onPress }: ProfileCardProps) => {
+const ProfileCard = ({ name, email, imageSource, onPress }: ProfileCardProps) => {
+  const source = imageSource
+    ? typeof imageSource === 'string'
+      ? { uri: imageSource }
+      : imageSource
+    : defaultImage;
+
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={onPress}>
-      <Image source={require('../../assets/images/profile.png')} style={styles.avatar} />
+      <Image source={source} style={styles.avatar} />
       <View style={styles.info}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.email}>{email}</Text>

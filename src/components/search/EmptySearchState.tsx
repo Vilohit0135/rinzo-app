@@ -1,4 +1,5 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { responsiveFontSize } from '../../utils/responsive';
 
 interface EmptySearchStateProps {
   query: string;
@@ -12,9 +13,9 @@ const EmptySearchState = ({ query }: EmptySearchStateProps) => {
         style={styles.image}
         resizeMode="contain"
       />
-      <Text style={styles.title}>No Laundries found</Text>
-      <Text style={styles.subtitle}>We couldn't find any laundry matching</Text>
-      <Text style={styles.queryText}>{`  "${query}"  `}</Text>
+      <Text style={styles.title} allowFontScaling={false} numberOfLines={1}>No Laundries found</Text>
+      <Text style={styles.subtitle} allowFontScaling={false} numberOfLines={2}>We couldn't find any laundry matching</Text>
+      <Text style={styles.queryText} allowFontScaling={false} numberOfLines={1}>{`  "${query}"  `}</Text>
     </View>
   );
 };
@@ -32,21 +33,21 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   title: {
-    fontSize: 30,
+    fontSize: responsiveFontSize(30),
     fontWeight: '700',
     color: '#111111',
     textAlign: 'center',
   },
   subtitle: {
     marginTop: 12,
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
     fontWeight: '400',
     color: '#A0A0A0',
     textAlign: 'center',
   },
   queryText: {
     marginTop: 18,
-    fontSize: 22,
+    fontSize: responsiveFontSize(22),
     fontWeight: '700',
     color: '#3E248C',
     textAlign: 'center',

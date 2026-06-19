@@ -5,7 +5,7 @@ import { StatusBar } from 'expo-status-bar';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import BottomTabBar from '../../components/home/BottomTabBar';
+import { responsiveFontSize } from '../../utils/responsive';
 
 type RootStackParamList = {
   Home: undefined;
@@ -50,16 +50,16 @@ const PaymentMethodsScreen = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <View style={styles.headerRow}>
-            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.canGoBack() ? navigation.goBack() : (navigation as any).navigate('ProfileTab', { screen: 'Profile' })} activeOpacity={0.7}>
               <Ionicons name="chevron-back" size={22} color="#BDBDBD" />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Payment methods</Text>
+            <Text style={styles.headerTitle} allowFontScaling={false}>Payment methods</Text>
           </View>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
           {/* Section 1: Saved Cards */}
-          <Text style={styles.sectionTitle}>Saved Cards</Text>
+          <Text style={styles.sectionTitle} allowFontScaling={false}>Saved Cards</Text>
 
           {savedCards.map((card, index) => (
             <TouchableOpacity
@@ -74,8 +74,8 @@ const PaymentMethodsScreen = () => {
                 resizeMode="contain"
               />
               <View style={styles.cardMiddle}>
-                <Text style={styles.cardNumber}>{card.number}</Text>
-                <Text style={styles.cardExpires}>Expire on {card.expires}</Text>
+                <Text style={styles.cardNumber} allowFontScaling={false}>{card.number}</Text>
+                <Text style={styles.cardExpires} allowFontScaling={false}>Expire on {card.expires}</Text>
               </View>
               <RadioCircle selected={selectedCard === index} />
             </TouchableOpacity>
@@ -83,11 +83,11 @@ const PaymentMethodsScreen = () => {
 
           <TouchableOpacity style={styles.outlinedBtn} activeOpacity={0.8}>
             <Ionicons name="add" size={18} color="#4C1D95" />
-            <Text style={styles.outlinedBtnText}>Add New Card</Text>
+            <Text style={styles.outlinedBtnText} allowFontScaling={false}>Add New Card</Text>
           </TouchableOpacity>
 
           {/* Section 2: UPI Accounts */}
-          <Text style={styles.sectionTitle}>UPI Accounts</Text>
+          <Text style={styles.sectionTitle} allowFontScaling={false}>UPI Accounts</Text>
 
           {upiAccounts.map((upi, index) => {
             const isSelected = selectedUpi === upi.id;
@@ -104,8 +104,8 @@ const PaymentMethodsScreen = () => {
                   resizeMode="contain"
                 />
                 <View style={styles.cardMiddle}>
-                  <Text style={styles.upiId}>{upi.upiId}</Text>
-                  <Text style={styles.upiBank}>{upi.bank}</Text>
+                  <Text style={styles.upiId} allowFontScaling={false}>{upi.upiId}</Text>
+                  <Text style={styles.upiBank} allowFontScaling={false}>{upi.bank}</Text>
                 </View>
                 <RadioCircle selected={isSelected} />
               </TouchableOpacity>
@@ -113,7 +113,7 @@ const PaymentMethodsScreen = () => {
           })}
 
           {/* Section 3: Wallets */}
-          <Text style={styles.sectionTitle}>Wallets</Text>
+          <Text style={styles.sectionTitle} allowFontScaling={false}>Wallets</Text>
 
           {wallets.map((wallet, index) => (
             <TouchableOpacity
@@ -127,8 +127,8 @@ const PaymentMethodsScreen = () => {
                 resizeMode="contain"
               />
               <View style={styles.cardMiddle}>
-                <Text style={styles.walletTitle}>{wallet.title}</Text>
-                <Text style={styles.walletSubtitle}>{wallet.subtitle}</Text>
+                <Text style={styles.walletTitle} allowFontScaling={false}>{wallet.title}</Text>
+                <Text style={styles.walletSubtitle} allowFontScaling={false}>{wallet.subtitle}</Text>
               </View>
               <Ionicons name="chevron-forward" size={16} color="#8259D2" />
             </TouchableOpacity>
@@ -136,18 +136,11 @@ const PaymentMethodsScreen = () => {
 
           <TouchableOpacity style={styles.outlinedBtn} activeOpacity={0.8}>
             <Ionicons name="add" size={18} color="#4C1D95" />
-            <Text style={styles.outlinedBtnText}>Add UPI/Wallet</Text>
+            <Text style={styles.outlinedBtnText} allowFontScaling={false}>Add UPI/Wallet</Text>
           </TouchableOpacity>
         </ScrollView>
 
-        <BottomTabBar
-          activeTab="Profile"
-          onTabPress={(tab) => {
-            if (tab === 'Home') navigation.navigate('Home');
-            if (tab === 'Search') navigation.navigate('Search');
-            if (tab === 'Orders') navigation.navigate('YourCart');
-          }}
-        />
+
       </View>
     </SafeAreaView>
   );
@@ -195,7 +188,7 @@ const styles = StyleSheet.create({
     }),
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: responsiveFontSize(18),
     fontWeight: '700',
     color: '#111111',
   },
@@ -206,7 +199,7 @@ const styles = StyleSheet.create({
   },
 
   sectionTitle: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     fontWeight: '700',
     color: '#111111',
     marginTop: 12,
@@ -237,24 +230,24 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   cardNumber: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#111111',
   },
   cardExpires: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '500',
     color: '#8A8A8A',
     marginTop: 2,
   },
 
   upiId: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#111111',
   },
   upiBank: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '500',
     color: '#8A8A8A',
     marginTop: 2,
@@ -287,12 +280,12 @@ const styles = StyleSheet.create({
   },
 
   walletTitle: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#111111',
   },
   walletSubtitle: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     fontWeight: '500',
     color: '#8A8A8A',
     marginTop: 2,
@@ -339,7 +332,7 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
   outlinedBtnText: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#4C1D95',
   },

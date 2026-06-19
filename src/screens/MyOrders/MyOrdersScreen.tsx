@@ -1,48 +1,66 @@
-﻿import { useState } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { RouteProp } from '@react-navigation/native';
 import OrdersHeader from '../../components/orders/OrdersHeader';
 import OrderFilterTabs from '../../components/orders/OrderFilterTabs';
 import OrderCard from '../../components/orders/OrderCard';
 import EmptyOrdersState from '../../components/orders/EmptyOrdersState';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
-import { ordersData } from '../../data/orders/ordersData';
-import { getLaundryById } from '../../data/laundry/laundryData';
-import { emptyOrdersData } from '../../data/orders/emptyOrdersData';
+import { useOrderStore } from '../../store/orderStore';
 
 type RootStackParamList = {
   Home: undefined;
   Search: undefined;
-  MyOrders: undefined;
+  MyOrders: { fromProfile?: boolean } | undefined;
   Profile: undefined;
+  OrderDetail: { orderId: string };
 };
 
 const MyOrdersScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'MyOrders'>>();
+  const route = useRoute<RouteProp<RootStackParamList, 'MyOrders'>>();
   const [activeFilter, setActiveFilter] = useState('All');
+  const orders = useOrderStore((s) => s.orders);
+
+  useEffect(() => {
+    if (!route.params?.fromProfile) return;
+
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+      (navigation as any).navigate('ProfileTab', { screen: 'Profile' });
+    });
+
+    return unsubscribe;
+  }, [navigation, route.params?.fromProfile]);
 
   const filteredOrders =
     activeFilter === 'All'
-      ? ordersData
-      : ordersData.filter((order) => order.status === activeFilter.toLowerCase());
+      ? orders
+      : orders.filter((order) => order.status === activeFilter.toLowerCase());
 
-  const { hasOrders, title, subtitle } = emptyOrdersData;
+  const hasOrders = orders.length > 0;
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
       <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <OrdersHeader onBackPress={() => navigation.goBack()} />
+        <OrdersHeader onBackPress={() => {
+          if (route.params?.fromProfile) {
+            (navigation as any).navigate('ProfileTab', { screen: 'Profile' });
+          } else {
+            navigation.goBack();
+          }
+        }} />
 
         {hasOrders ? (
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scroll}
-          >
+<ScrollableScreen
+    contentContainerStyle={styles.scroll}
+>
             <OrderFilterTabs
               activeFilter={activeFilter}
               onFilterChange={setActiveFilter}
@@ -54,17 +72,18 @@ const MyOrdersScreen = () => {
                 id={order.id}
                 status={order.status}
                 statusLabel={order.statusLabel}
-                laundryName={getLaundryById(order.laundryId)?.name || ''}
+                laundryName={order.laundryName}
                 date={order.date}
                 amount={order.amount}
+                onPress={() => navigation.navigate('OrderDetail', { orderId: order.id })}
               />
             ))}
-          </ScrollView>
+          </ScrollableScreen>
         ) : (
-          <EmptyOrdersState title={title} subtitle={subtitle} />
+          <EmptyOrdersState title="No Orders Yet" subtitle="Looks like you haven't placed any orders yet" />
         )}
       </KeyboardAvoidingView>
-      <BottomTabBar activeTab="Orders" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
+
     </SafeAreaView>
   );
 };

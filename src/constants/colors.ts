@@ -8,6 +8,7 @@ export const COLORS = {
   purpledarks1: '#331970',
   purplelocation:'#8259D2',
   purpleDark: '#4D2CA3',
+  brandPrice: '#331970',
   purpleLight: '#EEE8FF',
   gradientStart: '#8259D2',
   gradientEnd: '#8259D2',

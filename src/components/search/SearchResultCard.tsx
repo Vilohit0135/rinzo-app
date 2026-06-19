@@ -1,6 +1,6 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
-import { FavouriteButton } from '../favourites/FavouriteButton';
+import { responsiveFontSize } from '../../utils/responsive';
 
 interface SearchResultCardProps {
   id: string;
@@ -11,48 +11,48 @@ interface SearchResultCardProps {
   price: string;
   tags: string[];
   deliveryTime: string;
+  imageSource?: any;
   onPress?: () => void;
-  isFavourite: boolean;
-  onToggleFavourite: (id: string) => void;
 }
 
-const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, onPress, isFavourite, onToggleFavourite }: SearchResultCardProps) => {
+const SearchResultCard = ({ id, name, rating, reviewCount, distance, price, tags, deliveryTime, imageSource, onPress }: SearchResultCardProps) => {
   return (
     <TouchableOpacity activeOpacity={0.7} onPress={onPress} style={styles.card}>
-      <View style={styles.thumbnail} />
+      {imageSource ? (
+        <Image source={imageSource} style={styles.thumbnailImage} />
+      ) : (
+        <View style={styles.thumbnail} />
+      )}
       <View style={styles.content}>
         <View style={styles.topRow}>
-          <Text style={styles.name} numberOfLines={1}>{name}</Text>
+          <Text style={styles.name} numberOfLines={1} allowFontScaling={false}>{name}</Text>
           <View style={styles.ratingGroup}>
             <Ionicons name="star" size={11} color="#FFC107" />
-            <Text style={styles.rating}>{rating}</Text>
-            <Text style={styles.reviewCount}>({reviewCount})</Text>
+            <Text style={styles.rating} allowFontScaling={false}>{rating}</Text>
+            <Text style={styles.reviewCount} allowFontScaling={false}>({reviewCount})</Text>
           </View>
         </View>
 
         <View style={styles.secondRow}>
-          <Text style={styles.distance}>{distance}</Text>
-          <Text style={styles.price}>{price}</Text>
+          <View style={styles.locationGroup}>
+            <Ionicons name="location-outline" size={12} color="#8259D2" />
+            <Text style={styles.distance} allowFontScaling={false} numberOfLines={1}>{distance}</Text>
+          </View>
+          <Text style={styles.price} allowFontScaling={false} numberOfLines={1}>{price}</Text>
         </View>
 
         <View style={styles.tagsRow}>
           {tags.map((tag, index) => (
             <View key={index} style={styles.tag}>
-              <Text style={styles.tagText}>{tag}</Text>
+              <Text style={styles.tagText} allowFontScaling={false} numberOfLines={1}>{tag}</Text>
             </View>
           ))}
         </View>
 
         <View style={styles.deliveryRow}>
-          <Text style={styles.deliveryText}>🕒 Delivery by {deliveryTime}</Text>
+          <Ionicons name="time-outline" size={14} color="#8D8DAD" />
+          <Text style={styles.deliveryText} allowFontScaling={false} numberOfLines={1}> Delivery by {deliveryTime}</Text>
         </View>
-      </View>
-
-      <View style={styles.favouriteWrap}>
-        <FavouriteButton
-          isFavourite={isFavourite}
-          onPress={() => onToggleFavourite(id)}
-        />
       </View>
     </TouchableOpacity>
   );
@@ -81,6 +81,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: '#F1ECFF',
   },
+  thumbnailImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 14,
+    resizeMode: 'cover',
+  },
   content: {
     flex: 1,
     paddingLeft: 10,
@@ -92,7 +98,7 @@ const styles = StyleSheet.create({
   },
   name: {
     flexShrink: 1,
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '700',
     color: '#1E1E2D',
   },
@@ -102,12 +108,12 @@ const styles = StyleSheet.create({
     gap: 3,
   },
   rating: {
-    fontSize: 11,
+    fontSize: responsiveFontSize(11),
     fontWeight: '700',
     color: '#1E1E2D',
   },
   reviewCount: {
-    fontSize: 11,
+    fontSize: responsiveFontSize(11),
     color: '#8D8DAD',
   },
   secondRow: {
@@ -117,13 +123,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   distance: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     color: '#8D8DAD',
   },
+  locationGroup: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
   price: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
-    color: '#8259D2',
+    color: '#331970',
   },
   tagsRow: {
     marginTop: 6,
@@ -139,23 +150,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   tagText: {
-    fontSize: 10,
+    fontSize: responsiveFontSize(10),
     fontWeight: '600',
     color: '#8259D2',
   },
   deliveryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
     marginTop: 8,
   },
   deliveryText: {
-    fontSize: 12,
+    fontSize: responsiveFontSize(12),
     color: '#8D8DAD',
-  },
-  favouriteWrap: {
-    position: 'absolute',
-    bottom: 8,
-    right: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
 

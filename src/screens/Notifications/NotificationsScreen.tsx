@@ -1,36 +1,49 @@
-import { FlatList, StyleSheet } from 'react-native';
+import { useEffect } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import NotificationHeader from '../../components/notifications/NotificationHeader';
-import NotificationCard from '../../components/notifications/NotificationCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
-import { COLORS } from '../../constants/colors';
-import { notificationsData } from '../../data/notifications/notificationsData';
-
-type RootStackParamList = {
-  Home: undefined;
-  Search: undefined;
-  YourCart: undefined;
-  Profile: undefined;
-};
+import { useNotificationStore } from '../../store/notificationStore';
+import { initializeNotifications } from '../../services/notification.service';
+import type { RootStackParamList } from '../../types/navigation';
+import type { NotificationItem } from '../../types/notification.types';
+import NotificationsHeader from '../../components/notifications/NotificationsHeader';
+import NotificationList from '../../components/notifications/NotificationList';
+import NotificationsEmptyState from '../../components/notifications/NotificationsEmptyState';
 
 const NotificationsScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Home'>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const notifications = useNotificationStore((s) => s.notifications);
+  const markAllRead = useNotificationStore((s) => s.markAllRead);
+
+  useEffect(() => {
+    initializeNotifications();
+  }, []);
+
+  const handleNotificationPress = (item: NotificationItem) => {
+    (navigation as any).navigate('NotificationDetails', { notificationId: item.id });
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <NotificationHeader onBackPress={() => navigation.goBack()} />
-      <FlatList
-        data={notificationsData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <NotificationCard item={item} />}
-        contentContainerStyle={styles.list}
-        showsVerticalScrollIndicator={false}
+
+      <NotificationsHeader
+        onBackPress={() => navigation.goBack()}
+        onMarkAllRead={markAllRead}
       />
-      <BottomTabBar activeTab="Home" onTabPress={(tab) => { if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); if (tab === 'Profile') navigation.navigate('Profile'); }} />
+
+      <View style={styles.content}>
+        {notifications.length === 0 ? (
+          <NotificationsEmptyState />
+        ) : (
+          <NotificationList
+            notifications={notifications}
+            onNotificationPress={handleNotificationPress}
+          />
+        )}
+      </View>
     </SafeAreaView>
   );
 };
@@ -38,12 +51,10 @@ const NotificationsScreen = () => {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: '#F8F7FC',
   },
-  list: {
-    paddingHorizontal: 20,
-    marginTop: 20,
-    paddingBottom: 180,
+  content: {
+    flex: 1,
   },
 });
 

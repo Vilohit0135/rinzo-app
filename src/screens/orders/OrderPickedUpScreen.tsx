@@ -1,4 +1,7 @@
+import { useCallback } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
+import { useTabBar } from '../../utils/TabBarContext';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -13,6 +16,14 @@ import { orderStatusData } from '../../data/orders/orderStatusData';
 type Props = NativeStackScreenProps<RootStackParamList, 'OrderPickedUp'>;
 
 const OrderPickedUpScreen = ({ navigation }: Props) => {
+  const { setTabBarVisible } = useTabBar();
+
+  useFocusEffect(
+    useCallback(() => {
+      setTabBarVisible(false);
+    }, [])
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />

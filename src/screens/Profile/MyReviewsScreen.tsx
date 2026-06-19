@@ -1,45 +1,58 @@
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import ReviewsHeader from '../../components/reviews/ReviewsHeader';
 import ReviewCard from '../../components/reviews/ReviewCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
+import EditReviewModal from '../../components/reviews/EditReviewModal';
 import { COLORS } from '../../constants/colors';
-import { reviewsData } from '../../data/reviews/reviewsData';
-
-type RootStackParamList = {
-  Home: undefined;
-  Search: undefined;
-  YourCart: undefined;
-  Profile: undefined;
-};
+import { type ReviewItem } from '../../data/reviews/reviewsData';
+import { useReviewStore } from '../../store/reviewStore';
+import { getLaundryById } from '../../data/laundry/laundryData';
+import { RootStackParamList } from '../../types/navigation';
 
 const MyReviewsScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'MyReviews'>>();
+  const reviews = useReviewStore((s) => s.reviews);
+  const updateReview = useReviewStore((s) => s.updateReview);
+  const [editingReview, setEditingReview] = useState<ReviewItem | null>(null);
+
+  const handleEditSubmit = (rating: number, feedback: string) => {
+    updateReview(editingReview!.id, rating, feedback);
+    setEditingReview(null);
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}
-      >
+      <ScrollableScreen contentContainerStyle={styles.scroll}>
         <ReviewsHeader onBackPress={() => navigation.goBack()} />
 
         <View style={styles.listSection}>
-          {reviewsData.map((item) => (
+          {reviews.map((item) => (
             <ReviewCard
               key={item.id}
               laundryId={item.laundryId}
+              rating={item.rating}
               reviewDate={item.reviewDate}
               reviewText={item.reviewText}
+              onEditPress={() => setEditingReview(item)}
             />
           ))}
         </View>
-      </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+      </ScrollableScreen>
+
+      <EditReviewModal
+        visible={!!editingReview}
+        onClose={() => setEditingReview(null)}
+        onSubmit={handleEditSubmit}
+        initialRating={editingReview?.rating ?? 5}
+        initialFeedback={editingReview?.reviewText ?? ''}
+        laundryName={getLaundryById(editingReview?.laundryId ?? '')?.name ?? ''}
+      />
     </SafeAreaView>
   );
 };

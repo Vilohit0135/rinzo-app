@@ -1,69 +1,100 @@
-import { StyleSheet, Text, View } from 'react-native';
-import Ionicons from '@react-native-vector-icons/ionicons';
-import { NotificationItem } from '../../data/notifications/notificationsData';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { type NotificationItem } from '../../types/notification.types';
+import NotificationIcon from './NotificationIcon';
 
 interface NotificationCardProps {
   item: NotificationItem;
+  onPress: (item: NotificationItem) => void;
 }
 
-const NotificationCard = ({ item }: NotificationCardProps) => {
+function formatTime(isoDate: string): string {
+  const date = new Date(isoDate);
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  const h = hours % 12 || 12;
+  const m = minutes.toString().padStart(2, '0');
+  return `${h}:${m} ${ampm}`;
+}
+
+const NotificationCard = ({ item, onPress }: NotificationCardProps) => {
   return (
-    <View style={styles.card}>
-      <View style={styles.iconContainer}>
-        <Ionicons name={item.icon as any} size={24} color="#D0D0D0" />
+    <TouchableOpacity
+      style={styles.card}
+      activeOpacity={0.95}
+      onPress={() => onPress(item)}
+    >
+      <View style={styles.container}>
+        <NotificationIcon category={item.category} />
+        <View style={styles.content}>
+          <Text
+            style={styles.title}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            allowFontScaling={false}
+          >
+            {item.title}
+          </Text>
+          <Text
+            style={styles.message}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+            allowFontScaling={false}
+          >
+            {item.message}
+          </Text>
+        </View>
+        <Text style={styles.time} allowFontScaling={false}>
+          {formatTime(item.createdAt)}
+        </Text>
       </View>
-      <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
-        <Text style={styles.message}>{item.message}</Text>
-      </View>
-      <Text style={styles.time}>{item.time}</Text>
-    </View>
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    height: 78,
-    backgroundColor: '#FFFFFF',
+    width: '100%',
+    height: 88,
     borderRadius: 18,
+    backgroundColor: '#FFFFFF',
     paddingHorizontal: 16,
     paddingVertical: 14,
-    marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  container: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 1,
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   content: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: 10,
+    marginRight: 6,
   },
   title: {
     fontSize: 16,
-    fontWeight: '600',
-    color: '#111111',
+    fontWeight: '700',
+    color: '#000000',
+    lineHeight: 20,
   },
   message: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: '#111111',
-    marginTop: 1,
+    fontSize: 13,
+    fontWeight: '500',
+    color: '#000000',
+    lineHeight: 17,
+    marginTop: 2,
   },
   time: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: '#A5A5A5',
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#A9A9A9',
     alignSelf: 'flex-start',
+    marginTop: 1,
   },
 });
 

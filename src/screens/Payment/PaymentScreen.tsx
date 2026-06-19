@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StatusBar } from "expo-status-bar";
@@ -6,7 +6,10 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Ionicons from "@react-native-vector-icons/ionicons/static";
 import { LinearGradient } from "expo-linear-gradient";
 import { RootStackParamList } from "../../types/navigation";
-import { useBookingStore, DELIVERY_CHARGE, DISCOUNT } from "../../store/bookingStore";
+import { useBookingStore, DELIVERY_CHARGE, calculateDiscount } from "../../store/bookingStore";
+import { scale } from "../../utils/responsive";
+import { useFocusEffect } from "@react-navigation/native";
+import { useTabBar } from "../../utils/TabBarContext";
 
 interface PaymentMethod {
   id: string;
@@ -45,15 +48,43 @@ const paymentMethods: PaymentMethod[] = [
 type Props = NativeStackScreenProps<RootStackParamList, "Payment">;
 
 const PaymentScreen = ({ navigation }: Props) => {
+  const { setTabBarVisible } = useTabBar();
+
+  // Hide bottom tab bar
+  useFocusEffect(
+    useCallback(() => {
+      const timeout = setTimeout(() => {
+        setTabBarVisible(false);
+      }, 50);
+      return () => {
+        clearTimeout(timeout);
+        setTabBarVisible(true);
+      };
+    }, [setTabBarVisible])
+  );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setTabBarVisible(false);
+    }, 50);
+    return () => {
+      clearTimeout(timeout);
+      setTabBarVisible(true);
+    };
+  }, [setTabBarVisible]);
+
   const [selectedMethod, setSelectedMethod] = useState<string>("UPI");
   const services = useBookingStore((s) => s.services);
+  const appliedCoupon = useBookingStore((s) => s.appliedCoupon);
+  const setTotalAmount = useBookingStore((s) => s.setTotalAmount);
 
   const totalAmount = useMemo(() => {
     const subtotal = services
       .filter((s) => s.quantity > 0)
       .reduce((sum, s) => sum + s.quantity * s.unitPrice, 0);
-    return subtotal + DELIVERY_CHARGE - DISCOUNT;
-  }, [services]);
+    const discountValue = calculateDiscount(appliedCoupon, subtotal, services);
+    return Math.max(0, subtotal + DELIVERY_CHARGE - discountValue);
+  }, [services, appliedCoupon]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -134,7 +165,10 @@ const PaymentScreen = ({ navigation }: Props) => {
           <TouchableOpacity
             style={styles.payButton}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate("OrderConfirmation")}
+            onPress={() => {
+              setTotalAmount(totalAmount);
+              navigation.navigate("OrderConfirmation");
+            }}
           >
             <LinearGradient
               colors={["#8259D2", "#8259D2"]}
@@ -197,14 +231,14 @@ const styles = StyleSheet.create({
   },
 
   paymentList: {
-    marginTop: 10,
+    marginTop: scale(20),
     gap: 10,
     paddingHorizontal: 20,
   },
   paymentCard: {
     backgroundColor: "#FFFFFF",
     borderRadius: 14,
-    height: 60,
+    height: scale(70),
     padding: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
@@ -263,32 +297,32 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 100,
+    height: scale(120),
     backgroundColor: "#FFFFFF",
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: scale(16),
+    borderTopRightRadius: scale(24),
   },
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingTop: 12,
-    paddingHorizontal: 24,
+    paddingTop: scale(12),
+    paddingHorizontal: scale(24),
   },
   totalPayableLabel: {
-    fontSize: 15,
-    fontWeight: "700",
-    color: "#111111",
-  },
-  totalPayableAmount: {
     fontSize: 17,
     fontWeight: "700",
     color: "#111111",
   },
+  totalPayableAmount: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#331970",
+  },
   payButton: {
     marginTop: 14,
     marginHorizontal: 24,
-    height: 42,
+    height: 52,
   },
   payGradient: {
     flex: 1,
@@ -297,7 +331,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   payText: {
-    fontSize: 15,
+    fontSize: 17,
     fontWeight: "700",
     color: "#FFFFFF",
   },

@@ -12,18 +12,19 @@ export type RootStackParamList = {
   OnboardingThree: undefined;
   LocationAccess: undefined;
   Login: undefined;
+  Main: undefined;
   Home: undefined;
+  LaundryNearby: undefined;
   Search: undefined;
   YourCart: undefined;
   Profile: undefined;
-  Favourites: undefined;
   MyReviews: undefined;
   HelpCenter: undefined;
   ContactSupport: undefined;
   TermsPrivacy: undefined;
   PersonalInformation: undefined;
   PaymentMethods: undefined;
-  SavedAddress: undefined;
+  SavedAddress: { selectMode?: boolean } | undefined;
   AddAddress: undefined;
   AddAddressDetails: undefined;
   EditAddress: {
@@ -36,9 +37,13 @@ export type RootStackParamList = {
     isDefault: boolean;
   };
   LaundryDetail: { id: string };
-  MyOrders: undefined;
+  MyOrders: { fromProfile?: boolean } | undefined;
+  OrderDetail: { orderId: string };
+  OrderSummaryDelivered: { orderId: string };
   OtpVerification: { phone: string };
   Signup: undefined;
+  AllServices: { serviceId: string } | undefined;
+  ServiceDetail: { serviceId: string; serviceTitle: string };
   BookPickup: undefined;
   PickupDetails: undefined;
   SchedulePickup: undefined;
@@ -47,6 +52,10 @@ export type RootStackParamList = {
   OrderConfirmation: undefined;
   OrderPickedUp: undefined;
   OrderTracking: { from?: string } | undefined;
+  ComingSoon: { title?: string; icon?: string; subtitle?: string } | undefined;
+  LocationSelection: undefined;
+  PhoneLogin: undefined;
+  NotificationDetails: { notificationId: string };
 };
 
 export type ScreenProps<T extends keyof RootStackParamList> =

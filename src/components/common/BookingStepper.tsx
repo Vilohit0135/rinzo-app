@@ -1,16 +1,13 @@
 import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import { scale, responsiveFontSize } from "../../utils/responsive";
 
 interface BookingStepperProps {
   steps: string[];
   currentStep: number;
 }
 
-const { width: SCREEN_WIDTH } = Dimensions.get("window");
-const scale = Math.min(SCREEN_WIDTH / 390, 1.2);
-const circleSize = Math.round(34 * scale);
-const labelFontSize = Math.round(11 * scale);
-const numFontSize = Math.round(13 * scale);
+const circleSize = Math.round(scale(34));
 
 const BookingStepper = ({ steps, currentStep }: BookingStepperProps) => (
   <View style={styles.container}>
@@ -22,7 +19,7 @@ const BookingStepper = ({ steps, currentStep }: BookingStepperProps) => (
             <View
               style={[styles.circle, i === currentStep && styles.circleActive]}
             >
-              <Text style={[styles.num, i === currentStep && styles.numActive]}>
+              <Text style={[styles.num, i === currentStep && styles.numActive]} allowFontScaling={false}>
                 {i + 1}
               </Text>
             </View>
@@ -39,6 +36,7 @@ const BookingStepper = ({ steps, currentStep }: BookingStepperProps) => (
               style={[styles.label, i === currentStep && styles.labelActive]}
               numberOfLines={1}
               ellipsizeMode="clip"
+              allowFontScaling={false}
             >
               {label}
             </Text>
@@ -79,7 +77,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   num: {
-    fontSize: numFontSize,
+    fontSize: responsiveFontSize(13),
     fontWeight: "700",
     color: "#A0A0A0",
   },
@@ -109,7 +107,7 @@ const styles = StyleSheet.create({
     flexWrap: "nowrap",
   },
   label: {
-    fontSize: labelFontSize,
+    fontSize: responsiveFontSize(11),
     fontWeight: "600",
     color: "#A0A0A0",
     textAlign: "center",

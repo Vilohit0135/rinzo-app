@@ -1,15 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { getLaundryById } from '../../data/laundry/laundryData';
 import RatingStars from './RatingStars';
 
 interface ReviewCardProps {
   laundryId: string;
+  rating: number;
   reviewDate: string;
   reviewText: string;
+  onEditPress?: () => void;
 }
 
-const ReviewCard = ({ laundryId, reviewDate, reviewText }: ReviewCardProps) => {
+const ReviewCard = ({ laundryId, rating, reviewDate, reviewText, onEditPress }: ReviewCardProps) => {
   const laundry = getLaundryById(laundryId);
 
   if (!laundry) {
@@ -23,17 +25,17 @@ const ReviewCard = ({ laundryId, reviewDate, reviewText }: ReviewCardProps) => {
       <Text style={styles.date}>{reviewDate}</Text>
 
       <View style={styles.starRow}>
-        <RatingStars />
+        <RatingStars rating={rating} />
       </View>
 
       <Text style={styles.reviewText} numberOfLines={2}>
         {reviewText}
       </Text>
 
-      <View style={styles.editSection}>
+      <TouchableOpacity style={styles.editSection} activeOpacity={0.7} onPress={onEditPress}>
         <Text style={styles.editText}>Edit Review</Text>
         <Ionicons name="chevron-forward" size={14} color="#111111" />
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

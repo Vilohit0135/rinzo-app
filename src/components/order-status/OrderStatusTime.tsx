@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { responsiveFontSize } from '../../utils/responsive';
 
 interface OrderStatusTimeProps {
   pickupTime: string;
@@ -11,9 +12,9 @@ const OrderStatusTime = ({ pickupTime, trackMessage = 'You can track your order 
     <View style={styles.container}>
       <View style={styles.timeRow}>
         <Ionicons name="time-outline" size={22} color="#6F7787" />
-        <Text style={styles.timeText}>{pickupTime}</Text>
+        <Text style={styles.timeText} allowFontScaling={false}>{pickupTime}</Text>
       </View>
-      <Text style={styles.trackMessage}>{trackMessage}</Text>
+      <Text style={styles.trackMessage} allowFontScaling={false}>{trackMessage}</Text>
     </View>
   );
 };
@@ -29,12 +30,12 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   timeText: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
     color: '#6F7787',
   },
   trackMessage: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#6F7787',
     textAlign: 'center',

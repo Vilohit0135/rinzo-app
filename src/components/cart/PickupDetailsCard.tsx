@@ -1,26 +1,37 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface PickupDetailsCardProps {
   address: string;
   pickupTime: string;
+  onAddressPress?: () => void;
+  onTimePress?: () => void;
 }
 
-const PickupDetailsCard = ({ address, pickupTime }: PickupDetailsCardProps) => {
+const PickupDetailsCard = ({ address, pickupTime, onAddressPress, onTimePress }: PickupDetailsCardProps) => {
   return (
     <View style={styles.card}>
-      <View style={styles.row}>
+      <TouchableOpacity 
+        style={styles.row} 
+        activeOpacity={0.7} 
+        onPress={onAddressPress}
+      >
         <Text style={styles.address}>{address}</Text>
         <Ionicons name="create-outline" size={16} color="#8D8DAD" />
-      </View>
+      </TouchableOpacity>
       <View style={styles.divider} />
-      <View style={styles.row}>
-        <View>
+      <TouchableOpacity 
+        style={styles.row} 
+        activeOpacity={0.7} 
+        onPress={onTimePress}
+      >
+        <View style={{ flex: 1 }}>
           <Text style={styles.label}>Pickup Time</Text>
           <Text style={styles.time}>{pickupTime}</Text>
         </View>
         <Ionicons name="create-outline" size={16} color="#8D8DAD" />
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -28,34 +39,34 @@ const PickupDetailsCard = ({ address, pickupTime }: PickupDetailsCardProps) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    borderRadius: moderateScale(18),
+    paddingHorizontal: scale(12),
+    paddingVertical: verticalScale(6),
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: verticalScale(10),
   },
   address: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#1E1E2D',
     flex: 1,
-    marginRight: 8,
+    marginRight: scale(8),
   },
   divider: {
-    height: 1,
+    height: verticalScale(1),
     backgroundColor: '#ECECEC',
   },
   label: {
-    fontSize: 11,
+    fontSize: responsiveFontSize(11),
     color: '#8D8DAD',
-    marginBottom: 2,
+    marginBottom: verticalScale(2),
   },
   time: {
-    fontSize: 13,
+    fontSize: responsiveFontSize(13),
     fontWeight: '500',
     color: '#1E1E2D',
   },

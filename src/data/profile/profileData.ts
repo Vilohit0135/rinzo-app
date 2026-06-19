@@ -53,8 +53,8 @@ export const profileData: ProfileData = {
     heading: 'Activity',
     items: [
       { icon: 'receipt', title: 'Order History' },
-      { icon: 'heart', title: 'Favourites' },
       { icon: 'star', title: 'Review and Ratings' },
+      { icon: 'pricetags-outline', title: 'Offers' },
     ],
   },
   supportMenu: {

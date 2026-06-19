@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { responsiveFontSize } from '../../utils/responsive';
 
 interface OrderStatusContentProps {
   orderId: string;
@@ -8,11 +9,11 @@ interface OrderStatusContentProps {
 const OrderStatusContent = ({ orderId, title = 'Order Picked Up' }: OrderStatusContentProps) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.orderMessage}>
+      <Text style={styles.title} allowFontScaling={false}>{title}</Text>
+      <Text style={styles.orderMessage} allowFontScaling={false}>
         Your order #{orderId}{'\n'}has been picked up
       </Text>
-      <Text style={styles.description}>
+      <Text style={styles.description} allowFontScaling={false}>
         Our executive will reach the laundry facility shortly.
       </Text>
     </View>
@@ -25,7 +26,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Poppins-Medium',
-    fontSize: 22,
+    fontSize: responsiveFontSize(22),
     fontWeight: '600',
     color: '#171A2C',
     textAlign: 'center',
@@ -33,7 +34,7 @@ const styles = StyleSheet.create({
   },
   orderMessage: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 20,
+    fontSize: responsiveFontSize(20),
     fontWeight: '700',
     color: '#171A2C',
     lineHeight: 26,
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontFamily: 'Poppins-Regular',
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '500',
     color: '#6F7787',
     lineHeight: 20,

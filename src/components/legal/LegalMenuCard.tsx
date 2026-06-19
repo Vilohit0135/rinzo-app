@@ -1,20 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import type { LegalMenuItem } from '../../data/legal/legalData';
 
 interface LegalMenuCardProps {
   item: LegalMenuItem;
+  onPress?: () => void;
 }
 
-const LegalMenuCard = ({ item }: LegalMenuCardProps) => {
+const LegalMenuCard = ({ item, onPress }: LegalMenuCardProps) => {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={onPress}>
       <View style={styles.iconArea}>
         <Ionicons name={item.icon as any} size={20} color="#8259D2" />
       </View>
       <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
       <Ionicons name="chevron-forward" size={16} color="#999999" />
-    </View>
+    </TouchableOpacity>
   );
 };
 

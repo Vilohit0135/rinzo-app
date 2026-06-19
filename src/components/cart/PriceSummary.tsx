@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface DiscountItem {
   label: string;
@@ -29,7 +30,7 @@ const PriceSummary = ({ pricing }: PriceSummaryProps) => {
       </View>
       {pricing.discounts.map((d, i) => (
         <View key={i} style={styles.row}>
-          <Text style={styles.label}>{d.label}</Text>
+          <Text style={styles.discountLabel}>{d.label}</Text>
           <Text style={styles.discountValue}>{d.value}</Text>
         </View>
       ))}
@@ -44,11 +45,11 @@ const PriceSummary = ({ pricing }: PriceSummaryProps) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 18,
-    paddingHorizontal: 12,
+    borderRadius: moderateScale(18),
+    paddingHorizontal: scale(12),
   },
   row: {
-    height: 48,
+    height: verticalScale(48),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -59,28 +60,32 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
   },
   label: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     color: '#1E1E2D',
   },
   value: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
-    color: '#1E1E2D',
+    color: '#331970',
+  },
+  discountLabel: {
+    fontSize: responsiveFontSize(14),
+    color: '#2F9461',
   },
   discountValue: {
-    fontSize: 14,
+    fontSize: responsiveFontSize(14),
     fontWeight: '600',
-    color: '#2BAA66',
+    color: '#2F9461',
   },
   totalLabel: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     fontWeight: '700',
     color: '#1E1E2D',
   },
   totalValue: {
-    fontSize: 15,
+    fontSize: responsiveFontSize(15),
     fontWeight: '700',
-    color: '#1E1E2D',
+    color: '#331970',
   },
 });
 

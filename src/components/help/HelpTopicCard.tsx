@@ -1,15 +1,16 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import type { HelpTopic } from '../../data/help/helpCenterData';
 
 interface HelpTopicCardProps {
   topic: HelpTopic;
   isLast?: boolean;
+  onPress?: () => void;
 }
 
-const HelpTopicCard = ({ topic, isLast }: HelpTopicCardProps) => {
+const HelpTopicCard = ({ topic, isLast, onPress }: HelpTopicCardProps) => {
   return (
-    <View>
+    <TouchableOpacity activeOpacity={0.7} onPress={onPress}>
       <View style={styles.row}>
         <View style={styles.iconContainer}>
           <Ionicons name={topic.icon as any} size={20} color="#8259D2" />
@@ -18,7 +19,7 @@ const HelpTopicCard = ({ topic, isLast }: HelpTopicCardProps) => {
         <Ionicons name="chevron-forward" size={18} color="#8259D2" />
       </View>
       {!isLast && <View style={styles.divider} />}
-    </View>
+    </TouchableOpacity>
   );
 };
 

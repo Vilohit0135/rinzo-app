@@ -1,13 +1,13 @@
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Linking, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import ScrollableScreen from '../../components/common/ScrollableScreen';
 import ContactSupportHeader from '../../components/support/ContactSupportHeader';
 import SupportHeroCard from '../../components/support/SupportHeroCard';
 import SupportOptionCard from '../../components/support/SupportOptionCard';
 import RecentConversationCard from '../../components/support/RecentConversationCard';
-import BottomTabBar from '../../components/home/BottomTabBar';
 import { COLORS } from '../../constants/colors';
 import { supportOptions, recentConversation } from '../../data/support/contactSupportData';
 
@@ -17,6 +17,7 @@ type RootStackParamList = {
   YourCart: undefined;
   Profile: undefined;
   HelpAndSupport: undefined;
+  ComingSoon: { title?: string } | undefined;
 };
 
 const ContactSupportScreen = () => {
@@ -25,14 +26,11 @@ const ContactSupportScreen = () => {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}
-      >
+      <ScrollableScreen contentContainerStyle={styles.scroll}>
         <ContactSupportHeader onBackPress={() => navigation.goBack()} />
 
         <View style={styles.heroSection}>
-          <SupportHeroCard onChatPress={() => navigation.navigate('HelpAndSupport')} />
+          <SupportHeroCard onChatPress={() => navigation.navigate('ComingSoon', { title: 'Chat with us' })} />
         </View>
 
         <Text style={styles.sectionTitle}>Choose a way to contact</Text>
@@ -44,7 +42,18 @@ const ContactSupportScreen = () => {
             scrollEnabled={false}
             nestedScrollEnabled
             renderItem={({ item }) => (
-              <SupportOptionCard option={item} />
+              <SupportOptionCard
+                option={item}
+                onPress={() => {
+                  if (item.id === 'call') {
+                    Linking.openURL('tel:+919876543210').catch(err => console.error("Failed to open dialer", err));
+                  } else if (item.id === 'email') {
+                    Linking.openURL('mailto:support@laundry.com').catch(err => console.error("Failed to open mail client", err));
+                  } else {
+                    navigation.navigate('ComingSoon', { title: item.title });
+                  }
+                }}
+              />
             )}
           />
         </View>
@@ -54,8 +63,8 @@ const ContactSupportScreen = () => {
         <View style={styles.recentSection}>
           <RecentConversationCard conversation={recentConversation} />
         </View>
-      </ScrollView>
-      <BottomTabBar activeTab="Profile" onTabPress={(tab) => { if (tab === 'Home') navigation.navigate('Home'); if (tab === 'Search') navigation.navigate('Search'); if (tab === 'Orders') navigation.navigate('YourCart'); }} />
+      </ScrollableScreen>
+
     </SafeAreaView>
   );
 };

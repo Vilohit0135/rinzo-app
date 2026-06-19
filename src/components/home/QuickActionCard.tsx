@@ -1,44 +1,54 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import { COLORS } from '../../constants/colors';
+import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
 
 interface QuickActionCardProps {
   title: string;
   icon: string;
+  iconSource?: any;
   onPress?: () => void;
 }
 
-const QuickActionCard = ({ title, icon, onPress }: QuickActionCardProps) => {
+const QuickActionCard = ({ title, icon, iconSource, onPress }: QuickActionCardProps) => {
   return (
     <TouchableOpacity style={styles.card} activeOpacity={0.8} onPress={onPress}>
       <View style={styles.iconWrap}>
-        <Ionicons name={icon as any} size={24} color={COLORS.purple} />
+        {iconSource ? (
+          <Image source={iconSource} style={styles.quickIcon} />
+        ) : (
+          <Ionicons name={icon as any} size={24} color={COLORS.purple} />
+        )}
       </View>
-      <Text style={styles.title}>{title.replace(' ', '\n')}</Text>
+      <Text style={styles.title} allowFontScaling={false} numberOfLines={2}>{title.replace(' ', '\n')}</Text>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    width: 135,
-    height: 43,
+    width: scale(135),
+    height: verticalScale(43),
     backgroundColor: COLORS.purpleLight,
-    borderRadius: 20,
-    paddingHorizontal: 14,
+    borderRadius: moderateScale(20),
+    paddingHorizontal: scale(14),
     flexDirection: 'row',
     alignItems: 'center',
   },
   iconWrap: {
-    width: 26,
-    height: 26,
-    borderRadius: 9,
+    width: scale(26),
+    height: verticalScale(26),
+    borderRadius: moderateScale(9),
     alignItems: 'center',
     justifyContent: 'center',
   },
+  quickIcon: {
+    width: scale(24),
+    height: verticalScale(24),
+  },
   title: {
-    marginLeft: 10,
-    fontSize: 11,
+    marginLeft: scale(10),
+    fontSize: responsiveFontSize(11),
     fontWeight: '700',
     color: '#331970',
   },

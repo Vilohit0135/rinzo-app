@@ -1,6 +1,6 @@
 # Rinzo App
 
-Rinzo is an Expo React Native laundry service app. The current app flow starts with a splash screen, moves through onboarding and location access, and then presents login/signup screens. The repository also contains screen folders for the wider laundry ordering experience, including pickup scheduling, cart, orders, payments, profile, support, offers, and address management.
+Rinzo is an customer laundry service app. The current app flow starts with a splash screen, moves through onboarding and location access, and then presents login/signup screens. The repository also contains screen folders for the wider laundry ordering experience, including pickup scheduling, cart, orders, payments, profile, support, offers, and address management.
 
 ## Tech Stack
 
@@ -40,41 +40,6 @@ The Expo CLI will open a development server. Use Expo Go, an emulator, or a simu
 - `npm run ios` - start Expo and open the iOS target
 - `npm run web` - start Expo for web
 
-## Project Structure
-
-```text
-.
-|-- App.tsx                 # Current screen-state based app flow
-|-- index.ts                # Expo root registration
-|-- app.json                # Expo app configuration
-|-- assets/                 # Expo app icons and image assets
-|-- src/
-|   |-- assets/             # App-level images, fonts, icons, animations
-|   |-- components/         # Reusable UI components
-|   |-- constants/          # Shared constants such as theme colors
-|   |-- data/               # Static or mock data
-|   |-- hooks/              # Reusable hooks
-|   |-- navigation/         # Navigation setup
-|   |-- screens/            # App screens
-|   |-- services/           # API and integration services
-|   |-- store/              # Client state stores
-|   |-- theme/              # Theme primitives
-|   |-- types/              # Shared TypeScript types
-|   `-- utils/              # Utility helpers
-`-- tsconfig.json           # TypeScript configuration
-```
-
-## Current App Flow
-
-`App.tsx` currently uses local state to move through:
-
-1. Splash
-2. Onboarding
-3. Location access
-4. Login
-5. Signup
-
-`SchedulePickupScreen` is implemented as a standalone screen with selectable pickup dates and time slots. It uses React Navigation's `useNavigation`, so it should be mounted inside a navigator before being used in the main app flow.
 
 ## Expo Notes
 

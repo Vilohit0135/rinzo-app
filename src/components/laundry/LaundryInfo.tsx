@@ -22,8 +22,14 @@ const LaundryInfo = ({ name, rating, reviewCount, distance, closingTime, tags }:
       </View>
 
       <View style={styles.infoRow}>
-        <Text style={styles.infoText}>📍 {distance}</Text>
-        <Text style={styles.infoText}>🟢 Open till {closingTime}</Text>
+        <View style={styles.locationRow}>
+          <Ionicons name="location-outline" size={12} color="#8259D2" />
+          <Text style={styles.infoText}>{distance}</Text>
+        </View>
+        <View style={styles.closingRow}>
+          <Ionicons name="ellipse" size={10} color="#2F9461" />
+          <Text style={styles.infoText}> Open till {closingTime}</Text>
+        </View>
       </View>
 
       <View style={styles.tagsRow}>
@@ -64,9 +70,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 14,
   },
+  locationRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
   infoText: {
     fontSize: 13,
     color: '#8D8DAD',
+  },
+  closingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   tagsRow: {
     flexDirection: 'row',
