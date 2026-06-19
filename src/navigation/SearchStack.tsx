@@ -12,6 +12,8 @@ import OrderConfirmationScreen from '../screens/OrderConfirmation/OrderConfirmat
 import OrderPlacedScreen from '../screens/OrderPlaced/OrderPlacedScreen';
 import OrderPickedUpScreen from '../screens/orders/OrderPickedUpScreen';
 import OrderTrackingScreen from '../screens/OrderTracking/OrderTrackingScreen';
+import OrderDetailScreen from '../screens/OrderDetail/OrderDetailScreen';
+import OrderSummaryDeliveredScreen from '../screens/OrderSummary/OrderSummaryDeliveredScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -29,6 +31,8 @@ const SearchStack = () => {
       <Stack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
       <Stack.Screen name="OrderPickedUp" component={OrderPickedUpScreen} />
       <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} />
+      <Stack.Screen name="OrderDetail" component={OrderDetailScreen} />
+      <Stack.Screen name="OrderSummaryDelivered" component={OrderSummaryDeliveredScreen} />
     </Stack.Navigator>
   );
 };

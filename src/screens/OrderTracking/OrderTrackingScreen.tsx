@@ -24,9 +24,10 @@ type Props = NativeStackScreenProps<RootStackParamList, 'OrderTracking'>;
 
 const { height: screenHeight } = Dimensions.get('window');
 
-const OrderTrackingScreen = ({ navigation }: Props) => {
+const OrderTrackingScreen = ({ navigation, route }: Props) => {
   const { setTabBarVisible } = useTabBar();
-  const orderId = useBookingStore((s) => s.orderId) || 'ORD-2025-001';
+  const bookingOrderId = useBookingStore((s) => s.orderId) || 'ORD-2025-001';
+  const orderId = route.params?.orderId || bookingOrderId;
 
   // Hide bottom tab bar on focus with timeout to prevent navigation race condition
   useFocusEffect(
@@ -70,13 +71,24 @@ const OrderTrackingScreen = ({ navigation }: Props) => {
     ).start();
   }, [dotOpacity]);
 
-  // Auto redirect to OrderSummaryDelivered screen after 5 seconds
+  // Flow redirect timers
   useEffect(() => {
-    const timer = setTimeout(() => {
-      navigation.navigate('OrderSummaryDelivered', { orderId });
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [navigation, orderId]);
+    const flow = route.params?.flow || 'checkout';
+    
+    if (flow === 'checkout') {
+      // After 5 seconds, redirect to Pickup Scheduled Success (OrderConfirmation)
+      const timer = setTimeout(() => {
+        navigation.navigate('OrderConfirmation');
+      }, 5000);
+      return () => clearTimeout(timer);
+    } else {
+      // After 5 seconds, redirect to Order Delivery Success (OrderSummaryDelivered)
+      const timer = setTimeout(() => {
+        navigation.navigate('OrderSummaryDelivered', { orderId });
+      }, 5000); // Set to 5 seconds for snappy testing of the success screen redirection
+      return () => clearTimeout(timer);
+    }
+  }, [navigation, orderId, route.params?.flow]);
 
   return (
     <SafeAreaView style={styles.safeArea}>

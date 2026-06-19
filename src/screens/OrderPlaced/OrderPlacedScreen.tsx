@@ -68,8 +68,7 @@ const OrderPlacedScreen = ({ navigation }: Props) => {
   };
 
   const handleTrackYourOrder = () => {
-    // Redirects to Pickup Scheduled Successfully screen (OrderConfirmation)
-    navigation.navigate('OrderConfirmation');
+    navigation.navigate('OrderTracking', { flow: 'checkout' });
   };
 
   const handleBackToHome = () => {
