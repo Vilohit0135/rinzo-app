@@ -5,6 +5,7 @@ import YourCartScreen from '../screens/YourCart/YourCartScreen';
 import OrderSummaryScreen from '../screens/OrderSummary/OrderSummaryScreen';
 import PaymentScreen from '../screens/Payment/PaymentScreen';
 import OrderConfirmationScreen from '../screens/OrderConfirmation/OrderConfirmationScreen';
+import OrderPlacedScreen from '../screens/OrderPlaced/OrderPlacedScreen';
 import OrderPickedUpScreen from '../screens/orders/OrderPickedUpScreen';
 import OrderTrackingScreen from '../screens/OrderTracking/OrderTrackingScreen';
 import ComingSoonScreen from '../screens/ComingSoonScreen';
@@ -25,6 +26,7 @@ const OrdersStack = () => {
       <Stack.Screen name="YourCart" component={YourCartScreen} />
       <Stack.Screen name="OrderSummary" component={OrderSummaryScreen} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="OrderPlaced" component={OrderPlacedScreen} />
       <Stack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
       <Stack.Screen name="OrderPickedUp" component={OrderPickedUpScreen} />
       <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} />
