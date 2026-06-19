@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ScrollableScreen from '../../components/common/ScrollableScreen';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -33,16 +33,15 @@ type RootStackParamList = {
   BookPickup: undefined;
   OrderTracking: { from?: string } | undefined;
   LocationSelection: undefined;
+  HelpAndSupport: undefined;
 };
 
-type IconName = string;
-
-type QuickActionRoute = 'BookPickup' | 'OrderTracking' | 'MyOrders';
+type QuickActionRoute = 'BookPickup' | 'OrderTracking' | 'MyOrders' | 'Offers' | 'HelpAndSupport';
 
 type QuickAction = {
   title: string;
-  icon: IconName;
-  route?: QuickActionRoute;
+  icon: string;
+  route: QuickActionRoute;
 };
 
 const serviceImageMap: Record<string, any> = {
@@ -63,9 +62,9 @@ const laundryImageMap: Record<string, any> = {
 };
 
 const quickActions: QuickAction[] = [
-  { title: 'Schedule Pickup', icon: 'calendar-outline', route: 'BookPickup' },
-  { title: 'Track Order', icon: 'navigate-outline', route: 'OrderTracking' as const },
-  { title: 'All Orders', icon: 'receipt-outline', route: 'MyOrders' },
+  { title: 'Track Order', icon: 'location-outline', route: 'OrderTracking' },
+  { title: 'Offers', icon: 'pricetag-outline', route: 'Offers' },
+  { title: 'Live Support', icon: 'headset-outline', route: 'HelpAndSupport' },
 ];
 
 const SectionHeader = ({ title, onViewAll }: { title: string; onViewAll?: () => void }) => (
@@ -130,23 +129,19 @@ const HomeScreen = () => {
           >
             {quickActions.map((action) => {
               const route = action.route;
-              const isSchedule = action.title === 'Schedule Pickup';
 
               return (
                 <QuickActionCard
                   key={action.title}
                   title={action.title}
                   icon={action.icon}
-                  iconSource={isSchedule ? require('../../../assets/images/heroicons-schedule.png') : undefined}
-                  onPress={route ? () => {
+                  onPress={() => {
                     if (route === 'OrderTracking') {
                       navigation.navigate('OrderTracking', { from: 'Home' });
-                    } else if (route === 'MyOrders') {
-                      navigation.navigate('MyOrders');
                     } else {
-                      navigation.navigate(route);
+                      navigation.navigate(route as any);
                     }
-                  } : undefined}
+                  }}
                 />
               );
             })}
@@ -271,7 +266,7 @@ const styles = StyleSheet.create({
   },
   quickActionsRow: {
     marginTop: verticalScale(15),
-    gap: scale(12),
+    gap: scale(17),
     paddingRight: scale(18),
   },
   popularSection: {

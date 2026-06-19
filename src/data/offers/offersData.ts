@@ -4,38 +4,39 @@ export interface Offer {
   description: string;
   validTill: string;
   icon: string;
-  couponCode?: string;
+  couponCode: string;
 }
 
 export const featuredOffer = {
-  title: 'Get 30% off',
-  subtitle: 'On your first order',
-  couponCode: '323232',
+  title: 'Get 30% Off',
+  subtitle: 'on your first order',
+  couponCode: 'FIRST30',
+  description: 'Valid for first-time users only',
 };
 
 export const offersData: Offer[] = [
   {
     id: '1',
-    title: 'Flat 20 %',
-    description: 'Get 20% off on orders above 500',
+    title: 'FLAT50',
+    description: 'Flat ₹50 off on...',
     validTill: 'valid till 20 may 2026',
-    icon: 'pricetag-outline',
-    couponCode: 'FLAT20',
+    icon: 'ticket-outline',
+    couponCode: 'FLAT50',
   },
   {
     id: '2',
-    title: 'Freeship',
-    description: 'Free Delivery on all orders',
+    title: 'WASHREADY',
+    description: '20% off on Wash &',
     validTill: 'valid till 20 may 2026',
-    icon: 'gift-outline',
-    couponCode: 'FREESHIP',
+    icon: 'water-outline',
+    couponCode: 'WASHREADY',
   },
   {
     id: '3',
-    title: 'Iron 15',
-    description: '10% on iron services',
+    title: 'FREEDEL',
+    description: 'Free pickup &...',
     validTill: 'valid till 20 may 2026',
-    icon: 'pricetag-outline',
-    couponCode: 'IRON15',
+    icon: 'car-outline',
+    couponCode: 'FREEDEL',
   },
 ];

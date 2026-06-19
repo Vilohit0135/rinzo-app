@@ -11,6 +11,7 @@ import SchedulePickupScreen from '../screens/orders/SchedulePickupScreen';
 import OrderSummaryScreen from '../screens/OrderSummary/OrderSummaryScreen';
 import PaymentScreen from '../screens/Payment/PaymentScreen';
 import OrderConfirmationScreen from '../screens/OrderConfirmation/OrderConfirmationScreen';
+import OrderPlacedScreen from '../screens/OrderPlaced/OrderPlacedScreen';
 import OrderPickedUpScreen from '../screens/orders/OrderPickedUpScreen';
 import OrderTrackingScreen from '../screens/OrderTracking/OrderTrackingScreen';
 import LaundryDetailScreen from '../screens/LaundryDetail/LaundryDetailScreen';
@@ -40,6 +41,7 @@ const HomeStack = () => {
       <Stack.Screen name="SchedulePickup" component={SchedulePickupScreen} />
       <Stack.Screen name="OrderSummary" component={OrderSummaryScreen} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="OrderPlaced" component={OrderPlacedScreen} />
       <Stack.Screen name="OrderConfirmation" component={OrderConfirmationScreen} />
       <Stack.Screen name="OrderPickedUp" component={OrderPickedUpScreen} />
       <Stack.Screen name="OrderTracking" component={OrderTrackingScreen} />

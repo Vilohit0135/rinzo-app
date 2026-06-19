@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -10,14 +10,18 @@ import {
   Platform,
   KeyboardAvoidingView,
   Linking,
+  Animated,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useFocusEffect } from '@react-navigation/native';
 import { useTabBar } from '../../utils/TabBarContext';
 import Ionicons from '@react-native-vector-icons/ionicons';
+import Svg, { Path } from 'react-native-svg';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 import { useOrderStore } from '../../store/orderStore';
 import { useReviewStore } from '../../store/reviewStore';
 import { laundryItems } from '../../data/laundry/laundryData';
@@ -39,6 +43,89 @@ const OrderSummaryDeliveredScreen = ({ route, navigation }: Props) => {
       setTabBarVisible(true);
     }, [setTabBarVisible])
   );
+
+  // Animations values
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+  const ring1Scale = useRef(new Animated.Value(0.3)).current;
+  const ring1Opacity = useRef(new Animated.Value(0)).current;
+  const ring2Scale = useRef(new Animated.Value(0.3)).current;
+  const ring2Opacity = useRef(new Animated.Value(0)).current;
+  const tickDrawAnim = useRef(new Animated.Value(0)).current;
+
+  // Run animations on mount
+  useEffect(() => {
+    // spring checkmark pop (snappy and normal)
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      friction: 5,
+      tension: 40,
+      useNativeDriver: true,
+    }).start();
+
+    // ripple ring waves (loops continuously at normal speed)
+    Animated.loop(
+      Animated.parallel([
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(ring1Scale, { toValue: 0.3, duration: 0, useNativeDriver: true }),
+            Animated.timing(ring1Opacity, { toValue: 0, duration: 0, useNativeDriver: true }),
+          ]),
+          Animated.delay(100),
+          Animated.parallel([
+            Animated.timing(ring1Scale, {
+              toValue: 1.45,
+              duration: 1000,
+              useNativeDriver: true,
+            }),
+            Animated.timing(ring1Opacity, {
+              toValue: 0.5,
+              duration: 250,
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.timing(ring1Opacity, {
+            toValue: 0,
+            duration: 750,
+            useNativeDriver: true,
+          }),
+        ]),
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(ring2Scale, { toValue: 0.3, duration: 0, useNativeDriver: true }),
+            Animated.timing(ring2Opacity, { toValue: 0, duration: 0, useNativeDriver: true }),
+          ]),
+          Animated.delay(400),
+          Animated.parallel([
+            Animated.timing(ring2Scale, {
+              toValue: 1.6,
+              duration: 1000,
+              useNativeDriver: true,
+            }),
+            Animated.timing(ring2Opacity, {
+              toValue: 0.35,
+              duration: 250,
+              useNativeDriver: true,
+            }),
+          ]),
+          Animated.timing(ring2Opacity, {
+            toValue: 0,
+            duration: 750,
+            useNativeDriver: true,
+          }),
+        ]),
+      ])
+    ).start();
+
+    // Checkmark draw animation (starts drawing right after pop, draws smoothly over 1.2 seconds)
+    Animated.sequence([
+      Animated.delay(300),
+      Animated.timing(tickDrawAnim, {
+        toValue: 1,
+        duration: 1200,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [scaleAnim, ring1Scale, ring1Opacity, ring2Scale, ring2Opacity, tickDrawAnim]);
 
   // Local state for star ratings and feedback text
   const [rating, setRating] = useState<number>(0);
@@ -121,10 +208,54 @@ const OrderSummaryDeliveredScreen = ({ route, navigation }: Props) => {
         >
           {/* Top Checkmark Badge */}
           <View style={styles.badgeContainer}>
-            <View style={styles.checkOutline}>
-              <View style={styles.checkSolid}>
-                <Ionicons name="checkmark" size={32} color="#FFFFFF" />
-              </View>
+            <View style={styles.animationContainer}>
+              {/* Ripple Ring 2 */}
+              <Animated.View
+                style={[
+                  styles.rippleRing,
+                  {
+                    transform: [{ scale: ring2Scale }],
+                    opacity: ring2Opacity,
+                    backgroundColor: 'rgba(130, 89, 210, 0.12)',
+                  },
+                ]}
+              />
+              {/* Ripple Ring 1 */}
+              <Animated.View
+                style={[
+                  styles.rippleRing,
+                  {
+                    transform: [{ scale: ring1Scale }],
+                    opacity: ring1Opacity,
+                    backgroundColor: 'rgba(130, 89, 210, 0.18)',
+                  },
+                ]}
+              />
+              {/* Bouncing checkmark circle */}
+              <Animated.View
+                style={[
+                  styles.mainCircle,
+                  {
+                    transform: [{ scale: scaleAnim }],
+                  },
+                ]}
+              >
+                <Svg width="26" height="26" viewBox="0 0 24 24">
+                  <AnimatedPath
+                    d="M5 12l5 5L20 7"
+                    fill="none"
+                    stroke="#FFFFFF"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeDasharray="40"
+                    strokeDashoffset={tickDrawAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [40, 0],
+                    })}
+                  />
+                </Svg>
+              </Animated.View>
             </View>
             <Text style={styles.deliveredTitle} allowFontScaling={false}>
               Order Delivered!
@@ -362,26 +493,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: verticalScale(16),
   },
-  checkOutline: {
+  animationContainer: {
+    width: scale(150),
+    height: verticalScale(100),
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    marginBottom: verticalScale(6),
+  },
+  rippleRing: {
+    position: 'absolute',
     width: scale(72),
     height: scale(72),
     borderRadius: scale(36),
-    backgroundColor: '#ECE7FA',
+  },
+  mainCircle: {
+    width: scale(72),
+    height: scale(72),
+    borderRadius: scale(36),
+    backgroundColor: COLORS.purple,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#8259D2',
+    zIndex: 2,
+    shadowColor: COLORS.purple,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 4,
-  },
-  checkSolid: {
-    width: scale(54),
-    height: scale(54),
-    borderRadius: scale(27),
-    backgroundColor: '#8259D2',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   deliveredTitle: {
     fontSize: responsiveFontSize(21),

@@ -10,7 +10,27 @@ export interface ServiceSelection {
   subtitle: string;
 }
 
-export const DELIVERY_CHARGE = 20;
+export const DELIVERY_CHARGE = 30;
+export const SERVICE_FEE = 15;
+
+export const calculateSubtotal = (
+  services: ServiceSelection[],
+  clothesSummary: Record<string, { name: string; quantity: number; unitPrice?: number }[]>
+): number => {
+  let sum = 0;
+  services.forEach((s) => {
+    if (s.quantity > 0) {
+      if (s.unit === 'Kg') {
+        sum += s.quantity * s.unitPrice;
+      } else {
+        const serviceClothes = clothesSummary[s.id] || [];
+        sum += serviceClothes.reduce((sub, item) => sub + item.quantity * (item.unitPrice || s.unitPrice), 0);
+      }
+    }
+  });
+  return sum;
+};
+
 
 export const calculateDiscount = (
   couponCode: string | null,
@@ -20,15 +40,21 @@ export const calculateDiscount = (
   if (!couponCode) return 0;
   const code = couponCode.toUpperCase().trim();
   switch (code) {
+    case 'FIRST30':
     case '323232':
       return Math.round(subtotal * 0.3);
+    case 'FLAT50':
+      return 50;
+    case 'WASHREADY':
+      return Math.round(subtotal * 0.2);
+    case 'FREEDEL':
+    case 'FREESHIP':
+      return DELIVERY_CHARGE;
     case 'FLAT20':
       if (subtotal >= 500) {
         return Math.round(subtotal * 0.2);
       }
       return 0;
-    case 'FREESHIP':
-      return DELIVERY_CHARGE;
     case 'IRON15': {
       const ironService = services.find((s) => s.id === '2' || s.title.toLowerCase().includes('iron'));
       if (ironService) {
@@ -58,6 +84,7 @@ const getInitialClothesSummary = (): Record<string, { name: string; quantity: nu
   '6': defaultClothes.map(c => ({ ...c })),
   '7': defaultClothes.map(c => ({ ...c })),
   '8': defaultClothes.map(c => ({ ...c })),
+  '9': defaultClothes.map(c => ({ ...c })),
 });
 
 const getInitialServices = (): ServiceSelection[] =>
@@ -89,7 +116,7 @@ interface BookingState {
   orderId: string;
   totalAmount: number;
   appliedCoupon: string | null;
-  clothesSummary: Record<string, { name: string; quantity: number }[]>;
+  clothesSummary: Record<string, { name: string; quantity: number; unitPrice?: number }[]>;
   setServices: (services: ServiceSelection[]) => void;
   updateQuantity: (id: string, quantity: number) => void;
   setInstructions: (text: string) => void;
@@ -105,8 +132,8 @@ interface BookingState {
   setOrderId: (id: string) => void;
   setTotalAmount: (amount: number) => void;
   setAppliedCoupon: (coupon: string | null) => void;
-  setClothesSummary: (clothes: Record<string, { name: string; quantity: number }[]>) => void;
-  setServiceClothes: (serviceId: string, clothes: { name: string; quantity: number }[]) => void;
+  setClothesSummary: (clothes: Record<string, { name: string; quantity: number; unitPrice?: number }[]>) => void;
+  setServiceClothes: (serviceId: string, clothes: { name: string; quantity: number; unitPrice?: number }[]) => void;
   updateClothesQuantity: (name: string, quantity: number) => void;
   clear: () => void;
 }

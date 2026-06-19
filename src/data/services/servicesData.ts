@@ -34,8 +34,8 @@ export const allServices: ServiceItem[] = [
   },
   {
     id: '4',
-    title: 'Iron & Fold',
-    unitPrice: 65,
+    title: 'Wash & Iron',
+    unitPrice: 70,
     unit: 'Kg',
     subtitle: 'Wash, Dry & Iron Everything',
     duration: '24 hrs',
@@ -43,8 +43,8 @@ export const allServices: ServiceItem[] = [
   {
     id: '5',
     title: 'Steam Press',
-    unitPrice: 25,
-    unit: 'Itm',
+    unitPrice: 40,
+    unit: 'Kg',
     subtitle: 'Heavy Duty Steam Pressing',
     duration: '6 hrs',
   },
@@ -71,5 +71,13 @@ export const allServices: ServiceItem[] = [
     unit: 'Itm',
     subtitle: 'Curtain & Drapes Specialist',
     duration: '72 hrs',
+  },
+  {
+    id: '9',
+    title: 'Premium Wash',
+    unitPrice: 95,
+    unit: 'Kg',
+    subtitle: 'High Quality Detergents & Wash',
+    duration: '24 hrs',
   },
 ];
