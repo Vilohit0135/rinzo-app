@@ -67,8 +67,8 @@ const LaundryDetailScreen = () => {
   const minPrice = item.price || '₹50/kg';
 
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <StatusBar style="light" />
+    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+      <StatusBar style="dark" />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scroll}
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: verticalScale(40),
+    top: verticalScale(16),
     left: scale(18),
     width: 36,
     height: 36,

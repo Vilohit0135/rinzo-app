@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   ScrollView,
   Image,
   Platform,
+  Animated,
+  Easing,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
@@ -29,6 +31,9 @@ interface TimelineStepProps {
   isActive: boolean;
   iconName: string;
   isLast?: boolean;
+  activeStep: number;
+  incomingLineAnim: Animated.Value | null;
+  outgoingLineAnim: Animated.Value | null;
 }
 
 const TimelineStep = ({
@@ -39,47 +44,351 @@ const TimelineStep = ({
   isActive,
   iconName,
   isLast = false,
+  activeStep,
+  incomingLineAnim,
+  outgoingLineAnim,
 }: TimelineStepProps) => {
+  const travelAnim = useRef(new Animated.Value(0)).current;
+  const travelOpacityAnim = useRef(new Animated.Value(0)).current;
+
+  const [highlightActive, setHighlightActive] = useState(false);
+  const activeAnim = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+  const glowOpacity = useRef(new Animated.Value(isActive ? 1 : 0)).current;
+  const pulseAnim = useRef(new Animated.Value(0)).current;
+
+  // Bonus effects for step 3 (Washing in Progress)
+  const [lineReached, setLineReached] = useState(false);
+  const rippleScale = useRef(new Animated.Value(1)).current;
+  const rippleOpacity = useRef(new Animated.Value(0)).current;
+  const brightnessAnim = useRef(new Animated.Value(0)).current;
+
+  const isInitialRender = useRef(true);
+  const premiumEasing = Easing.bezier(0.25, 0.1, 0.25, 1);
+
+  // Synchronize highlighting with incomingLineAnim completion
+  useEffect(() => {
+    if (!isActive) {
+      setHighlightActive(false);
+      setLineReached(false);
+      return;
+    }
+
+    if (incomingLineAnim) {
+      const listenerId = incomingLineAnim.addListener(({ value }) => {
+        if (value >= 0.92) {
+          setHighlightActive(true);
+          setLineReached(true);
+        }
+      });
+
+      const initialVal = (incomingLineAnim as any)._value;
+      if (initialVal >= 0.92) {
+        setHighlightActive(true);
+        setLineReached(true);
+      }
+
+      return () => {
+        incomingLineAnim.removeListener(listenerId);
+      };
+    } else {
+      // Step 1 has no incoming line, highlight immediately
+      setHighlightActive(true);
+      setLineReached(true);
+    }
+  }, [incomingLineAnim, isActive]);
+
+  // Active state transitions (grow / shrink / glow) driven by highlightActive
+  useEffect(() => {
+    Animated.timing(activeAnim, {
+      toValue: highlightActive ? 1 : 0,
+      duration: 400,
+      easing: premiumEasing,
+      useNativeDriver: false,
+    }).start();
+
+    Animated.timing(glowOpacity, {
+      toValue: highlightActive ? 1 : 0,
+      duration: 300,
+      easing: premiumEasing,
+      useNativeDriver: false,
+    }).start();
+  }, [highlightActive]);
+
+  // Ripple and flash trigger for step 3 (Washing in Progress)
+  useEffect(() => {
+    if (isActive && highlightActive && stepNum === 3) {
+      // Trigger ripple effect
+      rippleScale.setValue(1);
+      rippleOpacity.setValue(0.8);
+      Animated.parallel([
+        Animated.timing(rippleScale, {
+          toValue: 2.8,
+          duration: 1500,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: false,
+            }),
+        Animated.timing(rippleOpacity, {
+          toValue: 0,
+          duration: 1500,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: false,
+        }),
+      ]).start();
+
+      // Trigger brief brightness flash (500ms)
+      brightnessAnim.setValue(0);
+      Animated.sequence([
+        Animated.timing(brightnessAnim, {
+          toValue: 1,
+          duration: 150,
+          easing: premiumEasing,
+          useNativeDriver: false,
+        }),
+        Animated.delay(200),
+        Animated.timing(brightnessAnim, {
+          toValue: 0,
+          duration: 150,
+          easing: premiumEasing,
+          useNativeDriver: false,
+        }),
+      ]).start();
+    } else {
+      brightnessAnim.setValue(0);
+      rippleOpacity.setValue(0);
+    }
+  }, [isActive, highlightActive, stepNum]);
+
+  // Gentle pulsing active state loop (2-second interval)
+  useEffect(() => {
+    let pulseLoop: Animated.CompositeAnimation | null = null;
+
+    if (isActive && lineReached) {
+      pulseAnim.setValue(0);
+      pulseLoop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulseAnim, {
+            toValue: 1,
+            duration: 1000,
+            easing: premiumEasing,
+            useNativeDriver: false,
+          }),
+          Animated.timing(pulseAnim, {
+            toValue: 0,
+            duration: 1000,
+            easing: premiumEasing,
+            useNativeDriver: false,
+          }),
+        ])
+      );
+      pulseLoop.start();
+    } else {
+      pulseAnim.setValue(0);
+    }
+
+    return () => {
+      if (pulseLoop) {
+        pulseLoop.stop();
+      }
+    };
+  }, [isActive, lineReached]);
+
+  // Traveling pulse dot animation loop
+  useEffect(() => {
+    let travelLoop: Animated.CompositeAnimation | null = null;
+    const isLineProgressing = activeStep === stepNum + 1;
+
+    if (isLineProgressing) {
+      travelAnim.setValue(0);
+      travelOpacityAnim.setValue(0);
+
+      travelLoop = Animated.loop(
+        Animated.sequence([
+          Animated.parallel([
+            Animated.timing(travelAnim, {
+              toValue: 1,
+              duration: 2000,
+              easing: Easing.linear,
+              useNativeDriver: false,
+            }),
+            Animated.sequence([
+              Animated.timing(travelOpacityAnim, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: false,
+              }),
+              Animated.delay(1200),
+              Animated.timing(travelOpacityAnim, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: false,
+              }),
+            ]),
+          ]),
+          Animated.delay(500),
+        ])
+      );
+      travelLoop.start();
+    } else {
+      travelAnim.setValue(0);
+      travelOpacityAnim.setValue(0);
+    }
+
+    return () => {
+      if (travelLoop) {
+        travelLoop.stop();
+      }
+      isInitialRender.current = false;
+    };
+  }, [activeStep]);
+
+  // Text transform & color interpolations
+  const scaleText = activeAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 1.1],
+  });
+  const translateXText = activeAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, scale(6)],
+  });
+  const textColor = activeAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [isCompleted ? '#1C1C38' : '#9CA3AF', '#8259D2'],
+  });
+
+  const showTravelingPulse = activeStep === stepNum + 1;
+
   return (
     <View style={styles.timelineStepRow}>
       {/* Indicator Column */}
       <View style={styles.indicatorCol}>
-        <View
-          style={[
-            styles.timelineCircle,
-            isCompleted && styles.circleCompleted,
-            isActive && styles.circleActive,
-            !isCompleted && !isActive && styles.circlePending,
-          ]}
-        >
-          <Ionicons
-            name={iconName as any}
-            size={isCompleted ? 14 : isActive ? 16 : 14}
-            color={isCompleted || isActive ? '#FFFFFF' : '#A0A0B0'}
-          />
-        </View>
-        {!isLast && (
+        <View style={styles.circleContainer}>
+          {/* Ripple Effect (Step 3 only) */}
+          {stepNum === 3 && (
+            <Animated.View
+              style={[
+                styles.timelineCircleRipple,
+                {
+                  transform: [{ scale: rippleScale }],
+                  opacity: rippleOpacity,
+                },
+              ]}
+            />
+          )}
+
+          {/* Pulsing Glow behind active icon */}
+          {highlightActive && (
+            <Animated.View
+              style={[
+                styles.timelineCircleGlow,
+                {
+                  transform: [
+                    {
+                      scale: lineReached
+                        ? pulseAnim.interpolate({ inputRange: [0, 1], outputRange: [1, 1.45] })
+                        : 1.1,
+                    },
+                  ],
+                  opacity: Animated.multiply(
+                    glowOpacity,
+                    lineReached
+                      ? pulseAnim.interpolate({ inputRange: [0, 1], outputRange: [0.55, 0.15] })
+                      : 0.45
+                  ),
+                },
+              ]}
+            />
+          )}
+
           <View
             style={[
-              styles.timelineLine,
-              isCompleted && styles.lineCompleted,
+              styles.timelineCircle,
+              isCompleted && styles.circleCompleted,
+              highlightActive && styles.circleActive,
+              !isCompleted && !highlightActive && styles.circlePending,
             ]}
-          />
+          >
+            <Ionicons
+              name={iconName as any}
+              size={isCompleted ? 14 : highlightActive ? 16 : 14}
+              color={isCompleted || highlightActive ? '#FFFFFF' : '#A0A0B0'}
+            />
+            {/* Brightness Flash Overlay */}
+            {stepNum === 3 && (
+              <Animated.View
+                style={[
+                  StyleSheet.absoluteFill,
+                  {
+                    backgroundColor: '#FFFFFF',
+                    borderRadius: scale(14),
+                    opacity: brightnessAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, 0.7],
+                    }),
+                  },
+                ]}
+              />
+            )}
+          </View>
+        </View>
+
+        {!isLast && (
+          <View style={styles.lineWrapper}>
+            {/* Background Grey Line */}
+            <View style={styles.timelineLineBackground} />
+
+            {/* Filled Purple Line */}
+            <Animated.View
+              style={[
+                styles.timelineLineFilled,
+                {
+                  height: outgoingLineAnim
+                    ? outgoingLineAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0%', '100%'],
+                      })
+                    : '0%',
+                },
+              ]}
+            >
+              {/* Traveling Pulse Dot (inside filled line to clip overflow) */}
+              {showTravelingPulse && outgoingLineAnim && (
+                <Animated.View
+                  style={[
+                    styles.travelingPulseDot,
+                    {
+                      top: travelAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ['0%', '100%'],
+                      }),
+                      opacity: travelOpacityAnim,
+                    },
+                  ]}
+                />
+              )}
+            </Animated.View>
+          </View>
         )}
       </View>
 
       {/* Content Column */}
       <View style={styles.stepContentCol}>
-        <Text
+        <Animated.Text
           style={[
             styles.stepLabel,
-            isActive && styles.stepLabelActive,
             !isCompleted && !isActive && styles.stepLabelPending,
+            {
+              transform: [
+                { scale: scaleText },
+                { translateX: translateXText }
+              ],
+              color: textColor,
+              fontWeight: isActive || isCompleted ? '800' : '600',
+            },
           ]}
           allowFontScaling={false}
         >
           {label}
-        </Text>
+        </Animated.Text>
         {subtitle ? (
           <Text style={styles.stepSubtitle} allowFontScaling={false}>
             {subtitle}
@@ -95,6 +404,12 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
   const { orderId } = route.params;
   const orders = useOrderStore((s) => s.orders);
   const order = orders.find((o) => o.id === orderId);
+
+  const line1Fill = useRef(new Animated.Value(0)).current;
+  const line2Fill = useRef(new Animated.Value(0)).current;
+  const line3Fill = useRef(new Animated.Value(0)).current;
+  const line4Fill = useRef(new Animated.Value(0)).current;
+  const isParentInitialRender = useRef(true);
 
   // Hide bottom tab bar
   useFocusEffect(
@@ -150,23 +465,130 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
   const taxAndServiceFee = Math.max(0, totalNum - subtotal);
 
   // Map order status to progress timeline steps
-  let activeStep = 3; // Default to Washing in Progress
-  if (displayOrder.status === 'completed') {
-    activeStep = 5;
-  } else if (displayOrder.status === 'cancelled') {
-    activeStep = 1;
-  } else {
-    const label = displayOrder.statusLabel.toLowerCase();
-    if (label.includes('placed') || label.includes('confirmed')) {
-      activeStep = 1;
-    } else if (label.includes('pick') || label.includes('picked')) {
-      activeStep = 2;
-    } else if (label.includes('wash') || label.includes('progress')) {
-      activeStep = 3;
-    } else if (label.includes('delivery') || label.includes('out')) {
-      activeStep = 4;
+  const getInitialActiveStep = () => {
+    if (displayOrder.status === 'completed') {
+      return 5;
+    } else if (displayOrder.status === 'cancelled') {
+      return 1;
+    } else {
+      const label = displayOrder.statusLabel.toLowerCase();
+      if (label.includes('placed') || label.includes('confirmed')) {
+        return 1;
+      } else if (label.includes('pick') || label.includes('picked')) {
+        return 2;
+      } else if (label.includes('wash') || label.includes('progress')) {
+        return 3;
+      } else if (label.includes('delivery') || label.includes('out')) {
+        return 4;
+      }
     }
-  }
+    return 3;
+  };
+
+  const [activeStep, setActiveStep] = useState(getInitialActiveStep());
+
+  // Local simulator to transition step-by-step for animation demonstration
+  // without modifying the global store state (prevents background side-effects)
+  useEffect(() => {
+    const initialStep = getInitialActiveStep();
+    setActiveStep(initialStep);
+
+    if (initialStep === 1) {
+      const t1 = setTimeout(() => {
+        setActiveStep(2);
+      }, 3000);
+
+      const t2 = setTimeout(() => {
+        setActiveStep(3);
+      }, 7000);
+
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [displayOrder.id, displayOrder.statusLabel]);
+
+  // Parent animation controller for the connecting lines
+  useEffect(() => {
+    // Line 1: Placed -> Picked Up
+    if (activeStep > 2) {
+      line1Fill.setValue(1);
+    } else if (activeStep === 2) {
+      if (isParentInitialRender.current) {
+        line1Fill.setValue(1);
+      } else {
+        line1Fill.setValue(0);
+        Animated.timing(line1Fill, {
+          toValue: 1,
+          duration: 8000,
+          easing: Easing.bezier(0.42, 0, 0.58, 1),
+          useNativeDriver: false,
+        }).start();
+      }
+    } else {
+      line1Fill.setValue(0);
+    }
+
+    // Line 2: Picked Up -> Washing in Progress
+    if (activeStep > 3) {
+      line2Fill.setValue(1);
+    } else if (activeStep === 3) {
+      if (isParentInitialRender.current) {
+        line2Fill.setValue(1);
+      } else {
+        line2Fill.setValue(0);
+        Animated.timing(line2Fill, {
+          toValue: 1,
+          duration: 8000,
+          easing: Easing.bezier(0.42, 0, 0.58, 1),
+          useNativeDriver: false,
+        }).start();
+      }
+    } else {
+      line2Fill.setValue(0);
+    }
+
+    // Line 3: Washing in Progress -> Out for Delivery
+    if (activeStep > 4) {
+      line3Fill.setValue(1);
+    } else if (activeStep === 4) {
+      if (isParentInitialRender.current) {
+        line3Fill.setValue(1);
+      } else {
+        line3Fill.setValue(0);
+        Animated.timing(line3Fill, {
+          toValue: 1,
+          duration: 8000,
+          easing: Easing.bezier(0.42, 0, 0.58, 1),
+          useNativeDriver: false,
+        }).start();
+      }
+    } else {
+      line3Fill.setValue(0);
+    }
+
+    // Line 4: Out for Delivery -> Delivered
+    if (activeStep > 5) {
+      line4Fill.setValue(1);
+    } else if (activeStep === 5) {
+      if (isParentInitialRender.current) {
+        line4Fill.setValue(1);
+      } else {
+        line4Fill.setValue(0);
+        Animated.timing(line4Fill, {
+          toValue: 1,
+          duration: 8000,
+          easing: Easing.bezier(0.42, 0, 0.58, 1),
+          useNativeDriver: false,
+        }).start();
+      }
+    } else {
+      line4Fill.setValue(0);
+    }
+
+    isParentInitialRender.current = false;
+  }, [activeStep]);
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -241,6 +663,9 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             isCompleted={activeStep > 1}
             isActive={activeStep === 1}
             iconName="checkmark"
+            activeStep={activeStep}
+            incomingLineAnim={null}
+            outgoingLineAnim={line1Fill}
           />
 
           <TimelineStep
@@ -250,6 +675,9 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             isCompleted={activeStep > 2}
             isActive={activeStep === 2}
             iconName="checkmark"
+            activeStep={activeStep}
+            incomingLineAnim={line1Fill}
+            outgoingLineAnim={line2Fill}
           />
 
           <TimelineStep
@@ -259,6 +687,9 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             isCompleted={activeStep > 3}
             isActive={activeStep === 3}
             iconName="shirt-outline"
+            activeStep={activeStep}
+            incomingLineAnim={line2Fill}
+            outgoingLineAnim={line3Fill}
           />
 
           <TimelineStep
@@ -268,6 +699,9 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             isCompleted={activeStep > 4}
             isActive={activeStep === 4}
             iconName="bus-outline"
+            activeStep={activeStep}
+            incomingLineAnim={line3Fill}
+            outgoingLineAnim={line4Fill}
           />
 
           <TimelineStep
@@ -278,6 +712,9 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
             isActive={activeStep === 5}
             iconName="checkmark-done"
             isLast={true}
+            activeStep={activeStep}
+            incomingLineAnim={line4Fill}
+            outgoingLineAnim={null}
           />
         </View>
 
@@ -399,7 +836,7 @@ const OrderDetailScreen = ({ route, navigation }: Props) => {
         <TouchableOpacity
           style={styles.ctaButton}
           activeOpacity={0.8}
-          onPress={() => navigation.navigate('OrderTracking')}
+          onPress={() => navigation.navigate('OrderTracking', { flow: 'detail', orderId: displayOrder.id })}
         >
           <Ionicons name="map-outline" size={18} color="#FFFFFF" />
           <Text style={styles.ctaText} allowFontScaling={false}>
@@ -521,13 +958,21 @@ const styles = StyleSheet.create({
     position: 'relative',
     height: '100%',
   },
-  timelineCircle: {
+  circleContainer: {
     width: scale(28),
     height: scale(28),
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    zIndex: 3,
+  },
+  timelineCircle: {
+    width: '100%',
+    height: '100%',
     borderRadius: scale(14),
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 2,
+    zIndex: 3,
   },
   circleCompleted: {
     backgroundColor: '#8259D2',
@@ -547,16 +992,58 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: '#E5E7EB',
   },
-  timelineLine: {
+  timelineCircleGlow: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: scale(14),
+    backgroundColor: '#8259D2',
+    zIndex: 1,
+  },
+  timelineCircleRipple: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: scale(14),
+    backgroundColor: '#8259D2',
+    zIndex: 2,
+  },
+  lineWrapper: {
     width: 2,
     position: 'absolute',
     top: scale(28),
     bottom: verticalScale(-20),
-    backgroundColor: '#E5E7EB',
+    alignSelf: 'center',
     zIndex: 1,
   },
-  lineCompleted: {
+  timelineLineBackground: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: '#E5E7EB',
+  },
+  timelineLineFilled: {
+    width: '100%',
+    position: 'absolute',
+    top: 0,
     backgroundColor: '#8259D2',
+    overflow: 'hidden',
+  },
+  travelingPulseDot: {
+    position: 'absolute',
+    left: -3,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#A78BFA',
+    shadowColor: '#8259D2',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    elevation: 3,
   },
   stepContentCol: {
     flex: 1,

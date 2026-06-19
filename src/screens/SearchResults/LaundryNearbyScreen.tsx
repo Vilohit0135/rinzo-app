@@ -48,6 +48,7 @@ const LaundryNearbyScreen = () => {
     serviceTypes: [],
     ratings: [],
     availability: [],
+    priceRange: '',
   });
 
   const handleQuickFilterPress = (filterType: string) => {
@@ -100,6 +101,17 @@ const LaundryNearbyScreen = () => {
       );
     }
 
+    if (filters.priceRange) {
+      result = result.filter((shop) => {
+        const priceNum = parseInt(shop.price.replace(/[^0-9]/g, ''), 10);
+        if (isNaN(priceNum)) return true;
+        if (filters.priceRange === 'under30') return priceNum < 30;
+        if (filters.priceRange === '30to50') return priceNum >= 30 && priceNum <= 50;
+        if (filters.priceRange === 'above50') return priceNum > 50;
+        return true;
+      });
+    }
+
     // 4. Sorting
     // Priority: Quick filters, then Modal Sort
     let sortOption = filters.sortBy;
@@ -140,6 +152,7 @@ const LaundryNearbyScreen = () => {
     count += filters.serviceTypes.length;
     count += filters.ratings.length;
     count += filters.availability.length;
+    if (filters.priceRange) count++;
     return count;
   }, [filters]);
 

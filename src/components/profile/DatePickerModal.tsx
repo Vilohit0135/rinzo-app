@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   Modal,
   View,
@@ -51,8 +51,22 @@ const WheelPicker = ({
   selectedIndex: number;
   onSelect: (index: number) => void;
 }) => {
+  const listRef = useRef<FlatList>(null);
+
+  // Synchronize scroll position when selectedIndex changes
+  useEffect(() => {
+    if (selectedIndex >= 0 && selectedIndex < data.length) {
+      listRef.current?.scrollToIndex({
+        index: selectedIndex,
+        animated: true,
+        viewPosition: 0,
+      });
+    }
+  }, [selectedIndex, data.length]);
+
   return (
     <FlatList
+      ref={listRef}
       data={data}
       keyExtractor={(_, i) => String(i)}
       showsVerticalScrollIndicator={false}
@@ -69,11 +83,15 @@ const WheelPicker = ({
         onSelect(Math.min(Math.max(index, 0), data.length - 1));
       }}
       renderItem={({ item, index }) => (
-        <View style={[styles.wheelItem, index === selectedIndex && styles.wheelItemSelected]}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => onSelect(index)}
+          style={[styles.wheelItem, index === selectedIndex && styles.wheelItemSelected]}
+        >
           <Text style={[styles.wheelText, index === selectedIndex && styles.wheelTextSelected]}>
             {item}
           </Text>
-        </View>
+        </TouchableOpacity>
       )}
     />
   );

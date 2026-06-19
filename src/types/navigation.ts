@@ -53,7 +53,7 @@ export type RootStackParamList = {
   OrderConfirmation: undefined;
   OrderPlaced: undefined;
   OrderPickedUp: undefined;
-  OrderTracking: { from?: string } | undefined;
+  OrderTracking: { from?: string; flow?: 'checkout' | 'detail'; orderId?: string } | undefined;
   ComingSoon: { title?: string; icon?: string; subtitle?: string } | undefined;
   LocationSelection: undefined;
   NotificationDetails: { notificationId: string };
