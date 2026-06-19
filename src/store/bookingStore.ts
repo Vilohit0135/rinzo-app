@@ -20,15 +20,21 @@ export const calculateDiscount = (
   if (!couponCode) return 0;
   const code = couponCode.toUpperCase().trim();
   switch (code) {
+    case 'FIRST30':
     case '323232':
       return Math.round(subtotal * 0.3);
+    case 'FLAT50':
+      return 50;
+    case 'WASHREADY':
+      return Math.round(subtotal * 0.2);
+    case 'FREEDEL':
+    case 'FREESHIP':
+      return DELIVERY_CHARGE;
     case 'FLAT20':
       if (subtotal >= 500) {
         return Math.round(subtotal * 0.2);
       }
       return 0;
-    case 'FREESHIP':
-      return DELIVERY_CHARGE;
     case 'IRON15': {
       const ironService = services.find((s) => s.id === '2' || s.title.toLowerCase().includes('iron'));
       if (ironService) {
@@ -58,6 +64,7 @@ const getInitialClothesSummary = (): Record<string, { name: string; quantity: nu
   '6': defaultClothes.map(c => ({ ...c })),
   '7': defaultClothes.map(c => ({ ...c })),
   '8': defaultClothes.map(c => ({ ...c })),
+  '9': defaultClothes.map(c => ({ ...c })),
 });
 
 const getInitialServices = (): ServiceSelection[] =>

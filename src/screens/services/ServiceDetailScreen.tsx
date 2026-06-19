@@ -1,5 +1,14 @@
-import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import {
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+  Image,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation, useRoute, useFocusEffect, type RouteProp } from '@react-navigation/native';
@@ -7,389 +16,389 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import type { RootStackParamList } from '../../types/navigation';
 import { allServices } from '../../data/services/servicesData';
+import { garmentItems } from '../../data/services/itemsData';
 import { useTabBar } from '../../utils/TabBarContext';
 import { scale, verticalScale, moderateScale, responsiveFontSize } from '../../utils/responsive';
-import { WashingMachineIcon, SteamIronIcon, HangerIcon } from '../../components/icons/ServiceIcons';
-import { cartData } from '../../data/cart/cartData';
 import { useBookingStore } from '../../store/bookingStore';
-import Toast from 'react-native-toast-message';
 
 type ServiceDetailRouteProp = RouteProp<RootStackParamList, 'ServiceDetail'>;
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'Home'>;
 
-const serviceMetadata: Record<
-  string,
-  {
-    description: string;
-    categorization: string;
-    turnover: string;
-    iconType: 'wash' | 'iron' | 'specialized';
-    priceLabel?: string;
-  }
-> = {
-  'Wash & Fold': {
-    description: 'Standard automated laundry service. Includes washing, drying, and neat folding of all items.',
-    categorization: 'Standard',
-    turnover: '24 Hours (Standard)',
-    iconType: 'wash',
-    priceLabel: '₹99.00 / Per KG',
-  },
-  'Iron Only': {
-    description: 'Professional steam ironing removes every wrinkle. Perfect for shirts, formal wear, and delicate fabrics.',
-    categorization: 'Standard',
-    turnover: '12 Hours (Standard)',
-    iconType: 'iron',
-    priceLabel: '₹15.00 / Per Itm',
-  },
-  'Specialized Care': {
-    description: 'Premium dry cleaning, steam pressing, blanket wash and more specialized treatments for all your fabrics.',
-    categorization: 'Premium',
-    turnover: '48 Hours (Standard)',
-    iconType: 'specialized',
-    priceLabel: 'from ₹15/pc',
-  },
-  'Dry Clean': {
-    description: 'Premium dry cleaning service for your delicate garments, formal suits, and expensive fabrics.',
-    categorization: 'Premium',
-    turnover: '48 Hours (Standard)',
-    iconType: 'specialized',
-  },
-  'Iron & Fold': {
-    description: 'Wash, dry, steam iron, and neatly fold your garments for a complete wardrobe-ready look.',
-    categorization: 'Standard',
-    turnover: '24 Hours (Standard)',
-    iconType: 'wash',
-  },
-  'Steam Press': {
-    description: 'Heavy duty steam pressing for crisp wrinkles-free clothing. Best for cotton shirts and trousers.',
-    categorization: 'Standard',
-    turnover: '6 Hours (Express)',
-    iconType: 'iron',
-  },
-  'Blanket Wash': {
-    description: 'Deep cleaning and sanitization for heavy blankets, quilts, and comforters.',
-    categorization: 'Standard',
-    turnover: '48 Hours (Standard)',
-    iconType: 'wash',
-  },
-  'Shoe Cleaning': {
-    description: 'Complete shoe cleaning, sanitization, deodorization, and polishing for all shoe types.',
-    categorization: 'Specialized',
-    turnover: '24 Hours (Standard)',
-    iconType: 'specialized',
-  },
-  'Curtain Dry Clean': {
-    description: 'Curtain and drapes specialist cleaning to remove dust, allergens, and wrinkles.',
-    categorization: 'Specialized',
-    turnover: '72 Hours (Standard)',
-    iconType: 'specialized',
-  },
-};
-
 const ServiceDetailScreen = () => {
   const navigation = useNavigation<NavigationProp>();
   const route = useRoute<ServiceDetailRouteProp>();
-  const { serviceId, serviceTitle } = route.params;
+  const { serviceTitle } = route.params;
 
   const { setTabBarVisible } = useTabBar();
-  const [extraNotes, setExtraNotes] = useState('');
-  
-  const scrollViewRef = useRef<ScrollView>(null);
+  const storeServices = useBookingStore((s) => s.services);
+  const clothesSummary = useBookingStore((s) => s.clothesSummary);
+  const updateStoreQuantity = useBookingStore((s) => s.updateQuantity);
+  const setServiceClothes = useBookingStore((s) => s.setServiceClothes);
+
+  const [activeToggle, setActiveToggle] = useState<'item' | 'kg'>('kg');
+  const [activeCategory, setActiveCategory] = useState<'Men' | 'Women' | 'Household' | 'Kids'>('Men');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Automatically adjust initial toggle based on route parameter
+  useEffect(() => {
+    if (serviceTitle) {
+      const titleLower = serviceTitle.toLowerCase();
+      if (titleLower.includes('iron only') || titleLower.includes('dry clean') || titleLower.includes('specialized')) {
+        setActiveToggle('item');
+        if (titleLower.includes('household')) {
+          setActiveCategory('Household');
+        } else if (titleLower.includes('kids')) {
+          setActiveCategory('Kids');
+        } else if (titleLower.includes('women')) {
+          setActiveCategory('Women');
+        } else {
+          setActiveCategory('Men');
+        }
+      } else {
+        setActiveToggle('kg');
+      }
+    }
+  }, [serviceTitle]);
+
+  // Hide bottom tab bar while focused
+  useFocusEffect(
+    useCallback(() => {
+      const timeout = setTimeout(() => {
+        setTabBarVisible(false);
+      }, 50);
+      return () => {
+        clearTimeout(timeout);
+        setTabBarVisible(true);
+      };
+    }, [setTabBarVisible])
+  );
 
   useEffect(() => {
-    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-
-    const showSubscription = Keyboard.addListener(showEvent, () => {
+    const timeout = setTimeout(() => {
       setTabBarVisible(false);
-    });
-
-    const hideSubscription = Keyboard.addListener(hideEvent, () => {
-      setTabBarVisible(true);
-    });
-
+    }, 50);
     return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
+      clearTimeout(timeout);
+      setTabBarVisible(true);
     };
   }, [setTabBarVisible]);
 
-  // Retrieve base data from database services
-  const service = allServices.find((s) => s.id === serviceId) ||
-                  allServices.find((s) => s.title === serviceTitle) ||
-                  allServices.find((s) => s.title.toLowerCase().includes(serviceTitle?.toLowerCase())) ||
-                  { id: serviceId || '1', title: serviceTitle || 'Wash & Fold', unitPrice: 99, unit: 'Kg', subtitle: '', duration: '24 hrs' };
+  // Subtotal and added items computation
+  const subtotal = storeServices.reduce((sum, s) => sum + s.quantity * s.unitPrice, 0);
+  const totalItemsCount = storeServices.reduce((sum, s) => sum + s.quantity, 0);
 
-  const storeClothesSummary = useBookingStore((s) => s.clothesSummary);
-  const setServiceClothes = useBookingStore((s) => s.setServiceClothes);
-  const updateStoreQuantity = useBookingStore((s) => s.updateQuantity);
+  // List of weight-based services
+  const weightServices = allServices.filter(s => s.unit === 'Kg');
 
-  const [clothes, setClothes] = useState(storeClothesSummary[service.id] || []);
-  const [newItemName, setNewItemName] = useState('');
+  // Filtered lists based on search
+  const filteredWeightServices = weightServices.filter(s =>
+    s.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  useEffect(() => {
-    setClothes(storeClothesSummary[service.id] || []);
-  }, [storeClothesSummary, service.id]);
+  const filteredGarments = garmentItems.filter(item => {
+    const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = item.category.toLowerCase() === activeCategory.toLowerCase();
+    return matchesSearch && (searchQuery ? true : matchesCategory);
+  });
 
-  const incrementQuantity = (index: number) => {
-    setClothes((prev) =>
-      prev.map((item, idx) => (idx === index ? { ...item, quantity: item.quantity + 1 } : item))
-    );
+  // Handle weight-based increments / decrements
+  const handleWeightQuantityChange = (serviceId: string, diff: number) => {
+    const service = storeServices.find(s => s.id === serviceId);
+    if (!service) return;
+    const currentQty = service.quantity;
+    const nextQty = Math.max(0, currentQty + diff);
+    updateStoreQuantity(serviceId, nextQty);
   };
 
-  const decrementQuantity = (index: number) => {
-    setClothes((prev) =>
-      prev.map((item, idx) =>
-        idx === index ? { ...item, quantity: Math.max(0, item.quantity - 1) } : item
-      )
-    );
-  };
+  // Handle item-based garment increments / decrements
+  const handleItemQuantityChange = (garmentId: string, diff: number) => {
+    const garment = garmentItems.find(g => g.id === garmentId);
+    if (!garment) return;
 
-  const handleAddNewItem = () => {
-    if (!newItemName.trim()) return;
-    const exists = clothes.some((c) => c.name.toLowerCase() === newItemName.trim().toLowerCase());
-    if (exists) {
-      setNewItemName('');
-      return;
+    const serviceId = garment.targetServiceId;
+    const currentClothes = clothesSummary[serviceId] ? [...clothesSummary[serviceId]] : [];
+    
+    // Find item in current service clothes checklist
+    let itemIndex = currentClothes.findIndex(c => c.name.toLowerCase() === garment.name.toLowerCase());
+    
+    if (itemIndex > -1) {
+      const currentQty = currentClothes[itemIndex].quantity;
+      const nextQty = Math.max(0, currentQty + diff);
+      if (nextQty === 0) {
+        currentClothes.splice(itemIndex, 1);
+      } else {
+        currentClothes[itemIndex] = { ...currentClothes[itemIndex], quantity: nextQty };
+      }
+    } else if (diff > 0) {
+      currentClothes.push({ name: garment.name, quantity: diff });
     }
-    setClothes((prev) => [...prev, { name: newItemName.trim(), quantity: 1 }]);
-    setNewItemName('');
-  };
 
-  const handleAddToCart = () => {
-    cartData.clothesSummary = clothes;
-    const totalQty = clothes.reduce((sum, item) => sum + item.quantity, 0);
-    updateStoreQuantity(service.id, totalQty);
-    setServiceClothes(service.id, clothes);
-    Toast.show({
-      type: 'success',
-      text1: 'Added to Cart',
-      text2: `${totalQty} clothes added to ${service.title} in your cart.`,
-      position: 'bottom',
-      visibilityTime: 2000,
-    });
+    // Set new clothes checklist and update total service quantity
+    setServiceClothes(serviceId, currentClothes);
+    const newTotalServiceQty = currentClothes.reduce((sum, c) => sum + c.quantity, 0);
+    updateStoreQuantity(serviceId, newTotalServiceQty);
   };
 
   const handleViewCart = () => {
     navigation.navigate('OrdersTab' as any, { screen: 'YourCart' });
   };
 
-  useFocusEffect(
-    useCallback(() => {
-      setTabBarVisible(true);
-    }, [setTabBarVisible])
-  );
-
-  // Fetch mockup specifications
-  const meta = serviceMetadata[service.title] || {
-    description: service.subtitle || 'Professional care for all types of clothes.',
-    categorization: 'Standard',
-    turnover: `${service.duration} (Standard)`,
-    iconType: (service.title.toLowerCase().includes('iron') || service.title.toLowerCase().includes('press')) ? 'iron' : 'wash',
-  };
-
-  const priceDisplay = meta.priceLabel || `₹${service.unitPrice.toFixed(2)} / Per ${service.unit === 'Kg' ? 'KG' : service.unit === 'Itm' ? 'Itm' : service.unit}`;
-
-  // Get matching SVG Icon Component
-  const renderIcon = () => {
-    switch (meta.iconType) {
-      case 'iron':
-        return <SteamIronIcon width={24} height={24} color="#7C5CE6" strokeWidth={2.2} />;
-      case 'specialized':
-        return <HangerIcon width={24} height={24} color="#7C5CE6" strokeWidth={2.2} />;
-      case 'wash':
-      default:
-        return <WashingMachineIcon width={24} height={24} color="#7C5CE6" strokeWidth={2.2} />;
-    }
-  };
-
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar style="dark" />
       
-      {/* Custom Header matching layout */}
+      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()} activeOpacity={0.7}>
-          <Ionicons name="arrow-back" size={24} color="#1E1E2D" />
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={24} color="#1C1C30" />
         </TouchableOpacity>
         <Text style={styles.headerTitle} allowFontScaling={false}>
-          {service.title} Details
+          {activeToggle === 'kg' ? 'Price per KG' : 'Price per Item'}
         </Text>
+        <TouchableOpacity style={styles.bellButton} activeOpacity={0.7}>
+          <Ionicons name="notifications-outline" size={22} color="#1C1C30" />
+        </TouchableOpacity>
       </View>
 
-      <KeyboardAvoidingView
-        style={styles.keyboardAvoid}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 40}
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
+        <Ionicons name="search-outline" size={20} color="#9CA3AF" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search for items (e.g. Shirt, Saree)"
+          placeholderTextColor="#9CA3AF"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          allowFontScaling={false}
+        />
+      </View>
+
+      {/* Pricing Toggle Switches */}
+      <View style={styles.toggleOuterContainer}>
+        <View style={styles.toggleContainer}>
+          <TouchableOpacity
+            style={[styles.toggleBtn, activeToggle === 'item' && styles.toggleBtnActive]}
+            onPress={() => {
+              setActiveToggle('item');
+              setSearchQuery('');
+            }}
+            activeOpacity={0.85}
+          >
+            <Text style={[styles.toggleText, activeToggle === 'item' && styles.toggleTextActive]} allowFontScaling={false}>
+              Price per Item
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.toggleBtn, activeToggle === 'kg' && styles.toggleBtnActive]}
+            onPress={() => {
+              setActiveToggle('kg');
+              setSearchQuery('');
+            }}
+            activeOpacity={0.85}
+          >
+            <Text style={[styles.toggleText, activeToggle === 'kg' && styles.toggleTextActive]} allowFontScaling={false}>
+              Service Per KG
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Category Tabs (only for Price per Item) */}
+      {activeToggle === 'item' && !searchQuery && (
+        <View style={styles.categoryContainer}>
+          {['Men', 'Women', 'Household', 'Kids'].map((cat) => (
+            <TouchableOpacity
+              key={cat}
+              style={[styles.categoryTab, activeCategory === cat && styles.categoryTabActive]}
+              onPress={() => setActiveCategory(cat as any)}
+              activeOpacity={0.7}
+            >
+              <Text style={[styles.categoryText, activeCategory === cat && styles.categoryTextActive]} allowFontScaling={false}>
+                {cat}
+              </Text>
+              {activeCategory === cat && <View style={styles.activeIndicator} />}
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={[
+          styles.scrollContent,
+          activeToggle === 'item' && styles.scrollContentItem,
+        ]}
       >
-        <ScrollView
-          ref={scrollViewRef}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* Main Service Description & Rate Card */}
-          <View style={styles.card}>
-            <View style={styles.iconContainer}>
-              {renderIcon()}
-            </View>
-            <Text style={styles.serviceTitle} allowFontScaling={false}>
-              {service.title}
-            </Text>
-            <Text style={styles.description} allowFontScaling={false}>
-              {meta.description}
-            </Text>
-            
-            <View style={styles.divider} />
-            
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel} allowFontScaling={false}>
-                FIXED RATE
+        {/* Hero Banner (only for Service Per KG) */}
+        {activeToggle === 'kg' && (
+          <View style={styles.bannerContainer}>
+            <View style={styles.bannerContent}>
+              <Text style={styles.bannerTitle} allowFontScaling={false}>
+                Weight-based Laundry
               </Text>
-              <Text style={styles.priceValue} allowFontScaling={false}>
-                {priceDisplay.split(' / ')[0]}
-                <Text style={styles.priceUnit} allowFontScaling={false}>
-                  {priceDisplay.includes(' / ') ? ` / ${priceDisplay.split(' / ')[1]}` : ''}
-                </Text>
+              <Text style={styles.bannerDesc} allowFontScaling={false}>
+                Perfect for daily wear. Wash, dry, and fold at unbeatable rates per kilogram.
               </Text>
             </View>
-          </View>
-
-          {/* Service Categorization Card */}
-          <View style={styles.card}>
-            <View style={styles.sectionHeader}>
-              <Ionicons name="grid-outline" size={20} color="#7C5CE6" />
-              <Text style={styles.sectionTitle} allowFontScaling={false}>
-                Service Categorization
-              </Text>
-            </View>
-            
-            <View style={styles.badgeRow}>
-              <Ionicons name="ribbon-outline" size={18} color="#7C5CE6" style={styles.badgeIcon} />
-              <Text style={styles.badgeText} allowFontScaling={false}>
-                {meta.categorization}
-              </Text>
-            </View>
-            
-            <Text style={styles.sectionLabel} allowFontScaling={false}>
-              TURNOVER
-            </Text>
-            
-            <View style={styles.badgeRow}>
-              <Ionicons name="time-outline" size={18} color="#7C5CE6" style={styles.badgeIcon} />
-              <Text style={styles.badgeText} allowFontScaling={false}>
-                {meta.turnover}
-              </Text>
-            </View>
-          </View>
-
-          {/* Service Details Card */}
-          <View style={styles.card}>
-            <View style={styles.sectionHeader}>
-              <Ionicons name="document-text-outline" size={20} color="#7C5CE6" />
-              <Text style={styles.sectionTitle} allowFontScaling={false}>
-                Service Details
-              </Text>
-            </View>
-            
-            <Text style={styles.sectionLabel} allowFontScaling={false}>
-              DESCRIPTION
-            </Text>
-            
-            <TextInput
-              style={styles.textInput}
-              value={extraNotes}
-              onChangeText={setExtraNotes}
-              placeholder="Ex: High-quali.."
-              placeholderTextColor="#A1A1AA"
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-              allowFontScaling={false}
+            <Image
+              source={require('../../../assets/images/service/weight-based.png')}
+              style={styles.bannerImage}
+              resizeMode="contain"
             />
           </View>
+        )}
 
-          {/* Clothes Summary Section */}
-          <View style={styles.sectionTitleContainer}>
-            <Text style={styles.sectionTitleHeading} allowFontScaling={false}>
-              Items Checklist
-            </Text>
-          </View>
-          <View style={styles.summaryCard}>
-            {clothes.map((c, idx) => (
-              <View key={idx}>
-                <View style={styles.summaryItemRow}>
-                  <Text style={styles.summaryItemName} allowFontScaling={false}>
-                    {c.name}
-                  </Text>
-                  
-                  <View style={styles.counterPill}>
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      onPress={() => decrementQuantity(idx)}
-                      hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-                    >
-                      <View style={[styles.counterBtn, c.quantity === 0 && styles.counterBtnDisabled]}>
-                        <Ionicons name="remove" size={12} color="#FFFFFF" />
-                      </View>
-                    </TouchableOpacity>
-                    <Text style={styles.counterValue}>{c.quantity}</Text>
-                    <TouchableOpacity
-                      activeOpacity={0.7}
-                      onPress={() => incrementQuantity(idx)}
-                      hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
-                    >
-                      <View style={styles.counterBtn}>
-                        <Ionicons name="add" size={12} color="#FFFFFF" />
-                      </View>
-                    </TouchableOpacity>
+        <Text style={styles.listSectionTitle} allowFontScaling={false}>
+          Available Services
+        </Text>
+
+        {/* Services / Garments List */}
+        <View style={styles.listContainer}>
+          {activeToggle === 'kg' ? (
+            filteredWeightServices.map((service) => {
+              const currentQty = storeServices.find(s => s.id === service.id)?.quantity || 0;
+              
+              let iconName = 'shirt-outline';
+              if (service.title.includes('Iron')) iconName = 'color-wand-outline';
+              if (service.title.includes('Premium')) iconName = 'ribbon-outline';
+              if (service.title.includes('Press')) iconName = 'water-outline';
+
+              return (
+                <View key={service.id} style={styles.card}>
+                  <View style={styles.cardLeft}>
+                    <View style={styles.iconWrap}>
+                      <Ionicons name={iconName as any} size={22} color="#7C4DFF" />
+                    </View>
+                    <View style={styles.cardInfo}>
+                      <Text style={styles.cardTitle} allowFontScaling={false}>
+                        {service.title}
+                      </Text>
+                      <Text style={styles.cardPrice} allowFontScaling={false}>
+                        ₹{service.unitPrice}/kg
+                      </Text>
+                    </View>
                   </View>
+                  
+                  {currentQty === 0 ? (
+                    <TouchableOpacity
+                      style={styles.addBtn}
+                      activeOpacity={0.8}
+                      onPress={() => handleWeightQuantityChange(service.id, 1)}
+                    >
+                      <Ionicons name="add" size={20} color="#FFFFFF" />
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={styles.counterPill}>
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleWeightQuantityChange(service.id, -1)}
+                      >
+                        <Ionicons name="remove" size={16} color="#7C4DFF" />
+                      </TouchableOpacity>
+                      <Text style={styles.counterValue} allowFontScaling={false}>
+                        {currentQty} kg
+                      </Text>
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleWeightQuantityChange(service.id, 1)}
+                      >
+                        <Ionicons name="add" size={16} color="#7C4DFF" />
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
-                {idx < clothes.length - 1 && <View style={styles.summaryDivider} />}
-              </View>
-            ))}
+              );
+            })
+          ) : (
+            filteredGarments.map((item) => {
+              // Calculate current selected item quantity from corresponding service's clothes summary
+              const serviceClothes = clothesSummary[item.targetServiceId] || [];
+              const currentQty = serviceClothes.find(c => c.name.toLowerCase() === item.name.toLowerCase())?.quantity || 0;
 
-            {/* Add custom item input flow */}
-            <View style={styles.addCustomItemRow}>
-              <TextInput
-                style={styles.customItemInput}
-                placeholder="Add more clothes or item..."
-                placeholderTextColor="#A1A1AA"
-                value={newItemName}
-                onChangeText={setNewItemName}
-                allowFontScaling={false}
-                onFocus={() => {
-                  setTimeout(() => {
-                    scrollViewRef.current?.scrollToEnd({ animated: true });
-                  }, 150);
-                }}
-              />
-              <TouchableOpacity
-                activeOpacity={0.8}
-                onPress={handleAddNewItem}
-                style={styles.customItemAddButton}
-              >
-                <Text style={styles.customItemAddButtonText} allowFontScaling={false}>
-                  Add
-                </Text>
-              </TouchableOpacity>
-            </View>
+              return (
+                <View key={item.id} style={styles.card}>
+                  <View style={styles.cardLeft}>
+                    <View style={styles.iconWrap}>
+                      <Ionicons name={item.icon as any} size={22} color="#7C4DFF" />
+                    </View>
+                    <View style={styles.cardInfo}>
+                      <Text style={styles.cardTitle} allowFontScaling={false}>
+                        {item.name}
+                      </Text>
+                      <Text style={styles.cardPrice} allowFontScaling={false}>
+                        ₹{item.price}/pc
+                      </Text>
+                    </View>
+                  </View>
+
+                  {currentQty === 0 ? (
+                    <TouchableOpacity
+                      style={styles.addBtn}
+                      activeOpacity={0.8}
+                      onPress={() => handleItemQuantityChange(item.id, 1)}
+                    >
+                      <Ionicons name="add" size={20} color="#FFFFFF" />
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={styles.counterPill}>
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleItemQuantityChange(item.id, -1)}
+                      >
+                        <Ionicons name="remove" size={16} color="#7C4DFF" />
+                      </TouchableOpacity>
+                      <Text style={styles.counterValue} allowFontScaling={false}>
+                        {currentQty}
+                      </Text>
+                      <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleItemQuantityChange(item.id, 1)}
+                      >
+                        <Ionicons name="add" size={16} color="#7C4DFF" />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                </View>
+              );
+            })
+          )}
+        </View>
+
+        {activeToggle === 'kg' && (
+          <View style={styles.infoLabelContainer}>
+            <Ionicons name="information-circle-outline" size={16} color="#8E8E9E" style={styles.infoIcon} />
+            <Text style={styles.infoLabel} allowFontScaling={false}>
+              Minimum order weight: 3kg
+            </Text>
           </View>
+        )}
+      </ScrollView>
 
-          {/* Action Buttons */}
-          <TouchableOpacity style={styles.addButton} activeOpacity={0.8} onPress={handleAddToCart}>
-            <Text style={styles.addButtonText} allowFontScaling={false}>
-              Add to Cart
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.viewCartButton} activeOpacity={0.8} onPress={handleViewCart}>
-            <Text style={styles.viewCartButtonText} allowFontScaling={false}>
-              View Cart
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      {/* Floating Footer Cart Bar */}
+      <View style={styles.footer}>
+        <View style={styles.footerLeft}>
+          <Text style={styles.footerItemsText} allowFontScaling={false}>
+            {totalItemsCount} {totalItemsCount === 1 ? 'Item' : 'Items'} Added
+          </Text>
+          <Text style={styles.footerPriceText} allowFontScaling={false}>
+            ₹{subtotal.toFixed(2)}
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={styles.viewCartBtn}
+          activeOpacity={0.85}
+          onPress={handleViewCart}
+        >
+          <Text style={styles.viewCartBtnText} allowFontScaling={false}>
+            View My Cart
+          </Text>
+          <Ionicons name="chevron-forward" size={16} color="#FFFFFF" style={styles.viewCartIcon} />
+        </TouchableOpacity>
+      </View>
     </SafeAreaView>
   );
 };
@@ -397,261 +406,311 @@ const ServiceDetailScreen = () => {
 const styles = StyleSheet.create({
   safe: {
     flex: 1,
-    backgroundColor: '#F8F9FE',
-  },
-  keyboardAvoid: {
-    flex: 1,
+    backgroundColor: '#FAFAFD',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: scale(18),
+    justifyContent: 'space-between',
+    paddingHorizontal: scale(16),
     paddingVertical: verticalScale(14),
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F1F6',
+    borderBottomColor: '#F2F2F7',
   },
   backButton: {
-    marginRight: scale(12),
+    padding: scale(2),
   },
   headerTitle: {
     fontSize: responsiveFontSize(18),
     fontWeight: '700',
-    color: '#1E1E2D',
+    color: '#1C1C30',
   },
-  scrollContent: {
-    paddingHorizontal: scale(18),
-    paddingTop: verticalScale(16),
-    paddingBottom: verticalScale(120), // leaves space for absolute BottomTabBar (height 66 + bottom 24)
+  bellButton: {
+    padding: scale(2),
   },
-  card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: scale(16),
-    padding: scale(20),
-    marginBottom: verticalScale(16),
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.03,
-    shadowRadius: 10,
-    elevation: 2,
-  },
-  iconContainer: {
-    width: scale(48),
-    height: scale(48),
-    borderRadius: scale(12),
-    backgroundColor: 'rgba(124, 92, 230, 0.08)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  serviceTitle: {
-    fontSize: responsiveFontSize(24),
-    fontWeight: '800',
-    color: '#1E1E2D',
-    marginTop: verticalScale(16),
-  },
-  description: {
-    fontSize: responsiveFontSize(14.5),
-    color: '#6B7280',
-    lineHeight: responsiveFontSize(21),
-    marginTop: verticalScale(12),
-    marginBottom: verticalScale(20),
-  },
-  divider: {
-    height: 1,
-    backgroundColor: '#F1F5F9',
-    marginBottom: verticalScale(16),
-  },
-  priceRow: {
+  searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: '#F3F4F6',
+    borderRadius: moderateScale(12),
+    marginHorizontal: scale(16),
+    marginTop: verticalScale(14),
+    paddingHorizontal: scale(14),
+    height: verticalScale(44),
   },
-  priceLabel: {
-    fontSize: responsiveFontSize(12),
-    fontWeight: '700',
-    color: '#8E8E8E',
-    letterSpacing: 0.5,
+  searchIcon: {
+    marginRight: scale(10),
   },
-  priceValue: {
-    fontSize: responsiveFontSize(20),
-    fontWeight: '800',
-    color: '#7C5CE6',
+  searchInput: {
+    flex: 1,
+    fontSize: responsiveFontSize(14),
+    color: '#1C1C30',
+    paddingVertical: 0,
+    fontWeight: '400',
   },
-  priceUnit: {
+  toggleOuterContainer: {
+    alignItems: 'center',
+    marginTop: verticalScale(14),
+    marginHorizontal: scale(16),
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#F3F4F6',
+    borderRadius: moderateScale(12),
+    padding: scale(4),
+    width: '100%',
+    height: verticalScale(46),
+  },
+  toggleBtn: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: moderateScale(8),
+  },
+  toggleBtnActive: {
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  toggleText: {
     fontSize: responsiveFontSize(13.5),
     fontWeight: '600',
     color: '#6B7280',
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: verticalScale(14),
-  },
-  sectionTitle: {
-    fontSize: responsiveFontSize(16),
+  toggleTextActive: {
+    color: '#7C4DFF',
     fontWeight: '700',
-    color: '#1E1E2D',
-    marginLeft: scale(8),
   },
-  badgeRow: {
+  categoryContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8F9FE',
-    borderRadius: scale(12),
-    paddingVertical: verticalScale(12),
-    paddingHorizontal: scale(16),
-    marginBottom: verticalScale(12),
-  },
-  badgeIcon: {
-    marginRight: scale(6),
-  },
-  badgeText: {
-    fontSize: responsiveFontSize(15),
-    fontWeight: '600',
-    color: '#1E1E2D',
-  },
-  sectionLabel: {
-    fontSize: responsiveFontSize(12),
-    fontWeight: '700',
-    color: '#8E8E8E',
-    letterSpacing: 0.5,
-    marginTop: verticalScale(8),
-    marginBottom: verticalScale(8),
-  },
-  textInput: {
+    justifyContent: 'space-between',
+    paddingHorizontal: scale(20),
+    marginTop: verticalScale(14),
     backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#E4E4E7',
-    borderRadius: scale(12),
-    padding: scale(14),
-    fontSize: responsiveFontSize(15),
-    color: '#1E1E2D',
-    height: verticalScale(110),
+    borderBottomWidth: 1,
+    borderBottomColor: '#F2F2F7',
+    height: verticalScale(44),
   },
-  addButton: {
-    backgroundColor: '#7C5CE6',
-    borderRadius: scale(12),
-    height: verticalScale(50),
-    justifyContent: 'center',
+  categoryTab: {
+    flex: 1,
     alignItems: 'center',
-    marginTop: verticalScale(8),
-    shadowColor: '#7C5CE6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 3,
+    justifyContent: 'center',
+    position: 'relative',
+    height: '100%',
   },
-  addButtonText: {
-    fontSize: responsiveFontSize(16),
+  categoryTabActive: {},
+  categoryText: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: '600',
+    color: '#6B7280',
+  },
+  categoryTextActive: {
+    color: '#7C4DFF',
     fontWeight: '700',
+  },
+  activeIndicator: {
+    position: 'absolute',
+    bottom: 0,
+    left: scale(20),
+    right: scale(20),
+    height: verticalScale(3),
+    backgroundColor: '#7C4DFF',
+    borderTopLeftRadius: moderateScale(3),
+    borderTopRightRadius: moderateScale(3),
+  },
+  scrollContent: {
+    paddingHorizontal: scale(16),
+    paddingTop: verticalScale(14),
+    paddingBottom: verticalScale(110),
+  },
+  scrollContentItem: {
+    paddingTop: verticalScale(16),
+  },
+  bannerContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#824CF4',
+    borderRadius: moderateScale(16),
+    padding: scale(16),
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    height: verticalScale(140),
+    shadowColor: '#824CF4',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  bannerContent: {
+    flex: 1.2,
+    marginRight: scale(8),
+  },
+  bannerTitle: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: '800',
     color: '#FFFFFF',
   },
-  sectionTitleContainer: {
-    marginTop: verticalScale(24),
+  bannerDesc: {
+    fontSize: responsiveFontSize(12),
+    color: 'rgba(255, 255, 255, 0.85)',
+    marginTop: verticalScale(6),
+    lineHeight: responsiveFontSize(16),
+    fontWeight: '500',
+  },
+  bannerImage: {
+    flex: 0.8,
+    height: '110%',
+    width: '100%',
+    marginBottom: verticalScale(-15),
+  },
+  listSectionTitle: {
+    fontSize: responsiveFontSize(15),
+    fontWeight: '800',
+    color: '#1C1C30',
+    marginTop: verticalScale(20),
     marginBottom: verticalScale(12),
   },
-  sectionTitleHeading: {
-    fontSize: responsiveFontSize(18),
-    fontWeight: '700',
-    color: '#1C1C38',
+  listContainer: {
+    gap: verticalScale(12),
   },
-  summaryCard: {
+  card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: scale(16),
-    padding: scale(20),
-    marginBottom: verticalScale(16),
+    borderRadius: moderateScale(12),
     borderWidth: 1,
-    borderColor: '#EBEBF0',
-  },
-  summaryItemRow: {
+    borderColor: '#EFEFF4',
+    paddingHorizontal: scale(14),
+    paddingVertical: verticalScale(12),
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: verticalScale(10),
+    height: verticalScale(74),
   },
-  summaryItemName: {
-    fontSize: responsiveFontSize(15),
-    fontWeight: '700',
-    color: '#1E1E2D',
+  cardLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  iconWrap: {
+    width: scale(42),
+    height: scale(42),
+    borderRadius: scale(10),
+    backgroundColor: '#F3EEFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: scale(14),
+  },
+  cardInfo: {
+    flex: 1,
+  },
+  cardTitle: {
+    fontSize: responsiveFontSize(14),
+    fontWeight: '800',
+    color: '#1C1C30',
+  },
+  cardPrice: {
+    fontSize: responsiveFontSize(12.5),
+    color: '#8E8E9E',
+    marginTop: verticalScale(2),
+    fontWeight: '500',
+  },
+  addBtn: {
+    backgroundColor: '#7C4DFF',
+    borderRadius: moderateScale(18),
+    width: scale(36),
+    height: scale(36),
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#7C4DFF',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
   },
   counterPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#FFFFFF',
+    justifyContent: 'space-between',
+    backgroundColor: '#F3EEFF',
     borderWidth: 1,
-    borderColor: '#BDBDBD',
-    borderRadius: moderateScale(14),
-    width: scale(75),
-    height: scale(22),
-    gap: scale(9),
-  },
-  counterBtn: {
-    width: scale(15),
-    height: scale(15),
-    borderRadius: moderateScale(12),
-    backgroundColor: '#504f4f',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  counterBtnDisabled: {
-    backgroundColor: '#D0D0D0',
+    borderColor: '#DCD4FF',
+    borderRadius: moderateScale(20),
+    width: scale(95),
+    height: verticalScale(34),
+    paddingHorizontal: scale(8),
   },
   counterValue: {
-    fontSize: responsiveFontSize(11),
+    fontSize: responsiveFontSize(13),
     fontWeight: '700',
-    color: '#000000',
+    color: '#7C4DFF',
     textAlign: 'center',
   },
-  summaryDivider: {
-    height: 1,
-    backgroundColor: '#F1F1F6',
-  },
-  addCustomItemRow: {
+  infoLabelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: verticalScale(14),
-    gap: scale(8),
-  },
-  customItemInput: {
-    flex: 1,
-    height: 42,
-    backgroundColor: '#F8F9FE',
-    borderWidth: 1,
-    borderColor: '#E4E4E7',
-    borderRadius: scale(12),
-    paddingHorizontal: scale(12),
-    fontSize: responsiveFontSize(14),
-    color: '#1E1E2D',
-  },
-  customItemAddButton: {
-    height: 42,
-    backgroundColor: '#7C5CE6',
-    borderRadius: scale(12),
-    paddingHorizontal: scale(16),
     justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: verticalScale(24),
   },
-  customItemAddButtonText: {
-    fontSize: responsiveFontSize(14),
-    fontWeight: '700',
-    color: '#FFFFFF',
+  infoIcon: {
+    marginRight: scale(4),
   },
-  viewCartButton: {
+  infoLabel: {
+    fontSize: responsiveFontSize(12),
+    color: '#8E8E9E',
+    fontWeight: '500',
+  },
+  footer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#7C5CE6',
-    borderRadius: scale(12),
-    height: verticalScale(50),
-    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderTopColor: '#F2F2F7',
+    paddingHorizontal: scale(16),
+    paddingVertical: verticalScale(12),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: verticalScale(12),
-    marginBottom: verticalScale(8),
+    height: verticalScale(74),
   },
-  viewCartButtonText: {
-    fontSize: responsiveFontSize(16),
+  footerLeft: {
+    justifyContent: 'center',
+  },
+  footerItemsText: {
+    fontSize: responsiveFontSize(12),
+    color: '#8E8E9E',
+    fontWeight: '500',
+  },
+  footerPriceText: {
+    fontSize: responsiveFontSize(18),
+    fontWeight: '800',
+    color: '#1C1C30',
+    marginTop: verticalScale(2),
+  },
+  viewCartBtn: {
+    backgroundColor: '#7C4DFF',
+    borderRadius: moderateScale(10),
+    paddingHorizontal: scale(20),
+    height: verticalScale(44),
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#7C4DFF',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  viewCartBtnText: {
+    color: '#FFFFFF',
+    fontSize: responsiveFontSize(14),
     fontWeight: '700',
-    color: '#7C5CE6',
+  },
+  viewCartIcon: {
+    marginLeft: scale(4),
   },
 });
 
