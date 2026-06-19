@@ -10,18 +10,10 @@ import SupportOptionCard from '../../components/support/SupportOptionCard';
 import RecentConversationCard from '../../components/support/RecentConversationCard';
 import { COLORS } from '../../constants/colors';
 import { supportOptions, recentConversation } from '../../data/support/contactSupportData';
-
-type RootStackParamList = {
-  Home: undefined;
-  Search: undefined;
-  YourCart: undefined;
-  Profile: undefined;
-  HelpAndSupport: undefined;
-  ComingSoon: { title?: string } | undefined;
-};
+import type { RootStackParamList } from '../../types/navigation';
 
 const ContactSupportScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -30,7 +22,7 @@ const ContactSupportScreen = () => {
         <ContactSupportHeader onBackPress={() => navigation.goBack()} />
 
         <View style={styles.heroSection}>
-          <SupportHeroCard onChatPress={() => navigation.navigate('ComingSoon', { title: 'Chat with us' })} />
+          <SupportHeroCard onChatPress={() => navigation.navigate('ChatSupport')} />
         </View>
 
         <Text style={styles.sectionTitle}>Choose a way to contact</Text>
@@ -49,6 +41,8 @@ const ContactSupportScreen = () => {
                     Linking.openURL('tel:+919876543210').catch(err => console.error("Failed to open dialer", err));
                   } else if (item.id === 'email') {
                     Linking.openURL('mailto:support@laundry.com').catch(err => console.error("Failed to open mail client", err));
+                  } else if (item.id === 'chat') {
+                    navigation.navigate('ChatSupport');
                   } else {
                     navigation.navigate('ComingSoon', { title: item.title });
                   }
@@ -64,7 +58,6 @@ const ContactSupportScreen = () => {
           <RecentConversationCard conversation={recentConversation} />
         </View>
       </ScrollableScreen>
-
     </SafeAreaView>
   );
 };

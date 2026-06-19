@@ -10,18 +10,10 @@ import HelpTopicCard from '../../components/help/HelpTopicCard';
 import SupportCard from '../../components/help/SupportCard';
 import { COLORS } from '../../constants/colors';
 import { helpTopics } from '../../data/help/helpCenterData';
-
-type RootStackParamList = {
-  Home: undefined;
-  Search: undefined;
-  YourCart: undefined;
-  Profile: undefined;
-  HelpAndSupport: undefined;
-  ComingSoon: { title?: string } | undefined;
-};
+import type { RootStackParamList } from '../../types/navigation';
 
 const HelpCenterScreen = () => {
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList, 'Profile'>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -52,7 +44,7 @@ const HelpCenterScreen = () => {
         </View>
 
         <View style={styles.supportSection}>
-          <SupportCard onChatPress={() => navigation.navigate('ComingSoon', { title: 'Chat with us' })} />
+          <SupportCard onChatPress={() => navigation.navigate('ChatSupport')} />
         </View>
       </ScrollableScreen>
 
