@@ -34,8 +34,7 @@
       "@react-native-vector-icons/ionicons",
       "expo-notifications",
       "expo-image-picker",
-      "expo-location",
-      "expo-clipboard"
+      "expo-location"
     ],
     "extra": {
       "eas": {

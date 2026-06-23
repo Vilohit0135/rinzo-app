@@ -263,7 +263,7 @@ const ServiceDetailScreen = () => {
               </Text>
             </View>
             <Image
-              source={require('../../../assets/images/service/weight-based.png')}
+              source={require('../../../assets/images/service/weight-based.jpg')}
               style={styles.bannerImage}
               resizeMode="contain"
             />

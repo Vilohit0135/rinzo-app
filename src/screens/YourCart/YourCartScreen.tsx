@@ -49,7 +49,7 @@ const YourCartScreen = () => {
       return require('../../../assets/images/cart/formal-trousers.png');
     }
     if (n.includes('blazer') || n.includes('suit') || n.includes('jacket') || n.includes('dress') || n.includes('saree')) {
-      return require('../../../assets/images/cart/premium-blazer.png');
+      return require('../../../assets/images/cart/premium-blazer.jpg');
     }
     return require('../../../assets/images/cart/cotton-shirt.png');
   };
